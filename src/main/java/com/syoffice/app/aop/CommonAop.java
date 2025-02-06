@@ -32,7 +32,7 @@ public class CommonAop {
 	 * 포인트컷(주업무)과 어드바이스(보조업무)를 생성하여 동작하도록 만들겠다.
 	*/
 	// == pointCut(주업무) 설정 //
-	@Pointcut("execution(public * com.spring.app..*Controller.requiredLogin_*(..))")
+	@Pointcut("execution(public * com.syoffice.app..*Controller.requiredLogin_*(..))")
 	public void requiredLogin() {
 
 	}
