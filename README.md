@@ -1,2 +1,2 @@
 # Final_Project
-final_project
+그룹웨어 SYoffice 프로젝트
