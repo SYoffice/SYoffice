@@ -1,7 +1,5 @@
 package com.syoffice.app.index.controller;
 
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,25 +40,20 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping(value="/*")
 public class IndexController {
-
 	
+	@Autowired  // Type에 따라 알아서 Bean 을 주입해준다.
+	private IndexService service;
 	
-	
-	// === #7. 메인 페이지 요청 === //
-	@GetMapping("/")   // http://localhost:9090/myspring/
+	@GetMapping("/")
 	public String main() {
-		return "redirect:/index";  //  http://localhost:9090/myspring/index
+		return "redirect:/login";
 	}
-	
-	@GetMapping("index")  //  http://localhost:9090/myspring/index
+
+	@GetMapping("login")
 	public String index(HttpServletRequest request) {
 		
-//		List<Map<String, String>> mapList = service.getImgfilenameList();
-		
-//		request.setAttribute("mapList", mapList);
-		
-		return "mycontent1/main/index";
-		//   /WEB-INF/views/mycontent1/main/index.jsp 페이지를 만들어야 한다.
+		return "/main/login";
+		//   /WEB-INF/views/main/login.jsp 페이지를 만들어야 한다.
 	}
 	
 	
