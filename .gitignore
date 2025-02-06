@@ -99,4 +99,4 @@ target/
 *.sql
 .DS_Store
 .settings
-
+.classpath
