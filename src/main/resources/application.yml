@@ -4,7 +4,7 @@ spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백�
 
   datasource: #DB 접속이 1개만 있을 경우
    driver-class-name: oracle.jdbc.OracleDriver
-   url: jdbc:oracle:thin:@211.238.142.192:1521:xe
+   url: jdbc:oracle:thin:@211.238.142.186:1521:xe
   #url: jdbc:oracle:thin:@//127.0.0.1:1521/xe  # oracle 12c 이후부터는 이렇게 하라고 함.
    username: final_orauser5
    password: gclass
