@@ -18,6 +18,7 @@
 
 	<div id="loginBox">
 		로그인 페이지 입니다.
+		정두환입니다.
 	</div>
 
 </div>    
