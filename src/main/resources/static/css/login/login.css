@@ -1,0 +1,85 @@
+@charset "UTF-8";
+
+/* 전체 */
+/* 전체 넓이 설정 */
+div#container {
+   width: 40%;
+   margin: 5% auto;
+}
+
+/* 로그인 박스 전체 */
+div#loginBox {
+    width: 100%;
+    height: 600px;
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid black;
+}
+
+/* 로그인 박스 내부의 요소들 전체 */
+div#main {
+	width: 70%;
+	margin: 8% auto;
+}
+
+/* 로고를 담고 있는 박스 */
+div#logoBox {
+	width: 70%;
+	margin: auto;
+}
+
+/* 실제 로고 img 태그 */
+div#logoBox > img {
+	width: 100%;
+	height: 300px;
+}
+
+/* 사번(아이디) input 태그를 감싸고 있는 박스 */
+div#empIdBox {
+	width: 70%;
+	height: 40px;
+	margin: 2% auto;
+}
+
+/* 실제 사번(아이디) 입력 input 태그 */
+input#empId {
+	width: 100%;
+	height: 40px;
+	font-size: 20px;
+}
+
+/* 비밀번호 input 태그를 감싸고 있는 박스 */
+div#passwordBox {
+	width: 70%;
+	height: 40px;
+	margin: 2% auto;
+}
+
+/* 실제 비밀번호 입력 input 태그 */
+input#password {
+	width: 100%;
+	height: 40px;
+	font-size: 20px;
+}
+
+/* "로그인" 버튼을 담고있는 박스 */
+div#loginBtnBox {
+	width: 70%;
+	height: 40px;
+	margin: 2% auto;
+}
+
+/* 실제 로그인 버튼 */
+button#btnLogin{ 
+	width: 100%;
+	height: 40px;
+	font-size: 18px;
+	background-color: #BFD2FA;
+	border: solid 1px #BFD2FA;
+}
+
+/* "로그인" 버튼에 hover 시 */
+button#btnLogin:hover {
+	cursor: pointer;
+}
+
