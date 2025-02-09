@@ -17,10 +17,28 @@
 <div id="container">
 
 	<div id="loginBox">
-		로그인 페이지 입니다.
-		정두환입니다.
-		이연진입니다.
-		한민정입니다.
+		
+		<div id="main">
+		
+			<div id="logoBox">
+				<img src="<%=ctxPath%>/images/logo.svg"/>	
+			</div>
+			
+			<form name="loginFrm">
+				<div id="empIdBox">
+					<input type="text" name="empId" id="empId" placeholder="아이디(사번)"/>
+				</div>
+				
+				<div id="passwordBox">
+					<input type="password" name="password" id="password" placeholder="비밀번호"/>
+				</div>
+				
+				<div id="loginBtnBox">
+					<button type="button" id="btnLogin">로그인</button>
+				</div>
+			</form>
+			
+		</div>
 	</div>
 
 </div>    
