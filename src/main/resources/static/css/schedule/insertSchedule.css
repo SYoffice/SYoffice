@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+div#container { 
+	width: 100%;
+	margin: 0 auto;
+	border: solid 1px red;
+}
+
+div#container > div#title {
+	width: 60%;
+	margin: 0 auto;
+}
+
+div#sideMenu {
+	width: 15%;
+	border: solid 1px blue;
+	background-color: #EAF0FF;
+}
+
+div#sideMenu > div#menuList {
+	width: 60%;
+	margin: 0 auto;
+}
+
+div#scheduleInput {
+	width: 75%;
+	margin: 0 auto;
+}
