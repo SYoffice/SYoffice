@@ -51,6 +51,14 @@ public class IndexController {
 		return "/main/login";
 		//   /WEB-INF/views/main/login.jsp 페이지를 만들어야 한다.
 	}
+		
+	@GetMapping("index")
+	public String indexy(HttpServletRequest request) {
+		
+		return "/main/index";
+		//   /WEB-INF/views/main/index.jsp 페이지를 만들어야 한다.
+	}
+	
 	
 	
 	
