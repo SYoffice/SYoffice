@@ -3,6 +3,9 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
+    <!-- domain(VO) package -->
+	<typeAliases>
+		<typeAlias type="com.syoffice.app.employee.domain.EmployeeVO" alias="EmployeeVO"/>
+	</typeAliases>
 
-	
 </configuration>

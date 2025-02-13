@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,6 +19,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+@MapperScan(basePackages={"com.syoffice.app.**.model"}, sqlSessionFactoryRef="sqlSessionFactory")
 @Configuration  // Spring 컨테이너가 처리해주는 클래스로서, 클래스내에 하나 이상의 @Bean 메소드를 선언만 해주면 런타임시 해당 빈에 대해 정의되어진 대로 요청을 처리해준다.
 @EnableTransactionManagement // 스프링 부트에서 Transaction 처리를 위한 용도
 public class Datasource_final_orauser5_Configuration {
@@ -27,7 +29,7 @@ public class Datasource_final_orauser5_Configuration {
 	
 	@Bean
  	@Qualifier("dataSource")
- // @ConfigurationProperties(prefix = "spring.datasource-mymvcuser")
+	@ConfigurationProperties(prefix = "spring.datasource")
  // @Primary
     public DataSource dataSource(){
         return DataSourceBuilder.create().build();

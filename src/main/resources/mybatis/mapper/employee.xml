@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="com.syoffice.app.employee.model.EmployeeDAO">
+	
+	<!-- 로그인 처리 -->	
+	<select id="login" resultType="EmployeeVO" parameterType="HashMap">
+		SELECT emp_id, fk_dept_id, name, password, tel, personal_mail, hire_date, mail, 
+       		   postcode, address, detailaddress, extraaddress, gender, birthday, fk_grade_no,
+       		   status, pwdchangedate, pwdchangestatus, leave_count, profile_img,
+       		   TRUNC( months_between(sysdate, pwdchangedate) ) AS pwdchangegap
+		FROM tbl_employee
+		WHERE emp_id = #{emp_id} 
+		AND password = #{password}
+		ANd status != 3	<!-- 퇴직상태일 때는 로그인 불가 -->
+	</select>
+
+	<!-- 마지막 비밀번호 변경일자가 3개월 이상 경과 시 비밀번호 변경이 필요한 상태로 전환 -->
+	<update id="updatePwdChangeStatus" parameterType="String">
+		UPDATE tbl_employee SET pwdchangestatus = 0
+		WHERE emp_id = #{emp_id}
+	</update>
+
+</mapper>
+
+
+
