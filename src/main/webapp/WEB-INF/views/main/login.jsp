@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+    pageEncoding="UTF-8"%>  
 
 <%
 	String ctxPath = request.getContextPath();
@@ -13,6 +11,11 @@
 <script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
 
+<%-- 직접 만든 JS --%>
+<script type="text/javascript" src="<%=ctxPath%>/js/login/login.js"></script>
+
+
+
 
 <div id="container">
 
@@ -21,12 +24,12 @@
 		<div id="main">
 		
 			<div id="logoBox">
-				<img src="<%=ctxPath%>/images/logo.svg"/>	
+				<img src="<%=ctxPath%>/images/logo.png"/>
 			</div>
 			
 			<form name="loginFrm">
 				<div id="empIdBox">
-					<input type="text" name="empId" id="empId" placeholder="아이디(사번)"/>
+					<input type="text" name="emp_id" id="emp_id" placeholder="아이디(사번)"/>
 				</div>
 				
 				<div id="passwordBox">

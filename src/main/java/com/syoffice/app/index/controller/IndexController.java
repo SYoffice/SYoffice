@@ -1,12 +1,11 @@
 package com.syoffice.app.index.controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.syoffice.app.index.service.IndexService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -40,9 +39,6 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping(value="/*")
 public class IndexController {
-	
-	@Autowired  // Type에 따라 알아서 Bean 을 주입해준다.
-	private IndexService service;
 	
 	@GetMapping("/")
 	public String main() {
