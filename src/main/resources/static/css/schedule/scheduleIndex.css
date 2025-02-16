@@ -17,8 +17,8 @@ div#sideMenu {
 }
 
 div#sideMenu > div#menuList {
-	width: 60%;
-	margin: 0 auto;
+	width: 80%;
+	margin: 2% auto 0 auto;
 }
 
 

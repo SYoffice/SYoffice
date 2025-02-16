@@ -7,14 +7,14 @@ div#container {
 }
 
 div#container > div#title {
-	width: 60%;
+	width: 65%;
 	margin: 0 auto;
 }
 
 div#sideMenu {
 	width: 15%;
 	border: solid 1px blue;
-	background-color: #EAF0FF;
+	background-color: white;
 }
 
 div#sideMenu > div#menuList {
@@ -23,6 +23,29 @@ div#sideMenu > div#menuList {
 }
 
 div#scheduleInput {
-	width: 75%;
+	width: 80%;
 	margin: 0 auto;
+	background-color: white;
+}
+
+/* 일정공유자 추가 시 각 인원을 감싸는 블럭 */
+span.plusUser{
+	transition: .8s;
+	padding: 8px; 
+	background-color: #EAF0FF;
+	margin-right: 10px;
+	/*
+	float:left;
+	background-color:#EAF0FF; 
+	color:#424242;
+	border-radius: 0%;
+	padding: 8px;
+	margin: 3px;	
+	margin-top: 6px;
+	*/
+}
+
+div.displayUserList {
+	margin-top: 1.5%;
+	margin-bottom: 0.5%;
 }

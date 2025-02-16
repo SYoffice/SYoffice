@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.syoffice.app.schedule.model.ScheduleDAO">
+	
+	
+	
+	<resultMap type="HashMap" id="selectSmallCategory">
+		<result property="smcatego_no" 		column="smcatego_no" 	javaType="String" />
+		<result property="fk_lgcatego_no" 	column="fk_lgcatego_no" javaType="String" />
+		<result property="smcatego_name" 	column="smcatego_name" 	javaType="String" />
+	</resultMap>
+	<!-- === 일정 등록시 내캘린더,사내캘린더 선택에 따른 서브캘린더 종류를 알아오기 === -->
+	<select id="selectSmallCategory" parameterType="HashMap" resultMap="selectSmallCategory">
+		SELECT smcatego_no, fk_lgcatego_no, smcatego_name
+		  FROM tbl_schedule_small_category
+		 WHERE fk_lgcatego_no = #{fk_lgcatego_no} and fk_emp_id= #{fk_emp_id}
+		ORDER BY smcatego_no ASC
+	</select>
+	
+	
+	<resultMap type="HashMap" id="searchJoinUserList">
+		<result property="emp_id" 	 column="emp_id" 	javaType="String"/>
+		<result property="name" 	 column="name" 		javaType="String"/>
+		<result property="dept_name" column="dept_name" javaType="String"/>
+		<result property="branch_name" column="branch_name" javaType="String"/>
+	</resultMap>
+	<!-- === 공유자를 찾기 위한 특정글자가 들어간 회원명단 불러오기 === -->
+	<select id="searchJoinUserList" parameterType="String" resultMap="searchJoinUserList">
+		SELECT e.emp_id, e.name, d.dept_name, b.branch_name
+		  FROM tbl_employee e JOIN tbl_department d
+		    ON e.fk_dept_id = d.dept_id
+	      JOIN tbl_branch b
+   			ON e.fk_branch_no = b.branch_no
+		WHERE (lower(e.name) like '%'|| #{joinSearchWord} ||'%' OR lower(d.dept_name) like '%'|| #{joinSearchWord} ||'%' OR lower(b.branch_name) like '%'|| #{joinSearchWord} ||'%')
+	</select>
+	
+	
+	<!-- 일정 등록하기 -->
+	<insert id="registerSchedule_end" parameterType="HashMap">
+		INSERT INTO tbl_schedule (schedule_no, fk_emp_id, schedule_name, schedule_content, schedule_startdate, schedule_enddate, schedule_color, schedule_joinemp, fk_lgcatego_no, fk_smcatego_no, schedule_place)
+		VALUES (schedule_seq.nextval, to_number(#{fk_emp_id}), #{schedule_name}, #{schedule_content}, to_date(#{schedule_startdate}, 'yyyymmddhh24miss'), to_date(#{schedule_enddate}, 'yyyymmddhh24miss'), #{schedule_color}, #{schedule_joinemp}, to_number(#{fk_lgcatego_no}), to_number(#{fk_smcatego_no}), #{schedule_place})
+	</insert>
+	
+	
+	
+	<resultMap type="HashMap" id="showCalendar">
+		<result property="smcatego_no" 		column="smcatego_no" 	javaType="String"/>
+		<result property="fk_lgcatego_no" 	column="fk_lgcatego_no" javaType="String"/>
+		<result property="smcatego_name" 	column="smcatego_name" 	javaType="String"/>
+	</resultMap>
+	<!-- 내 일정 소분류 가져오기 -->
+	<select id="showMyCalendar" parameterType="String" resultMap="showCalendar">
+		select smcatego_no, fk_lgcatego_no, smcatego_name
+		from tbl_schedule_small_category
+		where fk_lgcatego_no = 2
+		and fk_emp_id = #{fk_emp_id}
+		order by smcatego_no asc
+	</select>
+	
+	<!-- === 일정 소분류 추가하기 === -->
+	<insert id="addCalendar" parameterType="HashMap">
+		INSERT INTO tbl_schedule_small_category (smcatego_no, fk_lgcatego_no, smcatego_name, fk_emp_id)
+		VALUES (smcatgono_seq.nextval, #{fk_lgcatego_no}, #{smcatego_name}, #{fk_emp_id})
+	</insert>
+	
+	<!-- === 이미 존재하는 소분류인지 확인하기 === -->
+	<select id="existCalendar" parameterType="HashMap" resultType="Integer">
+		SELECT count(*)
+		  FROM tbl_schedule_small_category
+		 WHERE fk_lgcatego_no = #{fk_lgcatego_no} AND fk_emp_id = #{fk_emp_id} AND smcatego_name = #{smcatego_name}
+	</select>
+	
+	
+	<!-- === 전사 일정 소분류 가져오기 === -->
+	<select id="showCompanyCalendar" resultMap="showCalendar">
+		select smcatego_no, fk_lgcatego_no, smcatego_name
+		from tbl_schedule_small_category
+		where fk_lgcatego_no = 1
+		order by smcatego_no asc
+	</select>
+	
+	
+	
+	<resultMap type="HashMap" id="selectSchedule">
+		<result property="schedule_no" 			column="schedule_no" 			javaType="String" />
+		<result property="schedule_startdate" 	column="schedule_startdate" 	javaType="String" />
+		<result property="schedule_enddate" 	column="schedule_enddate" 		javaType="String" />
+		<result property="schedule_name" 		column="schedule_name" 			javaType="String" />
+		<result property="schedule_color" 		column="schedule_color" 		javaType="String" />
+		<result property="schedule_place" 		column="schedule_place" 		javaType="String" />
+		<result property="schedule_joinemp" 	column="schedule_joinemp" 		javaType="String" />
+		<result property="schedule_content" 	column="schedule_content" 		javaType="String" />
+		<result property="fk_smcatego_no" 		column="fk_smcatego_no" 		javaType="String" />
+		<result property="fk_lgcatego_no" 		column="fk_lgcatego_no" 		javaType="String" />
+		<result property="fk_emp_id" 			column="fk_emp_id" 				javaType="String" />
+	</resultMap>
+	<!-- === 등록된 모든 일정 불러오기 === -->
+	<select id="selectSchedule" parameterType="HashMap" resultMap="selectSchedule">
+		SELECT s.schedule_no, s.schedule_startdate, s.schedule_enddate, s.schedule_name, s.schedule_color, s.schedule_place
+			 , s.schedule_joinemp, s.schedule_content, s.fk_smcatego_no, s.fk_lgcatego_no, s.fk_emp_id 
+		  FROM tbl_schedule s JOIN tbl_employee e
+		    ON s.fk_emp_id = e.emp_id
+		 WHERE s.fk_emp_id = #{fk_emp_id} OR
+		fk_lgcatego_no = 1 OR
+		(fk_lgcatego_no != 1 AND lower(schedule_joinemp) LIKE '%'|| lower(#{name}) ||'%')
+		ORDER BY schedule_no ASC
+	</select>
+	
+	
+</mapper>
