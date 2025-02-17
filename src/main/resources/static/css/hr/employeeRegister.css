@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+div#container > form {
+	display: flex;
+}
+
+div#profile {
+	border: solid 2px green;
+}
+
+div.input_box {
+	width: 1000px;
+	height: 70px;
+	margin-top: 15px;
+	border: solid 2px purple;
+}
+
+div.input_text {
+	font-size: 15pt;
+	margin-bottom: 15px;
+}
+
+input {
+	font-size: 15pt;
+	width: 200px;
+	height: 40px;
+}
