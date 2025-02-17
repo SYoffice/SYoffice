@@ -1,13 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     
-<%-- temp --%>
-<script src='<%= request.getContextPath() %>/js/jquery-3.7.1.min.js'></script>
-<script src='<%= request.getContextPath() %>/bootstrap-4.6.2-dist/js/bootstrap.min.js'></script>
-<link href='<%= request.getContextPath() %>/bootstrap-4.6.2-dist/css/bootstrap.min.css' rel='stylesheet' />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+<jsp:include page="../main/header.jsp"></jsp:include>
 
 
+<!-- TailWind Script -->
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+<style type="text/tailwindcss">
+	<%-- border 라는 클래스 아래 자식태그에 모두 css 적용한다. --%>
+	.border {
+    	& {
+        	@apply border-1;
+			@apply rounded-md;
+			@apply border-black;
+        }
+    }
+	.buttonBorder {
+    	& {
+        	@apply border-2;
+			@apply rounded-md;
+			@apply h-10;
+			@apply w-20;
+        }
+    }
+</style>
 
 <%-- custom css --%>
 <link href='<%= request.getContextPath() %>/css/schedule/insertSchedule.css'rel='stylesheet' />
@@ -47,12 +64,12 @@
 					<tr>
 						<th>일자</th>
 						<td>
-							<input type="date" id="startDate" value="${requestScope.chooseDate}" style="height: 30px;"/>&nbsp; 
-							<select id="startHour" class="schedule"></select> 시
-							<select id="startMinute" class="schedule"></select> 분
-							- <input type="date" id="endDate" value="${requestScope.chooseDate}" style="height: 30px;"/>&nbsp;
-							<select id="endHour" class="schedule"></select> 시
-							<select id="endMinute" class="schedule"></select> 분&nbsp;
+							<input type="date" class="border" id="startDate" value="${requestScope.chooseDate}" style="height: 30px;"/>&nbsp; 
+							<select id="startHour" class="schedule border"></select> 시
+							<select id="startMinute" class="schedule border"></select> 분
+							- <input type="date" id="endDate" class="border" value="${requestScope.chooseDate}" style="height: 30px;"/>&nbsp;
+							<select id="endHour" class="schedule border"></select> 시
+							<select id="endMinute" class="schedule border"></select> 분&nbsp;
 							<input type="checkbox" id="allDay"/>&nbsp;<label for="allDay">종일</label>
 							
 							<input type="hidden" name="schedule_startdate"/>
@@ -66,7 +83,7 @@
 					<tr>
 						<th>캘린더선택</th>
 						<td>
-							<select class="calType schedule" name="fk_lgcatego_no">
+							<select class="calType schedule border" name="fk_lgcatego_no">
 								<c:choose>
 								<%-- 사내 캘린더 추가를 할 수 있는 직원은 직위코드가 3 이면서 부서코드가 4 에 근무하는 사원이 로그인 한 경우에만 가능하도록 조건을 걸어둔다.
 									<c:when test="${loginuser.fk_pcode =='3' && loginuser.fk_dcode == '4' }">
@@ -88,38 +105,43 @@
 									</c:otherwise >
 								</c:choose>
 							</select> &nbsp;
-							<select class="small_category schedule" name="fk_smcatego_no"></select>
+							<select class="small_category schedule border" name="fk_smcatego_no"></select>
 						</td>
 					</tr>
 					<tr>
 						<th>색상</th>
-						<td><input type="color" id="schedule_color" name="schedule_color" value="#009900"/></td>
+						<td><input class="border" type="color" id="schedule_color" name="schedule_color" value="#009900"/></td>
 					</tr>
 					<tr>
 						<th>장소</th>
-						<td><input type="text" name="place" class="form-control"/></td>
+						<td><input type="text" name="schedule_place" class="form-control"/></td>
 					</tr>
 					
 					<tr>
 						<th>공유자</th>
 						<td>
-							<input type="text" id="joinUserName" class="form-control" placeholder="일정을 공유할 회원명을 입력하세요"/>
+							<input type="text" id="joinSearchWord" class="form-control" placeholder="회원명 혹은 부서 혹은 지점으로 검색"/>
 							<div class="displayUserList"></div>
 							<input type="hidden" name="schedule_joinemp"/>
 						</td>
 					</tr>
 					<tr>
 						<th>내용</th>
-						<td><textarea rows="10" cols="100" style="height: 200px;" name="content" id="content"  class="form-control"></textarea></td>
+						<td><textarea rows="10" cols="100" style="height: 200px;" name="schedule_content" id="schedule_content"  class="form-control"></textarea></td>
 					</tr>
 				</table>
+				<input type="hidden" value="1000" name="fk_emp_id"/>
 			</form>
 			<div style="float: right;">
-				<button type="button" id="register" class="btn_normal" style="margin-right: 10px; background-color: #0071bd;">등록</button>
-				<button type="button" class="btn_normal" style="background-color: #990000;" onclick="javascript:location.href='<%= request.getContextPath()%>/schedule/scheduleIndex'">취소</button> 
+				<%-- <button type="button" id="register" class="border-1 rounded-md" style="margin-right: 10px;">등록</button>--%>
+				<button type="button" class="buttonBorder" id="register" style="margin-right: 10px; background-color: #990000;">등록</button>
+				<button type="button" class="buttonBorder" style="background-color: #990000;" onclick="javascript:location.href='<%= request.getContextPath()%>/schedule/scheduleIndex'">취소</button> 
 			</div>
 		</div>
 		
 	</div>
 	
 </div>
+
+<%-- path --%>
+<input type="hidden" id="path" value="${pageContext.request.contextPath}" /> 
