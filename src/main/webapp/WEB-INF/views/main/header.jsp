@@ -16,6 +16,10 @@
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/header/header.css" >
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>    
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-thin-straight/css/uicons-thin-straight.css'>
+    
+    	
+	<!-- sidebar common CSS -->
+	<link rel="stylesheet" href="<%= ctxPath%>/css/common/common.css">
   
     
     <!-- Font Awesome 6 Icons -->
@@ -36,6 +40,32 @@
     <%-- sweat alert --%>
 	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.all.min.js"></script>
+	
+	
+	<script type="text/javascript">
+		window.onload = function() {
+			
+			const sideMenu = document.querySelectorAll("ul#side_menu li");
+		
+			sideMenu.forEach(function(item) {
+			    const link = item.querySelector("a");
+		
+			    // 현재 페이지 URL과 href가 일치하는지 확인
+			    if (window.location.pathname === link.getAttribute("href")) {
+			        item.classList.add('active');
+			    }
+		
+			    link.addEventListener('click', function() {
+			        sideMenu.forEach(function(e) {
+			            e.classList.remove('active');
+			        });
+		
+			        item.classList.add('active');
+			    });
+			});
+		
+		}
+	</script>
  
 </head>
 <body>
