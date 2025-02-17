@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.syoffice.app.index.model.IndexDAO">
+
+    <select id="getLoginUserMap" parameterType="int" resultType="HashMap">
+        SELECT 
+            e.emp_id      AS empId,
+            e.name        AS name,
+            e.mail        AS mail,
+            g.grade_no    AS gradeNo,
+            g.grade_name  AS gradeName
+        FROM tbl_employee e
+        JOIN tbl_grade g ON e.fk_grade_no = g.grade_no
+        WHERE e.emp_id = #{empId}
+    </select>
+
+</mapper>
