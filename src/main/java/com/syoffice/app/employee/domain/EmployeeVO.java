@@ -46,6 +46,15 @@ public class EmployeeVO {
 	//////////////////////////////////////////////////////////////////////
 	
 	private int pwdchangegap;	/* 마지막 비번변경일이 3개월 이상 지났을지 비번변경필요여부를 변경하기 위한 용도 */
+	
+	///////// 검색 및 join 해오기 위한 용도 ///////// 
+	private String branch_name;	/* 지점명 */
+	
+    private String grade_name;	/* 직급명 */
+    
+    private String dept_name;	/* 부서명명 */
+    ///////// 검색 및 join 해오기 위한 용도 /////////
+    ///
 	//////////////////////////////////////////////////////////////////////
 	
 	
@@ -236,6 +245,33 @@ public class EmployeeVO {
 
 	public void setPwdchangegap(int pwdchangegap) {
 		this.pwdchangegap = pwdchangegap;
+	}
+
+	
+	public String getBranch_name() {
+		return branch_name;
+	}
+
+	public void setBranch_name(String branch_name) {
+		this.branch_name = branch_name;
+	}
+
+	
+	public String getGrade_name() {
+		return grade_name;
+	}
+
+	public void setGrade_name(String grade_name) {
+		this.grade_name = grade_name;
+	}
+
+	
+	public String getDept_name() {
+		return dept_name;
+	}
+
+	public void setDept_name(String dept_name) {
+		this.dept_name = dept_name;
 	}
 	
 }// end of public class EmployeeVO ------ 

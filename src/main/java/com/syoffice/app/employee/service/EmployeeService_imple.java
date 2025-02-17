@@ -25,9 +25,7 @@ public class EmployeeService_imple implements EmployeeService {
 	@Override
 	public ModelAndView login(Map<String, String> paraMap, ModelAndView mav, HttpServletRequest request) {
 		
-		/*	사원등록 암호화 후 주석해제
 		paraMap.put("password", Sha256.encrypt(paraMap.get("password"))); // 비밀번호를 암호화 시키기
-		*/
 		
 		// 로그인 메소드 실행 후 EmployeeVO loginuser 에 저장
 		EmployeeVO loginuser = dao.login(paraMap);

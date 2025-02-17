@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="com.syoffice.app.hr.model.HrDAO">
+	
+	<!-- 총 사원의 수 구해오기 -->
+	<select id="getTotalCount" parameterType="HashMap" resultType="int">
+		SELECT count(*)
+		FROM tbl_employee E
+		JOIN tbl_grade G ON E.fk_grade_no = G.grade_no
+		JOIN tbl_branch B ON E.fk_branch_no = B.branch_no
+		JOIN tbl_department D ON E.fk_dept_id = D.dept_id
+		WHERE status != 3
+		<choose>
+			<when test="searchType == 'dept_name' and searchWord != '' ">
+				AND lower(dept_name) LIKE '%'||lower(#{searchWord})||'%'
+			</when>
+			<when test="searchType == 'grade_name' and searchWord != '' ">
+				AND lower(grade_name) LIKE '%'||lower(#{searchWord})||'%'
+			</when>
+			<when test="searchType == 'branch_name' and searchWord != '' ">
+				AND lower(branch_name) LIKE '%'||lower(#{searchWord})||'%'
+			</when>
+			<when test=' searchType == "name" and searchWord != "" '>
+	     		AND lower(name) LIKE '%'||lower(#{searchWord})||'%'
+	     	</when>
+	     	<otherwise></otherwise>
+		</choose>
+	</select>
+	
+	<!-- 페이징과 검색이 포함된 사원목록 가져오기 -->
+	<select id="selctEmployeeList" parameterType="HashMap" resultType="EmployeeVO">
+		SELECT P.emp_id, P.name, P.grade_name, P.branch_name, P.dept_name, P.mail
+		FROM 
+		(
+			SELECT ROW_NUMBER() OVER(ORDER BY G.grade_no ASC) AS RNO, 
+           		   E.emp_id, E.name, G.grade_name, B.branch_name, D.dept_name, E.mail 
+			FROM tbl_employee E
+    		JOIN tbl_grade G ON E.fk_grade_no = G.grade_no
+    		JOIN tbl_branch B ON E.fk_branch_no = B.branch_no
+    		JOIN tbl_department D ON E.fk_dept_id = D.dept_id
+			WHERE status != 3
+			<choose>
+				<when test=' searchType == "dept_name" and searchWord != "" '>
+					AND lower(dept_name) LIKE '%'||lower(#{searchWord})||'%'
+				</when>
+				<when test=' searchType == "grade_name" and searchWord != "" '>
+					AND lower(grade_name) LIKE '%'||lower(#{searchWord})||'%'
+				</when>
+				<when test=' searchType == "branch_name" and searchWord != "" '>
+					AND lower(branch_name) LIKE '%'||lower(#{searchWord})||'%'
+				</when>
+				<when test=' searchType == "name" and searchWord != "" '>
+		     		AND lower(name) LIKE '%'||lower(#{searchWord})||'%'
+		     	</when>
+		     	<otherwise></otherwise>
+			</choose>
+			) P
+		 WHERE P.RNO BETWEEN #{startRno} AND #{endRno}
+	</select>
+	
+	
+	<!-- 신규 사원등록 시 부서 정보조회 -->
+	<select id="selectDepartmentList">
+		SELECT dept_id, dept_name, manager_id
+		FROM tbl_department
+		ORDER BY dept_id ASC
+	</select>
+	
+	<!-- 신규 사원등록 시 직급 정보조회 -->
+	<select id="selectGradeLst">
+		SELECT grade_no, grade_name
+		FROM tbl_grade
+		ORDER BY grade_no ASC
+	</select>
+	
+	<!-- 신규 사원등록 시 지점 정보조회 -->
+	<select id="selectBranchList">
+		SELECT branch_no, branch_name
+		FROM tbl_branch
+		ORDER BY branch_no ASC
+	</select>
+	
+	<!-- 신규 사원정보 insert -->
+	<insert id="employeeRegister">
+		INSERT INTO tbl_employee  ( emp_id, fk_dept_id, name, password, tel, personal_mail, hire_date, mail, 
+                           			postcode, address, detailaddress, extraaddress, gender, birthday, fk_grade_no,
+                           			status, pwdchangedate, pwdchangestatus, leave_count, profile_img, fk_branch_no )
+		VALUES (TO_NUMBER(EXTRACT(YEAR FROM SYSDATE) || LPAD(emp_seq.NEXTVAL, 3, '0')), #{dept_id}, #{name}, '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', #{tel},
+				#{personal_mail}, default, #{mail}, #{postcode}, #{address}, #{detailaddress}, #{extraaddress}, #{gender}, #{birthday},
+				#{grade_no}, default, null, default, default, null, #{branch_no})
+	</insert>
+	
+</mapper>
+
+
+
