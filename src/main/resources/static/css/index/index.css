@@ -1,0 +1,91 @@
+@charset "UTF-8";
+
+.row-flex {
+    display: flex;
+    flex: 1;                
+    min-height: 0;          
+}
+.left-col {
+    flex: 0 0 15%;         
+    max-width: 15%;        
+    box-sizing: border-box;
+    background-color: #EAF0FF;
+    border: 1px solid #ccc;
+}
+.profile-box {
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.profile-box img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+.profile-box h3 {
+    margin: 10px 0;
+}
+.button-area {
+    margin-top: 15px;
+}
+.button-area button {
+    margin: 0 5px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.calendar-area {
+    margin-top: 30px;
+}
+.calendar-area h4 {
+    margin-bottom: 15px;
+}
+.calendar-box {
+    border: 1px solid #ccc;
+    padding: 15px;
+    height: 250px; 
+    box-sizing: border-box;
+}       
+.right-col {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}      
+.info-box {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.schedule-box{
+    margin-bottom: 20px;
+    border: 1px solid #ccc;  
+    padding: 30px;           
+    min-height: 300px;       
+    box-sizing: border-box;
+    background-color: #ffff;
+}
+.notice-box {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;  
+    padding: 30px;           
+    min-height: 700px;       
+    box-sizing: border-box;
+    background-color: #ffff;
+}
+.schedule-box h4,
+.notice-box h4,
+.chart-box h4 {
+    margin-bottom: 15px;
+} 
+.chart-box {
+    border-bottom: 1px solid #ddd;
+    background-color: #ffff;
+}
+.chart-area {
+    border: 1px solid #ccc;
+    height: 700px;
+    box-sizing: border-box;
+   
+}
