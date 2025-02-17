@@ -23,6 +23,7 @@ a {
 }
 .navbar {
     background-color: #BFD2FA;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
 }
 .navbar-brand {
     color: #454545;
@@ -39,10 +40,9 @@ a {
             margin-top: 90px;      
             min-height: 100vh;     
             display: flex;
-            flex-direction: column; 
-            background-color: #fff;
-            padding: 0;           
+            flex-direction: column;                   
             box-sizing: border-box;
+           
         }      
         
 body {
