@@ -106,7 +106,7 @@
 		    ON s.fk_emp_id = e.emp_id
 		 WHERE s.fk_emp_id = #{fk_emp_id} OR
 		fk_lgcatego_no = 1 OR
-		(fk_lgcatego_no != 1 AND lower(schedule_joinemp) LIKE '%'|| lower(#{name}) ||'%')
+		(fk_lgcatego_no != 1 AND schedule_joinemp LIKE '%'|| #{name} ||'%')
 		ORDER BY schedule_no ASC
 	</select>
 	

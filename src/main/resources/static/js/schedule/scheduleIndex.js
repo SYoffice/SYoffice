@@ -345,7 +345,7 @@ window.onload = () => {
 		resolve();		// resolve 실행 시 
 	});
 	
-	// 일정 소분류를 불러오
+	// 일정 소분류를 불러오고 나서 캘린더 랜더링
 	render.then(()=>{
 		showMyCal()
 		showCompanyCal();
@@ -434,6 +434,15 @@ function goAddCal(smcatego_name, fk_lgcatego_no){
 				  //type: 'Error',                        // Alert 타입
 				});
 			 	//showCal(); // 내 캘린더 소분류 보여주기
+				switch (fk_lgcatego_no) {
+					case "1":	// 전사 일정
+						showCompanyCal();
+						break;
+					case "2":	// 내 일정
+						showMyCal();
+						break;
+				}
+				
 			}
 		},
 		error: function(request, status, error){

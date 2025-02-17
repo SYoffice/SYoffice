@@ -45,6 +45,7 @@
 				<button class="btn_edit addCal" style="float: right;" value="1"><i class="fa-solid fa-plus"></i></button>
 				<%-- 사내캘린더는 경영지원부에서 행사일정 등록할 때만 쓰인다. --%>
 				<div id="companyCal"></div>
+				<br>
 				
 				<%-- 부서 캘린더를 보여주는 곳 --%>
 				<input type="checkbox" id="allDeptCal" class="calendar_checkbox" checked/>&nbsp;&nbsp;<label for="allDeptCal">부서명(캘린더)</label>
@@ -53,12 +54,14 @@
 				<button class="btn_edit addCal" style="float: right;" value="3"><i class="fa-solid fa-plus"></i></button>
 				<%-- 부서 캘린더는 같은 부서원이 등록한 일정을 보이도록 한다. --%>
 				<div id="departmentCal"></div>
-				
+				<br>
+
 				<%-- 내 캘린더를 보여주는 곳 --%>
 				<input type="checkbox" id="allMyCal" class="calendar_checkbox" checked/>&nbsp;&nbsp;<label for="allMyCal">내 일정</label>
 				<button class="btn_edit showCal" value="2"><i class="fa-solid fa-caret-up"></i></button>
 				<button class="btn_edit addCal" style="float: right;" value="2"><i class="fa-solid fa-plus"></i></button>
 				<div id="myCal"></div>
+				<br>
 				
 				<input type="checkbox" id="sharedCal" class="calendar_checkbox" value="0" checked/>&nbsp;&nbsp;<label for="sharedCal">공유받은 캘린더</label> 
 			</div>
@@ -68,45 +71,6 @@
 		<div id="calendar"></div>
 	</div>
 </div>
-
-
-<%-- === 일정 소분류 추가 Modal 시작 === --%>
-<div class="modal fade" id="modal_addCal" role="dialog" data-backdrop="static">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      
-      <!-- Modal header -->
-      <div class="modal-header">
-        <h4 class="modal-title">일정 소분류 추가</h4>
-        <button type="button" class="close modal_close" data-dismiss="modal">&times;</button>
-      </div>
-      
-      <!-- Modal body -->
-      <div class="modal-body">
-          <form name="modal_frm">
-       	<table style="width: 100%;" class="table table-bordered">
-     			<tr>
-     				<td style="text-align: left; ">소분류명</td>
-     				<td><input type="text" id="smcatego_name" /><input type="hidden" id="fk_lgcatego_no"/></td>
-     			</tr>
-     			<tr>
-     				<td style="text-align: left;">만든이</td>
-     				<td style="text-align: left; padding-left: 5px;">${sessionScope.loginuser.name}</td> 
-     			</tr>
-     		</table>
-     		</form>
-      </div>
-      
-      <!-- Modal footer -->
-      <div class="modal-footer">
-      	<button type="button" id="addMy" class="btn btn-success btn-sm" onclick="goAddCal()">추가</button>
-          <button type="button" class="btn btn-danger btn-sm modal_close" data-dismiss="modal">취소</button>
-      </div>
-      
-    </div>
-  </div>
-</div>
-<%-- === 일정 소분류 추가 Modal 끝 === --%>
 
 <%-- === 마우스로 클릭한 날짜의 일정 등록을 위한 폼 === --%>     
 <form name="dateFrm">
