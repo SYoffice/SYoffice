@@ -70,7 +70,7 @@
 </head>
 <body>
     
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top w-100 py-3">
+    <nav class="navbar navbar-expand-lg navbar-light w-100 py-3">
         <a class="navbar-brand" href="<%=ctxPath%>/index">로고</a>
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
@@ -104,6 +104,11 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="#">메신저</a>
                 </li>
+                <c:if test="${sessionScope.loginuser.fk_dept_id eq 2}">
+                   <li class="nav-item active">
+                       <a class="nav-link" href="#">인사관리</a>
+                   </li>
+                </c:if>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
