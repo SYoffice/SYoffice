@@ -27,5 +27,20 @@ public interface ScheduleService {
 
 	// === 등록된 모든 일정 불러오기 === //
 	List<Map<String, String>> selectSchedule(Map<String, String> paraMap);
+	
+	// === 일정상세보기 === //
+	Map<String, String> detailSchedule(String scheduleno);
+
+	// === 전사일정 소분류 수정하기 === //
+	int editCalendar(Map<String, String> paraMap);
+
+	// === 일정 소분류 삭제하기 === //
+	int deleteSubCalendar(String smcatego_no);
+
+	// === 일정 삭제하기 === //
+	int deleteSchedule(String schedule_no);
+
+	// === 일정 수정하기 === //
+	int editSchedule_end(Map<String, String> paraMap);
 
 }

@@ -100,7 +100,8 @@ window.onload = () => {
 	$(document).on("click", "button.addCal", function() {
 		//$("input#fk_lgcatego_no").val($(this).val());
 		//$("div#modal_addCal").modal();
-
+		//alert($(this).find("input[name='lgcatego_no']").val());
+		
 		Swal.fire({
 			title: "소분류명 등록",
 			icon : "question",
@@ -137,45 +138,52 @@ window.onload = () => {
 	
 	
 	
-	// 화살표 버튼을 눌렀을 때 등록한 소분류를 표시, 제거
-	$(document).on("click", "button.showCal", function() {
+	// 전사 일정 화살표 버튼을 눌렀을 때 등록한 소분류를 표시, 감추기
+	$(document).on("click", "span.showComCal", function() {
 		//alert($(this).html());
-		const dept = $(this).val();
 
 		if ($(this).children().hasClass("fa-caret-down")) {	
 			$(this).children().removeClass("fa-caret-down").addClass("fa-caret-up");
-			switch (dept) {
-				case "1":	// 전사 일정 보기 시
-					showCompanyCal();
-					break;
-				case "2":	// 내 일정 보기 시
-					showMyCal();
-					break;
-				default:	// 부서 일정 보기 시
-					//showCompanyCal();
-					break;
-			}// end of switch -------
+			showCompanyCal();
 		}
 		else {			
 			$(this).children().removeClass("fa-caret-up").addClass("fa-caret-down");
-			switch (dept) {
-				case "1":	// 전사 일정 접기 시
-					$("div#companyCal").hide().css({"transition": "0.8s"});
-					break;
-				case "2":	// 내 일정 접기 시
-					$("div#myCal").hide();
-					break;
-				default:	// 부서 일정 접기 시
-					//showCompanyCal();
-					break;
-			}// end of switch -------
+			$("ul#comCal").hide().css({"transition": "0.8s"});
 		}
-
-		
-		
-
 	});// end of $(document).on("click", "button.showSmallCal", function() {})------------------
+	
+	
+	// 부서 일정 화살표 버튼을 눌렀을 때 등록한 소분류를 표시, 감추기
+	$(document).on("click", "span.showDeptCal", function() {
+		//alert($(this).html());
 
+		if ($(this).children().hasClass("fa-caret-down")) {	
+			$(this).children().removeClass("fa-caret-down").addClass("fa-caret-up");
+			//showCompanyCal();
+		}
+		else {			
+			$(this).children().removeClass("fa-caret-up").addClass("fa-caret-down");
+			$("ul#deptCal").hide().css({"transition": "0.8s"});
+		}
+	});// end of $(document).on("click", "button.showSmallCal", function() {})------------------
+	
+	
+	// 내 일정 화살표 버튼을 눌렀을 때 등록한 소분류를 표시, 감추기
+	$(document).on("click", "span.showMyCal", function() {
+		//alert($(this).html());
+
+		if ($(this).children().hasClass("fa-caret-down")) {	
+			$(this).children().removeClass("fa-caret-down").addClass("fa-caret-up");
+			showMyCal();
+		}
+		else {			
+			$(this).children().removeClass("fa-caret-up").addClass("fa-caret-down");
+			$("ul#myCal").hide().css({"transition": "0.8s"});
+		}
+	});// end of $(document).on("click", "button.showSmallCal", function() {})------------------
+	
+	
+	
 	// 소분류명 입력 후 엔터 키 입력 시 등록하는 이벤트 	
 	$(document).on("keyDown", "input#smcatego_name", e => {
 		if (e.keyCode == 13) {	// 엔터 입력 시
@@ -224,8 +232,12 @@ window.onload = () => {
 				data:{"fk_emp_id": $("input#fk_emp_id").val(), "name": $("input#name").val()},
 				dataType: "JSON",
 				success: function(json) {
-					console.log(JSON.stringify(json));
-
+					//console.log(JSON.stringify(json));
+					/*
+						[{"fk_smcatego_no":"1","schedule_startdate":"2025-02-18 13:30:00","fk_emp_id":"1000","schedule_no":"2","schedule_place":"회사","schedule_content":"채팅으로","schedule_color":"#009900","schedule_enddate":"2025-02-18 18:00:00","schedule_name":"퇴근하고싶다","schedule_joinemp":"이순신(본사-영업부)","fk_lgcatego_no":"1"}
+						,{"fk_smcatego_no":"2","schedule_startdate":"2025-02-17 14:00:00","fk_emp_id":"1000","schedule_no":"3","schedule_place":"쌍용강북 g클래스","schedule_content":"일정관리 표시","schedule_color":"#009900","schedule_enddate":"2025-02-17 18:00:00","schedule_name":"파이널프로젝트","schedule_joinemp":"관리자(본사-인사부),엄정화(본사-인사부),이순신(본사-영업부)","fk_lgcatego_no":"2"}
+						,{"fk_smcatego_no":"5","schedule_startdate":"2025-02-19 08:00:00","fk_emp_id":"1000","schedule_no":"4","schedule_place":"집","schedule_content":"실험체 구하기","schedule_color":"#7c7bbc","schedule_enddate":"2025-02-19 09:00:00","schedule_name":"출근","schedule_joinemp":"아이유(본사-기획부),실험용(본사-마케팅부)","fk_lgcatego_no":"2"}]
+					*/
 					var events = [];	// 이벤트를 담을 배열
 
 					if(json.length > 0){
@@ -292,7 +304,8 @@ window.onload = () => {
 					successCallback(events);  
 				},
 				error: function(request, status, error){
-					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+					alert("여기서나는거임!!"+"code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+					
 				}
 			});
 		},// end of events:function(info, successCallback, failureCallback) {}---------
@@ -300,7 +313,7 @@ window.onload = () => {
 		
 		// 풀캘린더에서 날짜 클릭할 때 발생하는 이벤트(일정 등록창으로 넘어간다)
         dateClick: function(info) {
-      	 // alert('클릭한 Date: ' + info.dateStr); // 클릭한 Date: 2021-11-20
+      	  	//alert('클릭한 Date: ' + info.dateStr); // 클릭한 Date: 2021-11-20
       	    $(".fc-day").css('background','none'); // 현재 날짜 배경색 없애기
       	    info.dayEl.style.backgroundColor = '#b1b8cd'; // 클릭한 날짜의 배경색 지정하기
       	    $("input[name=chooseDate]").val(info.dateStr);
@@ -338,9 +351,9 @@ window.onload = () => {
 	 	}
 	});// end of var calendar = new FullCalendar.Calendar(calendarEl, {}) ----------------- 
 	
-	//setTimeout(()=>{ calendar.render();}, 500)  // 풀캘린더 보여주기 보이다 말다 하므로 timeout 설정
+	setTimeout(()=>{ calendar.render();}, 300)  // 풀캘린더 보여주기 보이다 말다 하므로 timeout 설정
 	
-	
+	/*
 	let render = new Promise(function (resolve, reject) {
 		resolve();		// resolve 실행 시 
 	});
@@ -352,7 +365,7 @@ window.onload = () => {
 	}).then(()=>{
 		calendar.render();
 	})
-	
+	*/
 	
 	var arr_calendar_checkbox = document.querySelectorAll("input.calendar_checkbox"); 
 	// 사내캘린더, 내캘린더, 공유받은캘린더 에서의 체크박스임
@@ -368,45 +381,6 @@ window.onload = () => {
 
 // === 내 캘린더 추가 모달창에서 추가 버튼 클릭시 === 
 function goAddCal(smcatego_name, fk_lgcatego_no){
-	/*
-	if($("input#smcatego_name").val().trim() == ""){
- 		  alert("추가할 내캘린더 소분류명을 입력하세요!!");
- 		  return;
- 	}
-	else {
- 		$.ajax({
- 			url: $("input#path").val()+"/schedule/addCalendar",
- 			type: "post",
- 			data: {"smcatego_name": smcatego_name, 
- 				   "fk_emp_id": $("input#fk_emp_id").val(), "fk_lgcatego_no": fk_lgcatego_no},
- 			dataType: "json",
- 			success:function(json){
- 				
- 				if(json.n!=1){
- 					//alert("이미 등록한 캘린더입니다.");
-					Swal.fire({
-					  title: '캘린더 등록에 실패했습니다.',        // Alert 제목
-					  text: '이미 등록한 캘린더입니다.',  		 	// Alert 내용
-					  icon: 'error',
-					  //type: 'Error',                        // Alert 타입
-					});
-					
- 					return;
- 				}
- 				else if(json.n==1){
- 					$('#modal_addMyCal').modal('hide'); // 모달창 감추기
- 					alert("내 캘린더에 "+$("input.add_my_smcatego_name").val()+" 소분류명이 추가되었습니다.");
- 					 
- 					$("input#smcatego_name").val("");
- 				 	//showCal(); // 내 캘린더 소분류 보여주기
- 				}
- 			},
- 			error: function(request, status, error){
-  	         	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-    	    }	 
- 		});
-	}	
-	*/
 	$.ajax({
 		url: $("input#path").val()+"/schedule/addCalendar",
 		type: "post",
@@ -419,11 +393,10 @@ function goAddCal(smcatego_name, fk_lgcatego_no){
 				//alert("이미 등록한 캘린더입니다.");
 				Swal.fire({
 				  title: '캘린더 등록에 실패했습니다.',        // Alert 제목
-				  text: '이미 등록한 캘린더입니다.',  		 	// Alert 내용
+				  text: smcatego_name+ '은(는) 이미 사용중인 캘린더 명입니다',  		 	// Alert 내용
 				  icon: 'error',
 				  //type: 'Error',                        // Alert 타입
 				});
-				
 				return;
 			}
 			else if(json.n==1){				
@@ -452,7 +425,6 @@ function goAddCal(smcatego_name, fk_lgcatego_no){
 }// end of function goAddMyCal(){}-----------------------
 
 
-
 // === 내 캘린더에서 내캘린더 소분류 보여주기  === //
 function showMyCal(){
 	$.ajax({
@@ -461,23 +433,20 @@ function showMyCal(){
 		 data:{"fk_emp_id": $("input#fk_emp_id").val()},
 		 dataType:"json",
 		 success:function(json){
-			 var html = "";
-			 if(json.length > 0){
-				 html += "<table style='width:80%;'>";	 
-				 
+			 var html = ``;
+			 if(json.length > 0){				 	 
 				 $.each(json, function(index, item){
-					 html += "<tr style='font-size: 11pt;'>";
-					 html += "<td style='width:60%; padding: 3px 0px;'><input type='checkbox' name='my_smcatgono' class='calendar_checkbox my_smcatgono' style='margin-right: 3px;' value='"+item.smcatego_no+"' checked id='my_smcatgono_"+index+"' checked/><label for='my_smcatgono_"+index+"'>"+item.smcatego_name+"</label></td>";   
-					 html += "<td style='width:20%; padding: 3px 0px;'><button class='btn_edit editCal' data-target='editCal' onclick='editMyCalendar("+item.smcatego_no+",\""+item.smcatego_name+"\")'><i class='fas fa-edit'></i></button></td>"; 
-					 html += "<td style='width:20%; padding: 3px 0px;'><button class='btn_edit delCal' onclick='delCalendar("+item.smcatego_no+",\""+item.smcatego_name+"\")'><i class='fas fa-trash'></i></button></td>";
-				     html += "</tr>";
+					html += `
+					<li>
+						<input type='checkbox' name='my_smcatgono' class='calendar_checkbox my_smcatgono' style='margin-right: 12px; cursor: pointer;' value='${item.smcatego_no}' checked id='my_smcatgono_${index}'/><label style='cursor: pointer;' for='my_smcatgono_${index}'>${item.smcatego_name}</label>
+	         			<span style="display: inline-block; margin-right: 12%;" class='btn_edit delCal float-right' onclick='delCalendar("${item.smcatego_no}", "${item.smcatego_name}")'><i class='fas fa-trash'></i></span>
+	         			<span style="display: inline-block; margin-right: 8%;" class='btn_edit float-right' onclick='editMyCalendar("${item.smcatego_no}", "${item.smcatego_name}")'><i class='fas fa-edit'></i></span>
+					</li>`; 
 				 });
-				 
-				 html += "</table>";
 			 }
 			 
-			$("div#myCal").html(html);
-			$("div#myCal").show();
+			$("ul#myCal").html(html);
+			$("ul#myCal").show();
 		 },
 		 error: function(request, status, error){
 	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -493,30 +462,27 @@ function showCompanyCal(){
 		type:"get",
 		dataType:"json",
 		success:function(json){
+				console.log(JSON.stringify(json));
+				
 				var html = "";
-				 
 				if(json.length > 0){
-					html += "<table style='width:80%;'>";
-					 
 					$.each(json, function(index, item){
-						html += "<tr style='font-size: 11pt;'>";
-						html += "<td style='width:60%; padding: 3px 0px;'><input type='checkbox' name='com_smcatgono' class='calendar_checkbox com_smcatgono' style='margin-right: 3px;' value='"+item.smcatego_no+"' checked id='com_smcatgono_"+index+"'/><label for='com_smcatgono_"+index+"'>"+item.smcatego_name+"</label></td>";  
-						 
-
+						html += `
+							<li>
+								<input type='checkbox' name='com_smcatgono' class='calendar_checkbox com_smcatgono' style='margin-right: 12px; cursor: pointer;' value='${item.smcatego_no}' checked id='com_smcatgono_${index}'/><label style='cursor: pointer;' for='com_smcatgono_${index}'>${item.smcatego_name}</label>
+							`;
 						if(Number($("input#dept_id").val()) == 2) {	// 인사부서일 경우만 수정, 삭제 가능
-							 // 수정, 삭제 아이콘 나오는 부분
-							 html += "<td style='width:20%; padding: 3px 0px;'><button class='btn_edit' data-target='editCal' onclick='editComCalendar("+item.smcatego_no+",\""+item.smcatego_name+"\")'><i class='fas fa-edit'></i></button></td>";  
-							 html += "<td style='width:20%; padding: 3px 0px;'><button class='btn_edit delCal' onclick='delCalendar("+item.smcatego_no+",\""+item.smcatego_name+"\")'><i class='fas fa-trash'></i></button></td>";
+							 html += `
+							 	<span style="display: inline-block; margin-right: 12%;" class='btn_edit delCal float-right' onclick='delCalendar("${item.smcatego_no}", "${item.smcatego_name}")'><i class='fas fa-trash'></i></span>
+		         				<span style="display: inline-block; margin-right: 8%;" class='btn_edit float-right' onclick='editComCalendar("${item.smcatego_no}", "${item.smcatego_name}")'><i class='fas fa-edit'></i></span>
+							 `;
 						}
-						 
-						html += "</tr>";
+						html += "</li>";
 					});
-				 	 
-					html += "</table>";
 				}
 			 
-				$("div#companyCal").html(html);
-				$("div#companyCal").show();
+				$("ul#comCal").html(html);
+				$("ul#comCal").show();
 		},
 		error: function(request, status, error){
 	           alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -524,3 +490,223 @@ function showCompanyCal(){
 	});
 
 }// end of function showCompanyCal()------------------
+
+
+
+function inputSmallCategoInfo(fk_lgcatego_no) {
+	
+	//alert("확인용 대분류 : "+ fk_lgcatego_no)
+	
+	Swal.fire({
+		title: "캘린더명 등록",
+		icon : "question",
+		input: "text",
+		showCancelButton: true,
+		confirmButtonText: "등록",
+		cancelButtonText: "취소",
+	})
+	.then((result) => {
+		if (result.isConfirmed){	// 등록확인 버튼 클릭 시
+			if (result.value == "") {
+				// 아무 내용도 입력하지 않았을 시
+				Swal.fire({
+					title: '캘린더명을 입력하세요!!',        // Alert 제목
+					icon: 'warning',
+				});
+				setTimeout( () => {$(this).click()}, 1000) ;	// 다시 버튼 클릭
+			}
+			else {
+				goAddCal(result.value, fk_lgcatego_no);	// 소분류 추가 함수 호출(입력값, 대분류 카테고리)					
+			}
+		}
+		else {	// 취소 시
+			Swal.fire({
+				title: '등록을 취소했습니다.',        // Alert 제목
+				icon: 'info',
+			});
+		}
+	}).catch((err) => {
+		console.log(err);
+	});
+	
+}// end of function inputSmallCategoInfo(fk_lgcatego_no) -----------------------
+
+
+// == 전사 일정 소분류 수정하기 == //
+function editComCalendar(smcatego_no, smcatego_name){
+	Swal.fire({
+		title: "캘린더명 수정",
+		icon : "question",
+		input: "text",
+		showCancelButton: true,
+		confirmButtonText: "수정",
+		cancelButtonText: "취소",
+	})
+	.then((result) => {
+		if (result.isConfirmed){	// 수정 버튼 클릭 시
+			if (result.value == "") {
+				// 아무 내용도 입력하지 않았을 시
+				Swal.fire({
+					title: '캘린더명을 입력하세요!!',        // Alert 제목
+					icon: 'warning',
+				});
+				setTimeout( () => {editComCalendar()}, 800) ;	// 다시 함수 호출
+			}
+			else {
+				$.ajax({
+					url:$("input#path").val()+"/schedule/editComCalendar",
+					type: "PUT",
+					data: {"smcatego_no": smcatego_no, 
+						   "smcatego_name": result.value, 
+						   "fk_emp_id": $("input#fk_emp_id").val(),
+						   "fk_lgcatego_no": "1"
+					},
+					dataType: "JSON",
+					success:function(json){
+						if(json.n == 0){
+		   					//alert($("input.edit_com_smcatgoname").val()+"은(는) 이미 존재하는 캘린더 명입니다.");
+							Swal.fire({
+								title: smcatego_name +'은(는) 이미 사용중인 캘린더 명입니다.',        // Alert 제목
+								icon: 'warning',
+							});
+		   					return;
+		   				 }
+						if(json.n == 1){
+							Swal.fire({
+								title: '캘린더명을 변경했습니다.',        // Alert 제목
+								text: '변경된 캘린더명 : '+ result.value,
+								icon: 'success',
+							});
+							showCompanyCal();
+						}
+					},
+					 error: function(request, status, error){
+				            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+				    }
+				});
+			}
+		}
+		else {	// 취소 시
+			Swal.fire({
+				title: '수정을 취소했습니다.',        // Alert 제목
+				icon: 'info',
+			});
+		}
+	}).catch((err) => {
+		console.log(err);
+	});
+}// end of function editComCalendar(smcatego_no, smcatego_name) ------------
+
+
+// == 내 일정 소분류 수정하기 == //
+function editMyCalendar(smcatego_no, smcatego_name){
+	Swal.fire({
+		title: "캘린더명 수정",
+		icon : "question",
+		input: "text",
+		showCancelButton: true,
+		confirmButtonText: "수정",
+		cancelButtonText: "취소",
+	})
+	.then((result) => {
+		if (result.isConfirmed){	// 수정 버튼 클릭 시
+			if (result.value == "") {
+				// 아무 내용도 입력하지 않았을 시
+				Swal.fire({
+					title: '캘린더명을 입력하세요!!',        // Alert 제목
+					icon: 'warning',
+				});
+				setTimeout( () => {editComCalendar()}, 800) ;	// 다시 함수 호출
+			}
+			else {
+				$.ajax({
+					url:$("input#path").val()+"/schedule/editMyCalendar",
+					type: "PUT",
+					data: {"smcatego_no": smcatego_no, 
+						   "smcatego_name": result.value, 
+						   "fk_emp_id": $("input#fk_emp_id").val(),
+						   "fk_lgcatego_no": "2"
+					},
+					dataType: "JSON",
+					success:function(json){
+						if(json.n == 0){
+		   					//alert($("input.edit_com_smcatgoname").val()+"은(는) 이미 존재하는 캘린더 명입니다.");
+							Swal.fire({
+								title: smcatego_name +'은(는) 이미 사용중인 캘린더 명입니다.',        // Alert 제목
+								icon: 'warning',
+							});
+		   					return;
+		   				 }
+						if(json.n == 1){
+							Swal.fire({
+								title: '캘린더명을 변경했습니다.',        // Alert 제목
+								text: '변경된 캘린더명 : '+ result.value,
+								icon: 'success',
+							});
+							showMyCal();
+						}
+					},
+					 error: function(request, status, error){
+				            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+				    }
+				});
+			}
+		}
+		else {	// 취소 시
+			Swal.fire({
+				title: '수정을 취소했습니다.',        // Alert 제목
+				icon: 'info',
+			});
+		}
+	}).catch((err) => {
+		console.log(err);
+	});
+}// end of function editMyCalendar(smcatego_no, smcatego_name) ------------------
+
+
+// == 등록한 일정 소분류 삭제하기 == //
+function delCalendar(smcatego_no, smcatego_name){ // smcatgono => 캘린더 소분류 번호, smcatgoname => 캘린더 소분류 명
+	
+	Swal.fire({
+		title: "캘린더 삭제",
+		icon : "question",
+		text : '캘린더 '+ smcatego_name + '을(를) 삭제하시겠습니까?',
+		showCancelButton: true,
+		confirmButtonText: "삭제",
+		cancelButtonText: "취소",
+	})
+	.then((result) => {
+		if (result.isConfirmed){	// 삭제 버튼 클릭 시
+			$.ajax({
+				url: $("input#path").val()+"/schedule/deleteSubCalendar",
+				type: "DELETE",
+				data: {"smcatego_no": smcatego_no},
+				dataType: "JSON",
+				success: function(json){
+					if(json.n==1){
+						Swal.fire({
+							title: '캘린더를 삭제했습니다.',        // Alert 제목
+							text: '삭제된 캘린더명 : '+ smcatego_name,
+							icon: 'success',
+						});
+						setTimeout( () => {location.href="javascript:history.go(0);";}, 1000) ;	// 페이지 새로고침
+					}
+				},
+				error: function(request, status, error){
+						alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+				}
+			});
+		}
+		else {	// 취소 시
+			Swal.fire({
+				title: '삭제를 취소했습니다.',        // Alert 제목
+				icon: 'info',
+			});
+		}
+	}).catch((err) => {
+		console.log(err);
+	});
+	
+}// end of function delCalendar(smcatgono, smcatgoname){}------------------------
+
+ 
