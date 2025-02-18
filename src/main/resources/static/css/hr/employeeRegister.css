@@ -1,0 +1,122 @@
+@charset "UTF-8";
+
+div#container {
+	margin-top: 40px;
+}
+
+div#container > form {
+	display: flex;
+}
+
+div#img_container {
+	margin-top: 50px;
+	width: 350px; 	
+}
+
+div#input_container {
+	margin-top: 50px;
+	width: 400px; 
+	margin-right: 130px;
+}
+
+div.input_box {
+	width: 100%;
+	margin-bottom: 50px;
+}
+
+div.input_text {
+	font-size: 15pt;
+	margin-bottom: 10px;
+}
+
+input[type=text] {
+	width: 100%;
+	height: 30px;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom: solid 1px #424242;
+	background-color: #f8f9fa;
+}
+
+div.error {
+	font-size: 13pt;
+	color: red;
+}
+
+div#preview {
+	width: 45%;
+	height: 180px;
+	border: solid 1px black;
+	margin-bottom: 3%;
+}
+
+img{
+	width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+div#select {
+	display: flex;
+}
+
+div.radioBox {
+	display: flex;
+}
+
+input[type=radio] {
+	margin-left: 80px;
+	font-size: 15pt;
+}
+
+div.btnBox  {
+	display: flex;
+}
+
+button.resetButton {
+	width: 40%;
+	background-color: #BFD2FA;
+	height: 40px;
+	border: none;
+	margin-right: auto;
+	border-radius: 5%;
+}
+
+span.gender {
+	font-size: 15pt;
+	margin-top: 3px;
+	margin-left: 10px;
+}
+
+button.RegisterButton {
+	width: 40%;
+	background-color: #BFD2FA;
+	height: 40px;
+	border: none;
+	border-radius: 3px;
+}
+
+div#inputBox {
+	position: relative;
+}
+
+div#inputBox > button {
+	position: absolute;
+	width: 120px;
+	height: 30px;
+	top: 0;
+	bottom: 20px;
+	right: 1px;
+	margin: auto 0;
+	border-radius: 3px;
+	border: none;
+	background-color: #BFD2FA;
+}
+
+div.select {
+	width: 92px;
+	margin-right: 65px;
+}
+
+

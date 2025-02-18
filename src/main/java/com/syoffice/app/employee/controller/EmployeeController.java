@@ -25,6 +25,8 @@ public class EmployeeController {
 	@PostMapping("login")
 	public ModelAndView login(ModelAndView mav, HttpServletRequest request, @RequestParam Map<String, String> paraMap) {
 		
+	//	System.out.println(paraMap.get("emp_id"));
+	//	System.out.println(paraMap.get("password"));
 		mav = service.login(paraMap, mav, request);
 		
 		return mav;

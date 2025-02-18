@@ -106,7 +106,7 @@
                 </li>
                 <c:if test="${sessionScope.loginuser.fk_dept_id eq 2}">
                    <li class="nav-item active">
-                       <a class="nav-link" href="#">인사관리</a>
+                       <a class="nav-link" href="<%=ctxPath%>/hr/hrIndex">인사관리</a>
                    </li>
                 </c:if>
             </ul>
