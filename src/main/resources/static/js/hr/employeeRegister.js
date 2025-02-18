@@ -3,7 +3,9 @@ let nameCheckVaild = false; // 이름이 유효한 경우 true
 
 let birthdayCheckVaild = false; // 생년월일이 유효한 경우 true
 
-let mobileCheckVaild = false; // 전화번호가 유효한 경우 true
+let emailCheckValid = false; // 이메일이 유효한 경우 true
+
+let telCheckVaild = false; // 전화번호가 유효한 경우 true
 
 $(document).ready(function() {
 	
@@ -12,31 +14,62 @@ $(document).ready(function() {
 	// 성명 유효성 검사
 	$(document).on("blur", "input[name='name']", function(e) {
         const name = $(e.target).val();
-        // 이름 유효성 검사
+		
         if (!checkName(name)) {
             $("div.name_error").show();  
             nameCheckVaild = false; 
         } else {
+			// 올바르게 입력한 경우
             $("div.name_error").hide();  
             nameCheckVaild = true;
         }
     });
 	
 	// 생년월일 유효성 검사
-	$("input#birthday").blur((e) => {
-		const birthday = $(e.target).val(); // 생년월일
-		
+	$(document).on("blur", "input[name='birthday']", function(e) {
+		const birthday = $(e.target).val();
 		
 		if(!checkBirthday(birthday)) {
-			$("div.error").show();
+			$("div.birthday_error").show();
 		}
 		else{
-			// 공백이 아닌 글자를 입력했을 경우
-			$("div.error").hide();
+			// 올바르게 입력한 경우
+			$("div.birthday_error").hide();
 			birthdayCheckVaild = true;
 		}
 		
 	});	
+	
+	// 이메일 유효성 검사
+	$(document).on("blur", "input[name='personal_mail']", function(e) {
+		const personal_mail = $(e.target).val();
+		
+		if(!checkEmail(personal_mail)) {
+			$("div.personal_mail_error").show();
+		}
+		else{
+			// 올바르게 입력한 경우
+			$("div.personal_mail_error").hide();
+			emailCheckValid = true;
+		}
+		
+	});	
+	
+	// 전화번호 유효성 검사
+	$(document).on("blur", "input[name='tel']", function(e) {
+		const tel = $(e.target).val();
+		
+		if(!checkTel(tel)) {
+			$("div.tel_error").show();
+		}
+		else{
+			// 올바르게 입력한 경우
+			$("div.tel_error").hide();
+			telCheckVaild = true;
+		}
+		
+	});	
+	
 	
 	
 	// ==== 이메일 값 사내메일 칸으로 보내주기 ==== //
@@ -100,10 +133,6 @@ $(document).ready(function() {
     });// end of $("button#find_Zip").click(function(){})--------
 	// ==== "우편번호찾기"를 클릭했을 때 이벤트 처리하기 ==== //    
 	
-	
-	
-	
-	
 });// end $(document).ready(function(){})----------------------
 
 
@@ -149,8 +178,68 @@ function checkTel(tel){
 	return regExp_tel.test(tel);
 }
 
-
+// 신규 사원 등록
 function goRegister() {
+
+	// 성명을 입력하지 않을 경우
+	if (!nameCheckVaild) {
+		alert("성명을 입력하여 주세요.")
+		return;
+	}
+
+	// 생년월일을 입력하지 않을 경우
+	if (!birthdayCheckVaild) {
+		alert("생년월일 입력하여 주세요.")
+		return;
+	}
+	
+	// 성별을 선택하지 않은 경우
+	const radio_checked_length = $("input:radio[name='gender']:checked").length;  
+	if (radio_checked_length == 0) {
+		alert("성별을 선택하셔야 합니다.");
+		return;
+	}
+	
+	// 이메일을 입력하지 않은 경우
+	if (!emailCheckValid) {	
+		alert("이메일을 입력하여 주세요.")
+		return;
+	}
+	
+	// 전화번호를 입력하지 않은 경우
+	if (!telCheckVaild) {
+		alert("전화번호를 입력하여 주세요.")
+		return;
+	}
+	
+	// 우편번호를 입력하지 않은 경우
+	const postcode = $("input[name='postcode']").val();
+	
+	if (postcode.trim() === "") {
+        alert("우편번호를 입력하세요.");
+        return false;
+    }
+	
+	// 지점을 선택하지 않은 경우
+	const branch_no = $("select[name='branch_no']").val();
+	if (branch_no == "") {
+		alert("지점을 선택하셔야 합니다.");
+		return;
+	}
+	
+	// 부서를 선택하지 않은 경우
+	const dept_id = $("select[name='dept_id']").val();				
+	if (dept_id == "") {
+		alert("부서를 선택하셔야 합니다.");
+		return;
+	}
+	
+	// 직급을 선택하지 않은 경우
+	const grade_no = $("select[name='grade_no']").val();		
+	if (grade_no == "") {
+		alert("직급을 선택하셔야 합니다.");
+		return;
+	}
 	
 	const frm = document.registerFrm;
 	frm.action = "/syoffice/hr/employeeRegister";
@@ -158,3 +247,18 @@ function goRegister() {
 	frm.submit();
 	
 };// end of function goRegister() -----		
+
+
+//// 프로필 미리보기 ////
+$(function(){
+	$("input[name='profile_img']").change(function(event){
+		const file = event.target.files;
+
+		var image = new Image();
+		var ImageTempUrl = window.URL.createObjectURL(file[0]);
+
+		image.src = ImageTempUrl;
+
+		$("#preview").append(image);
+	});
+});
