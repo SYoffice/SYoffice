@@ -1,6 +1,7 @@
 package com.syoffice.app.hr.controller;
 
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.syoffice.app.branch.domain.BranchVO;
+import com.syoffice.app.common.FileManager;
 import com.syoffice.app.common.PagingDTO;
 import com.syoffice.app.department.domain.DepartmentVO;
 import com.syoffice.app.employee.domain.EmployeeVO;
@@ -34,6 +38,10 @@ public class HrController {
 	
 	@Autowired	// Type 에 따라 자동적으로 Bean 을 주입해준다.
 	private HrService service;
+	
+	// 파일업로드 및 파일다운로드를 해주는 FileManager 클래스 의존객체 주입하기(DI : Dependency Injection) //
+	@Autowired
+	private FileManager fileManager;
 	
 	// 인사관리 페이지 요정
 	@GetMapping("hrIndex")
@@ -138,7 +146,54 @@ public class HrController {
 	@PostMapping("employeeRegister")
 	public ModelAndView employeeRegister(HttpServletRequest request, 
 										 ModelAndView mav, 
-										 @RequestParam Map<String, String> paraMap) {
+										 @RequestParam Map<String, String> paraMap,
+										 MultipartHttpServletRequest mrequest,
+										 @RequestParam("profile_img") MultipartFile file) {
+		
+		paraMap.put("profile_img", file.getOriginalFilename());
+		
+		// WAS 의 webapp 의 절대경로를 알아와야 한다.
+		HttpSession session = mrequest.getSession();
+		String root = session.getServletContext().getRealPath("/");	// 최상위 루트 패키지의 경로를 가져온다.
+		
+	//	System.out.println("~~~ 확인용 webapp 의 절대경로 : "+ root);
+	//	~~~ 확인용 webapp 의 절대경로 : C:\Users\User\git\SYoffice\src\main\webapp\
+		
+		String path = root+"images"+File.separator+"profile";
+	
+		/* 	File.separator 는 운영체제에서 사용하는 폴더와 파일의 구분자이다.
+        	운영체제가 Windows 이라면 File.separator 는  "\" 이고,
+	        운영체제가 UNIX, Linux, 매킨토시(맥) 이라면  File.separator 는 "/" 이다. 
+		 */
+		
+		// path 가 첨부파일이 저장될 WAS(톰캣)의 폴더가 된다.
+	//	System.out.println("~~~ 확인용 path 경로 : "+ path);
+//		~~~ 확인용 path 경로 : C:\Users\User\git\SYoffice\src\main\webapp\images\profile
+		
+		byte[] bytes = null;
+		// 첨부파일의 내용물을 담는 것
+		
+		long filesize = 0;
+		// 첨부파일의 크기
+		
+		try {
+			bytes = file.getBytes();
+			// 첨부파일의 내용물을 읽어 오는 것
+			
+			String originalFilename = file.getOriginalFilename();
+			// attach.getOriginalFilename()은 첨부파일의 파일명을 가져온다. 파일명 예(강아지.png)
+			
+	//		System.out.println("~~~ 확인용 originalFilename: "+ originalFilename);
+		
+			// 첨부되어진 파일을 업로드 하는 것이다.
+			fileManager.doProfileUpload(bytes, originalFilename, path);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		String fileName = file.getOriginalFilename();
 		
 		// 신규 사원정보 insert
 		int n = service.employeeRegister(paraMap);

@@ -91,7 +91,7 @@
                            			status, pwdchangedate, pwdchangestatus, leave_count, profile_img, fk_branch_no )
 		VALUES (TO_NUMBER(EXTRACT(YEAR FROM SYSDATE) || LPAD(emp_seq.NEXTVAL, 3, '0')), #{dept_id}, #{name}, '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', #{tel},
 				#{personal_mail}, default, #{mail}, #{postcode}, #{address}, #{detailaddress}, #{extraaddress}, #{gender}, #{birthday},
-				#{grade_no}, default, null, default, default, null, #{branch_no})
+				#{grade_no}, default, null, default, default, #{profile_img	}, #{branch_no})
 	</insert>
 	
 </mapper>

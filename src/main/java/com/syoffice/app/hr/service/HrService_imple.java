@@ -3,6 +3,7 @@ package com.syoffice.app.hr.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.catalina.connector.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +64,8 @@ public class HrService_imple implements HrService {
 	// 신규 사원정보 insert
 	@Override
 	public int employeeRegister(Map<String, String> paraMap) {
+		
+	//	System.out.println("Service_imple" + paraMap.get("profile")); 
 		
 		int n = dao.employeeRegister(paraMap);
 		return n;
