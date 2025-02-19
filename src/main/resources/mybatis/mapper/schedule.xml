@@ -111,4 +111,89 @@
 	</select>
 	
 	
+	<resultMap type="HashMap" id="detailSchedule_Map">
+		<result property="schedule_no" 		column="schedule_no" 		javaType="String"/>
+		<result property="startdate" 		column="startdate" 			javaType="String"/>
+		<result property="enddate" 			column="enddate" 			javaType="String"/>
+		<result property="schedule_name" 	column="schedule_name" 		javaType="String"/>
+		<result property="schedule_color" 	column="schedule_color" 	javaType="String"/>
+		<result property="schedule_place" 	column="schedule_place" 	javaType="String"/>
+		<result property="schedule_joinemp" column="schedule_joinemp" 	javaType="String"/>
+		<result property="schedule_content" column="schedule_content" 	javaType="String"/>
+		<result property="fk_smcatego_no" 	column="fk_smcatego_no" 	javaType="String"/>
+		<result property="fk_lgcatego_no" 	column="fk_lgcatego_no" 	javaType="String"/>
+		<result property="fk_emp_id" 		column="fk_emp_id" 			javaType="String"/>
+		<result property="name" 			column="name" 				javaType="String"/>
+		<result property="smcatego_name" 	column="smcatego_name" 		javaType="String"/>
+		<result property="fk_dept_id" 		column="fk_dept_id" 		javaType="String"/>
+		<result property="dept_name" 		column="dept_name" 			javaType="String"/>
+	</resultMap>
+	<select id="detailSchedule" parameterType="String" resultMap="detailSchedule_Map">
+		SELECT sd.schedule_no
+		     , to_char(sd.schedule_startdate,'yyyy-mm-dd hh24:mi') as startdate
+		     , to_char(sd.schedule_enddate,'yyyy-mm-dd hh24:mi') as enddate  
+		     , sd.schedule_name
+		     , sd.schedule_color
+		     , nvl(sd.schedule_place,'-') as schedule_place
+		     , nvl(sd.schedule_joinemp,'참석자가 없습니다.') as schedule_joinemp
+		     , nvl(sd.schedule_content,'') as schedule_content
+		     , sd.fk_smcatego_no
+		     , sd.fk_lgcatego_no
+		     , sd.fk_emp_id
+		     , e.name
+		     , sc.smcatego_name
+		     , e.fk_dept_id
+		     , d.dept_name
+		  FROM tbl_schedule sd JOIN tbl_employee e
+		    ON SD.fk_emp_id = e.emp_id
+		  JOIN tbl_schedule_small_category sc
+		    ON SD.fk_smcatego_no = sc.smcatego_no
+		  JOIN tbl_department d
+    		ON e.fk_dept_id = d.dept_id
+		 WHERE SD.schedule_no = #{scheduleno}
+	</select>
+	
+	<!-- === 일정 소분류 수정 전 소분류명이 존재하는지 알아보기 === -->
+	<select id="existsCalendar" parameterType="HashMap" resultType="Integer">
+		SELECT count(*)
+		  FROM tbl_schedule_small_category
+		 WHERE fk_lgcatego_no = #{fk_lgcatego_no} 
+		   AND fk_emp_id = #{fk_emp_id}
+		   AND smcatego_name = #{smcatego_name}	
+	</select>
+	
+	<!-- === 일정 소분류 수정하기 === -->
+	<update id="editCalendar" parameterType="HashMap">
+		UPDATE tbl_schedule_small_category SET smcatego_name = #{smcatego_name}
+		 WHERE smcatego_no = #{smcatego_no}
+	</update>
+	
+	
+	<!-- === 일정 소분류 삭제하기 === -->
+	<delete id="deleteSubCalendar" parameterType="String">
+		DELETE FROM tbl_schedule_small_category
+ 		 WHERE smcatego_no = #{smcatego_no}
+	</delete>
+	
+	
+	<!-- === 일정 삭제하기 === -->
+	<delete id="deleteSchedule" parameterType="String">
+		DELETE FROM tbl_schedule
+		 WHERE schedule_no = #{schedule_no}
+	</delete>
+	
+	<!-- === 일정 수정하기 === -->
+	<update id="editSchedule_end" parameterType="HashMap">
+		update tbl_schedule set schedule_startdate = to_date(#{schedule_startdate}, 'yyyymmddhh24miss')
+		                        , schedule_enddate = to_date(#{schedule_enddate}, 'yyyymmddhh24miss')
+		                        , schedule_name = #{schedule_name}
+		                        , fk_lgcatego_no = #{fk_lgcatego_no}
+		                        , fk_smcatego_no = #{fk_smcatego_no}
+		                        , schedule_color = #{schedule_color}
+		                        , schedule_place = #{schedule_place}
+		                        , schedule_joinemp = #{schedule_joinemp}
+		                        , schedule_content = #{schedule_content}
+		where schedule_no = #{schedule_no}
+	</update>
+	
 </mapper>

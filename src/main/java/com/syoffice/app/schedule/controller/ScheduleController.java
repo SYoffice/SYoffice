@@ -1,23 +1,24 @@
 package com.syoffice.app.schedule.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.syoffice.app.common.MyUtil;
+import com.syoffice.app.employee.domain.EmployeeVO;
 import com.syoffice.app.schedule.service.ScheduleService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/schedule/*")
@@ -49,63 +50,7 @@ public class ScheduleController {
 		
 		return mav;
 	}// end of public ModelAndView insertSchedule(HttpServletRequest request, HttpServletResponse response, ModelAndView mav, @RequestParam String chooseDate) ------ 
-	
-	
-	// === 일정 등록시 내캘린더,사내캘린더 선택에 따른 서브캘린더 종류를 알아오기 === //
-	@GetMapping("selectSmallCategory")
-	@ResponseBody
-	public String selectSmallCategory(HttpServletRequest request) {
-		
-		String fk_lgcatego_no = request.getParameter("fk_lgcatego_no"); // 캘린더 대분류 번호
-		String fk_emp_id = request.getParameter("fk_emp_id");       // 사용자아이디
-		
-		Map<String,String> paraMap = new HashMap<>();
-		paraMap.put("fk_lgcatego_no", fk_lgcatego_no);
-		paraMap.put("fk_emp_id", fk_emp_id);
-		
-		List<Map<String, String>> small_category_List = service.selectSmallCategory(paraMap);
-		
-		JSONArray jsArr = new JSONArray();
-		if(small_category_List != null) {
-			for(Map<String, String> map : small_category_List) {
-				JSONObject jsObj = new JSONObject();
-				jsObj.put("smcatego_no", map.get("smcatego_no"));
-				jsObj.put("fk_lgcatego_no", map.get("fk_lgcatego_no"));
-				jsObj.put("smcatego_name", map.get("smcatego_name"));
-				
-				jsArr.put(jsObj);
-			}
-		}
-//		System.out.println("확인용 jsArr : "+ jsArr.toString());
-		
-		return jsArr.toString();
-	}// end of public String selectSmallCategory(HttpServletRequest request) --------------------------
-	
-	
-	// === 공유자를 찾기 위한 특정글자가 들어간 회원명단 불러오기 === //
-	@GetMapping("insertSchedule/searchJoinUserList")
-	@ResponseBody
-	public String searchJoinUserList(HttpServletRequest request) {
-		String joinSearchWord = request.getParameter("joinSearchWord");
-		
-		// 사원 명단 불러오기
-		List<Map<String, String>> joinUserList = service.searchJoinUserList(joinSearchWord);
 
-		JSONArray jsonArr = new JSONArray();
-		if(joinUserList != null && joinUserList.size() > 0) {
-			for(Map<String, String> map : joinUserList) {
-				JSONObject jsObj = new JSONObject();
-				jsObj.put("empid", map.get("emp_id"));
-				jsObj.put("name", map.get("name"));
-				jsObj.put("dept_name", map.get("dept_name"));
-				jsObj.put("branch_name", map.get("branch_name"));
-				
-				jsonArr.put(jsObj);
-			}
-		}
-		return jsonArr.toString();
-	}// end of public String searchJoinUserList(HttpServletRequest request) ------------------------- 
-	
 	
 	// === 일정 등록하기 === //
 	@PostMapping("registerSchedule_end")
@@ -162,127 +107,108 @@ public class ScheduleController {
 		
 		return mav;
 	}// end of public ModelAndView registerSchedule_end(ModelAndView mav, HttpServletRequest request) throws Throwable ----------------
+
 	
-	
-	
-	// === 내 일정 소분류 보여주기 === //
-	@GetMapping("showMyCalendar")
-	@ResponseBody
-	public String showMyCalendar(HttpServletRequest request) {
+	// === 일정상세보기 === //
+	@GetMapping(value="detailSchedule")
+	public ModelAndView detailSchedule(ModelAndView mav, HttpServletRequest request) {
 		
-		String fk_emp_id = request.getParameter("fk_emp_id");
+		String scheduleno = request.getParameter("scheduleno");
 		
-		List<Map<String, String>> mycalendar_small_categoryList = service.showMyCalendar(fk_emp_id);
+		// 검색하고 나서 취소 버튼 클릭했을 때 필요함
+//		String listgobackURL_schedule = request.getParameter("listgobackURL_schedule");
+//		mav.addObject("listgobackURL_schedule",listgobackURL_schedule);
 		
-		JSONArray jsonArr = new JSONArray();
+//		System.out.println("확인용 scheduleno: "+ scheduleno);
 		
-		if(mycalendar_small_categoryList != null) {
-			for(Map<String, String> map : mycalendar_small_categoryList) {
-				JSONObject jsObj = new JSONObject();
-				
-				jsObj.put("smcatego_no", map.get("smcatego_no"));
-				jsObj.put("fk_lgcatego_no", map.get("fk_lgcatego_no"));
-				jsObj.put("smcatego_name", map.get("smcatego_name"));
-				
-				jsonArr.put(jsObj);
-			}// end of for() --------------
+		// 일정상세보기에서 일정수정하기로 넘어갔을 때 필요함
+		String gobackURL_detailSchedule = MyUtil.getCurrentURL(request);
+		mav.addObject("gobackURL_detailSchedule", gobackURL_detailSchedule);
+		
+		try {
+			Integer.parseInt(scheduleno);
+			Map<String,String> map = service.detailSchedule(scheduleno);
+			mav.addObject("map", map);
+			mav.setViewName("schedule/detailSchedule");
+		} catch (NumberFormatException e) {
+			mav.setViewName("redirect:/schedule/scheduleIndex");
 		}
 		
-//		System.out.println("확인용 jsonArr: "+ jsonArr);
-		
-		return jsonArr.toString();
-	}// end of public String showMyCalendar(HttpServletRequest request) -----------------------
+		return mav;
+	}// end of public ModelAndView detailSchedule(ModelAndView mav, HttpServletRequest request, @RequestParam String scheduleno) ------------------- 
 	
 	
-	// === 일정 소분류 추가하기 === //
-	@PostMapping("addCalendar")
-	@ResponseBody
-	public String addMyCalendar(HttpServletRequest request) throws Throwable {
+	// === 일정 수정하기 === //
+	@PostMapping("editSchedule")
+	public ModelAndView editSchedule(ModelAndView mav, HttpServletRequest request) {
 		
-		String smcatego_name = request.getParameter("smcatego_name");
-		String fk_emp_id = request.getParameter("fk_emp_id");
-		String fk_lgcatego_no = request.getParameter("fk_lgcatego_no");
-		
-//		System.out.println("확인용 my_smcatego_name : "+ my_smcatego_name);
-//		System.out.println("확인용 fk_emp_id : "+ fk_emp_id);
-//		System.out.println("확인용 fk_lgcatego_no : "+ fk_lgcatego_no);
-		
-		Map<String, String> paraMap = new HashMap<String, String>();
-		paraMap.put("smcatego_name",smcatego_name);
-		paraMap.put("fk_emp_id",fk_emp_id);
-		paraMap.put("fk_lgcatego_no",fk_lgcatego_no);
-		
-		int n = service.addCalendar(paraMap);
-				
-		JSONObject jsObj = new JSONObject();
-		jsObj.put("n", n);
-		
-		return jsObj.toString();
-	}// end of public String addMyCalendar(HttpServletRequest request) throws Throwable ------------------------- 
-	
-	
-	// === 전사 일정 소분류 가져오기 === //
-	@GetMapping("showCompanyCalendar")
-	@ResponseBody
-	public String showCompanyCalendar() {
-		
-		List<Map<String, String>> calendar_small_category_CompanyList = service.showCompanyCalendar();
-		
-		JSONArray jsonArr = new JSONArray();
-		
-		if(calendar_small_category_CompanyList != null) {
-			for(Map<String, String> map : calendar_small_category_CompanyList) {
-				JSONObject jsObj = new JSONObject();
-				jsObj.put("smcatego_no", map.get("smcatego_no"));
-				jsObj.put("fk_lgcatego_no", map.get("fk_lgcatego_no"));
-				jsObj.put("smcatego_name", map.get("smcatego_name"));
-				
-				jsonArr.put(jsObj);
-			}// end of for() -------------------
-		}
-		
-		return jsonArr.toString();
-	}// end of public String showCompanyCalendar() -------------------------------------- 
-	
-	
-	// === 등록된 모든 일정 불러오기 === //
-	@GetMapping("selectSchedule")
-	@ResponseBody
-	public String selectSchedule(HttpServletRequest request) {
-		
-		// 등록된 일정 가져오기
-		String fk_emp_id = request.getParameter("fk_emp_id");
-		String name = request.getParameter("name");
-		
-		Map<String, String> paraMap = new HashMap<>();
-		paraMap.put("fk_emp_id", fk_emp_id);
-		paraMap.put("name", name);
-		
-		List<Map<String, String>> scheduleList = service.selectSchedule(paraMap);
-		
-		JSONArray jsonArr = new JSONArray();
-		
-		if(scheduleList != null && scheduleList.size() > 0) {
+		String schedule_no = request.getParameter("schedule_no");
+   		
+		try {
+			Integer.parseInt(schedule_no);
 			
-			for(Map<String, String> map : scheduleList) {
-				JSONObject jsonObj = new JSONObject();
-				jsonObj.put("schedule_no", map.get("schedule_no"));
-				jsonObj.put("schedule_startdate", map.get("schedule_startdate"));
-				jsonObj.put("schedule_enddate", map.get("schedule_enddate"));
-				jsonObj.put("schedule_name", map.get("schedule_name"));
-				jsonObj.put("schedule_color", map.get("schedule_color"));
-				jsonObj.put("schedule_place", map.get("schedule_place"));
-				jsonObj.put("schedule_joinemp", map.get("schedule_joinemp"));
-				jsonObj.put("schedule_content", map.get("schedule_content"));
-				jsonObj.put("fk_smcatego_no", map.get("fk_smcatego_no"));
-				jsonObj.put("fk_lgcatego_no", map.get("fk_lgcatego_no"));
-				jsonObj.put("fk_emp_id", map.get("fk_emp_id"));
+			String gobackURL_detailSchedule = request.getParameter("gobackURL_detailSchedule");
 			
-				jsonArr.put(jsonObj);
-			}// end of for-------------------------------------
+			HttpSession session = request.getSession();
+			EmployeeVO loginuser = (EmployeeVO) session.getAttribute("loginuser");
+			
+			Map<String,String> map = service.detailSchedule(schedule_no);
+			/*
+			if( !loginuser.getEmp_id().equals( map.get("fk_emp_id") ) ) {
+				String message = "다른 사용자가 작성한 일정은 수정이 불가합니다.";
+				String loc = "javascript:history.back()";
+				
+				mav.addObject("message", message);
+				mav.addObject("loc", loc);
+				mav.setViewName("msg");
+			}
+			else {
+				mav.addObject("map", map);
+				mav.addObject("gobackURL_detailSchedule", gobackURL_detailSchedule);
+				
+				mav.setViewName("schedule/editSchedule");
+			}
+			*/
+			mav.addObject("map", map);
+			mav.addObject("gobackURL_detailSchedule", gobackURL_detailSchedule);
+			
+			mav.setViewName("schedule/editSchedule");
+		} catch (NumberFormatException e) {
+			mav.setViewName("redirect:/schedule/scheduleIndex");
 		}
 		
-		return jsonArr.toString();
-	}// end of public String selectSchedule(HttpServletRequest request) -------------------------------- 
+		
+		
+		return mav;
+		
+	}// end of public ModelAndView editSchedule(ModelAndView mav, HttpServletRequest request) ---------------------------
+	
+	
+	// === 일정 수정 완료하기 ===
+	@PostMapping("editSchedule_end")
+	public ModelAndView editSchedule_end(@RequestParam Map<String, String> paraMap, HttpServletRequest request, ModelAndView mav) {
+		
+//		System.out.println("확인용 :" + paraMap.get("schedule_startdate")) ;
+		
+		try {
+			 int n = service.editSchedule_end(paraMap);
+			 
+			 if(n==1) {
+				 mav.addObject("message", "일정을 수정하였습니다.");
+				 mav.addObject("loc", request.getContextPath()+"/schedule/scheduleIndex");
+			 }
+			 else {
+				 mav.addObject("message", "일정 수정에 실패하였습니다.");
+				 mav.addObject("loc", "javascript:history.back()");
+			 }
+			 
+			 mav.setViewName("common/msg");
+		} catch (Throwable e) {	
+			e.printStackTrace();
+			mav.setViewName("redirect:/schedule/scheduleIndex");
+		}
+			
+		return mav;
+	}
 	
 }

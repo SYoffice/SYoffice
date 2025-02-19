@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+div#detailScheduleInfo {
+	width: 50%;
+	border: solid 0px red;
+}
+
+div#showCal {
+	width: 50%;
+	border: solid 0px yellow;
+}
+
+/* 수정 삭제 버튼 */
+button.buttonBorder {
+	border-radius: 5px;
+	border: solid 1px black;
+	width: 5em;
+	height: 2.5em;
+}
