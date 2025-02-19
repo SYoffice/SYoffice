@@ -94,6 +94,19 @@
 				#{grade_no}, default, null, default, default, #{profile_img	}, #{branch_no})
 	</insert>
 	
+	
+	<!-- 사원 한명의 정보를 select -->
+	<select id="employeeDetail" parameterType="String" resultType="EmployeeVO">
+		SELECT  E.emp_id, name, tel, personal_mail, TO_CHAR(E.hire_date, 'YYYY-MM-DD') AS hire_date, 
+				mail, postcode, address, detailaddress, extraaddress, gender, 
+				birthday, status, profile_img, G.grade_name, B.branch_name, D.dept_name
+		FROM tbl_employee E
+		JOIN tbl_grade G ON E.fk_grade_no = G.grade_no
+		JOIN tbl_branch B ON E.fk_branch_no = B.branch_no
+		JOIN tbl_department D ON E.fk_dept_id = D.dept_id
+		WHERE emp_id = #{emp_id}
+	</select>
+	
 </mapper>
 
 
