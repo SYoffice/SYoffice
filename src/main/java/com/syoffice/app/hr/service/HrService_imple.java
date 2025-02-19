@@ -70,6 +70,16 @@ public class HrService_imple implements HrService {
 		int n = dao.employeeRegister(paraMap);
 		return n;
 	}// end of public int employeeRegister(Map<String, String> paraMap) -----
+	
+	
+	// 사원 한명의 정보 select
+	@Override
+	public EmployeeVO employeeDetail(String emp_id) {
+		
+		EmployeeVO employeevo = dao.employeeDetail(emp_id);
+		
+		return employeevo;
+	}// end of public EmployeeVO employeeDetail(String emp_id) -----
 
 
 

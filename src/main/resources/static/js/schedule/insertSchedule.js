@@ -132,7 +132,7 @@ $(document).ready(() => {
 				        focus: function(event, ui) {
 				            return false;
 				        }
-					}); 
+					});
 						
 				}// end of if------------------------------------
 			}// end of success-----------------------------------
@@ -274,7 +274,7 @@ function add_joinUser(value){  // value 가 공유자로 선택한이름 이다.
 		alert("이미 추가한 회원입니다.");
 	}
 	else {
-		$("div.displayUserList").append("<span style='' class='plusUser border-1 rounded-md'>"+value+"&nbsp;<i style='cursor: pointer;' class='fas fa-times-circle'></i></span>");
+		$("div.displayUserList").append("<span class='plusUser joinBorder'>"+value+"&nbsp;<i style='cursor: pointer;' class='fas fa-times-circle'></i></span>");
 	}
 	$("input#joinSearchWord").val("");
 }// end of function add_joinUser(value){}----------------------------

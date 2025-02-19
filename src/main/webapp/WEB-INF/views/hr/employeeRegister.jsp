@@ -118,7 +118,7 @@
 						</div>
 						
 						<div class="btnBox">
-							<button class="resetButton" type="button" id="reset">취소하기</button>
+							<button class="resetButton" type="button" id="reset" onclick="history.back()">취소하기</button>
 							<button class="RegisterButton" type="button" id="employee_register_button" onclick="goRegister()">등록하기</button>
 						</div>
 						

@@ -1,0 +1,60 @@
+@charset "UTF-8";
+
+div#container {
+	width: 60%;
+	margin: 40px auto;
+	display: flex;
+}
+
+table {
+	text-align: center;
+	font-size: 15pt;
+	border-collapse: collapse;
+	border: solid 1px black;
+}
+
+tr{
+    border: solid 1px black;
+}
+
+td{
+    border: solid 1px black;
+}
+
+td.first_row {
+	width: 223px;
+	height: 200px;
+	border-top: solid 1px black;
+}
+
+td.second_row {
+	width: 25%;
+	border-top: solid 1px black;
+}
+
+div.btnBox {
+	width: 60%;
+	display: flex;
+	margin: auto;
+}
+
+button.goBackBtn {
+	width: 40%;
+	background-color: #BFD2FA;
+	height: 40px;
+	border: none;
+	margin-left: 55px;
+	margin-right: 70px;
+	border-radius: 5%;
+}
+
+
+button.EditBtn {
+	width: 40%;
+	background-color: #BFD2FA;
+	height: 40px;
+	border: none;
+	border-radius: 3px;
+}
+
+

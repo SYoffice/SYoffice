@@ -76,5 +76,54 @@ public class ScheduleService_imple implements ScheduleService {
 		List<Map<String, String>> scheduleList = dao.selectSchedule(paraMap);
 		return scheduleList;
 	}
+
+
+	// === 일정상세보기 === //
+	@Override
+	public Map<String, String> detailSchedule(String scheduleno) {
+		Map<String,String> map = dao.detailSchedule(scheduleno);
+		return map;
+	}// end of public Map<String, String> detailSchedule(String scheduleno) ---------------
+
+
+	// === 전사일정 소분류 수정하기 === //
+	@Override
+	public int editCalendar(Map<String, String> paraMap) {
+		
+		int n = 0;
+		
+		int m = dao.existsCalendar(paraMap); 
+		// 수정된 (사내캘린더 또는 내캘린더)속의 소분류 카테고리명이 이미 해당 사용자가 만든 소분류 카테고리명으로 존재하는지 유무 알아오기  
+		
+		if(m == 0) {
+			n = dao.editCalendar(paraMap);	
+		}
+		
+		return n;		
+	}// end of public int editCalendar(Map<String, String> paraMap) ------------------------ 
+
+	
+	// === 일정 소분류 삭제하기 === //
+	@Override
+	public int deleteSubCalendar(String smcatego_no) {
+		int n = dao.deleteSubCalendar(smcatego_no); 
+		return n;
+	}// end of public int deleteSubCalendar(String smcatego_no) ---------------- 
+
+
+	// === 일정 삭제하기 === //
+	@Override
+	public int deleteSchedule(String schedule_no) {
+		int n = dao.deleteSchedule(schedule_no);
+		return n;
+	}// end of public int deleteSchedule(String schedule_no) ----------------------- 
+
+
+	// === 일정 수정하기 === //
+	@Override
+	public int editSchedule_end(Map<String, String> paraMap) {
+		int n = dao.editSchedule_end(paraMap);
+		return n;
+	}// end of public int editSchedule_end(Map<String, String> paraMap) ------------------ 
 	
 }

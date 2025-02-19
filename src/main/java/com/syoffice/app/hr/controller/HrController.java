@@ -107,7 +107,9 @@ public class HrController {
 		
 		// 페이징DTO 보내주기
 		mav.addObject("pagingDTO", pagingDTO);
-		
+		// 검색어 및 검색타입이 담긴 파라맵 보내주기
+		// 검색이 있는 경우에만 하시면 됩니다.
+		mav.addObject("paraMap", paraMap);
 		//////////////////////페이징 처리 /////////////////////////
 		//////////////////////////////////////////////////////////		
 		
@@ -159,16 +161,11 @@ public class HrController {
 	//	System.out.println("~~~ 확인용 webapp 의 절대경로 : "+ root);
 	//	~~~ 확인용 webapp 의 절대경로 : C:\Users\User\git\SYoffice\src\main\webapp\
 		
-		String path = root+"images"+File.separator+"profile";
-	
-		/* 	File.separator 는 운영체제에서 사용하는 폴더와 파일의 구분자이다.
-        	운영체제가 Windows 이라면 File.separator 는  "\" 이고,
-	        운영체제가 UNIX, Linux, 매킨토시(맥) 이라면  File.separator 는 "/" 이다. 
-		 */
+		String path = root+"resources"+File.separator+"profile";
 		
 		// path 가 첨부파일이 저장될 WAS(톰캣)의 폴더가 된다.
 	//	System.out.println("~~~ 확인용 path 경로 : "+ path);
-//		~~~ 확인용 path 경로 : C:\Users\User\git\SYoffice\src\main\webapp\images\profile
+	//	~~~ 확인용 path 경로 : C:\Users\User\git\SYoffice\src\main\webapp\resources\profile
 		
 		byte[] bytes = null;
 		// 첨부파일의 내용물을 담는 것
@@ -178,10 +175,8 @@ public class HrController {
 		
 		try {
 			bytes = file.getBytes();
-			// 첨부파일의 내용물을 읽어 오는 것
 			
 			String originalFilename = file.getOriginalFilename();
-			// attach.getOriginalFilename()은 첨부파일의 파일명을 가져온다. 파일명 예(강아지.png)
 			
 	//		System.out.println("~~~ 확인용 originalFilename: "+ originalFilename);
 		
@@ -220,5 +215,19 @@ public class HrController {
 		return mav;
 	}// end of public ModelAndView employeeRegister(HttpServletRequest request, ModelAndView mav, RequestParam Map<String, String> paraMap) -----
 	
+	
+	@GetMapping("employeeDetail")
+	public ModelAndView employeeDetail(ModelAndView mav, @RequestParam String emp_id) {
+		
+		// EmployeeVO 초기화
+		EmployeeVO employeevo = null;
+		
+		// 사원 한명의 정보를 조회
+		employeevo = service.employeeDetail(emp_id);
+		
+		mav.addObject("employeevo", employeevo);
+		mav.setViewName("/hr/employeeDetail");
+		return mav;
+	}// end of public ModelAndView employeeDetail(ModelAndView mav, @RequestParam String emp_id) -----
 	
 }// end of public class HrController ----- 
