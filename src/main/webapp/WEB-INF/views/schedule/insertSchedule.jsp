@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="../main/header.jsp" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,15 +77,8 @@
 						<td>
 							<select class="calType schedule border" name="fk_lgcatego_no">
 								<c:choose>
-								<%-- 사내 캘린더 추가를 할 수 있는 직원은 직위코드가 3 이면서 부서코드가 4 에 근무하는 사원이 로그인 한 경우에만 가능하도록 조건을 걸어둔다.
-									<c:when test="${loginuser.fk_pcode =='3' && loginuser.fk_dcode == '4' }">
-										<option value="">선택하세요</option>
-										<option value="1">내 캘린더</option>
-										<option value="2">사내 캘린더</option>
-									</c:when>
-								--%> 
 								<%-- 일정등록시 사내캘린더 등록은 부서가 인사부원만 등록이 가능하도록 한다. --%> 
-									<c:when test="${loginuser.gradelevel =='10'}"> 
+									<c:when test="${sessionScope.loginuser.fk_dept_id == 2}"> 
 										<option value="">선택하세요</option>
 										<option value="2">내 일정</option>
 										<option value="1">전사 일정</option>
@@ -93,8 +86,8 @@
 								<%-- 일정등록시 내캘린더 등록은 로그인 된 사용자이라면 누구나 등록이 가능하다. --%> 	
 									<c:otherwise>
 										<option value="">선택하세요</option>
-										<option value="1">내 일정</option>
-									</c:otherwise >
+										<option value="2">내 일정</option>
+									</c:otherwise>
 								</c:choose>
 							</select> &nbsp;
 							<select class="small_category schedule border" name="fk_smcatego_no"></select>
@@ -122,7 +115,7 @@
 						<td><textarea rows="10" cols="100" style="height: 200px;" name="schedule_content" id="schedule_content"  class="form-control"></textarea></td>
 					</tr>
 				</table>
-				<input type="hidden" value="1000" name="fk_emp_id"/>
+				<input type="hidden" value="${sessionScope.loginuser.emp_id}" name="fk_emp_id"/>
 			</form>
 			<div style="float: right;">
 				<%-- <button type="button" id="register" class="border-1 rounded-md" style="margin-right: 10px;">등록</button>--%>

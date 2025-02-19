@@ -92,9 +92,9 @@
 </form>
 
 <%-- calendar 용 데이터 --%>
-<input type="hidden" id="fk_emp_id" value="1000" />
-<input type="hidden" id="name" value="이순신" />
-<input type="hidden" id="dept_id" value="2" />
+<input type="hidden" id="fk_emp_id" value="${sessionScope.loginuser.emp_id}" />
+<input type="hidden" id="name" value="${sessionScope.loginuser.name}" />
+<input type="hidden" id="dept_id" value="${sessionScope.loginuser.fk_dept_id}" />
 
 <%-- JS 활용 용도 --%>
 <input type="hidden" id="path" 	value="${pageContext.request.contextPath}" />
