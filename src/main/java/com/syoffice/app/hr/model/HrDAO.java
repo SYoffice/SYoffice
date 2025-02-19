@@ -30,6 +30,9 @@ public interface HrDAO {
 	
 	// 신규 사원정보 insert
 	int employeeRegister(Map<String, String> paraMap);
+	
+	// 사원 한명의 정보를 select
+	EmployeeVO employeeDetail(String emp_id);
 
 	
 	

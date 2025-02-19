@@ -49,3 +49,7 @@ a.active {
 	color: black;
 	font-weight: bold;
 }
+
+td:hover {
+	cursor: pointer;
+}
