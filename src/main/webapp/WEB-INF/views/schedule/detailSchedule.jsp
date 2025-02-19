@@ -73,11 +73,13 @@
         				<td>${requestScope.map.name}</td>
         			</tr>
         		</table>
-        		<div style="float: right;">
-					<%-- <button type="button" id="register" class="border-1 rounded-md" style="margin-right: 10px;">등록</button>--%>
-					<button type="button" class="buttonBorder" id="edit" style="margin-right: 10px; background-color: #99ccff;">수정</button>
-					<button type="button" class="buttonBorder" id="delete" style="background-color: ecf0f8;">삭제</button> 
-				</div>
+        		<c:if test="${sessionScope.loginuser.emp_id == requestScope.map.fk_emp_id}">
+	        		<div style="float: right;">
+						<%-- <button type="button" id="register" class="border-1 rounded-md" style="margin-right: 10px;">등록</button>--%>
+						<button type="button" class="buttonBorder" id="edit" style="margin-right: 10px; background-color: #99ccff;">수정</button>
+						<button type="button" class="buttonBorder" id="delete" style="background-color: ecf0f8;">삭제</button> 
+					</div>
+				</c:if>
         	</div>
         	<div id="showCal">
         		<jsp:include page="./calendar.jsp" />
