@@ -74,7 +74,7 @@ $(document).ready(() => {
 				data: {"fk_lgcatego_no":fk_lgcatego_no, "fk_emp_id": fk_emp_id},
 				dataType: "JSON",
 				success:function(json){
-					//console.log(JSON.stringify(json));
+					console.log(JSON.stringify(json));
 					
 					var html = "";
 					if(json.length>0){

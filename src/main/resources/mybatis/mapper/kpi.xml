@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.syoffice.app.kpi.model.KpiDAO">
+
+	<!-- === 목표 실적액 등록하기 === -->	
+	<insert id="kpiRegister" parameterType="KpiVO">
+		INSERT INTO tbl_kpi (kpi_no, fk_dept_id, kpi_year, kpi_quarter, kpi_index)
+		VALUES (kpi_seq.nextval, to_number(#{fk_dept_id}), to_number(#{kpi_year}), to_number(#{kpi_quarter}), to_number(#{kpi_index}))
+	</insert>
+	
+	<!-- === 특정 부서의 목표실적 가져오기 === -->
+	<select id="getDeptKpi" parameterType="HashMap" resultType="KpiVO">
+		SELECT DISTINCT V.kpi_no, V.fk_dept_id, V.kpi_year, V.kpi_quarter, V.kpi_index
+			 , V.dept_name, V.manager_id, b.branch_name
+		  FROM 
+			(
+			SELECT k.kpi_no, k.fk_dept_id, k.kpi_year, k.kpi_quarter, k.kpi_index
+				 , d.dept_name, nvl(d.manager_id, -1) AS manager_id
+			  FROM tbl_kpi k JOIN tbl_department d
+			    ON k.fk_dept_id = d.dept_id
+			 WHERE fk_dept_id = #{fk_dept_id}
+			) V
+		  JOIN tbl_employee e
+		    ON V.fk_dept_id = e.fk_dept_id
+		  JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
+		  ORDER BY V.kpi_year DESC, V.kpi_quarter ASC
+	</select>
+	
+	<!-- === 기존에 등록한 목표가 있는지 확인하기 === -->
+	<select id="getExistKpi" parameterType="KpiVO" resultType="Integer">
+		SELECT count(*)
+		  FROM tbl_kpi
+		 WHERE fk_dept_id = #{fk_dept_id} AND kpi_year = #{kpi_year} AND kpi_quarter = #{kpi_quarter}
+	</select>
+	
+</mapper>

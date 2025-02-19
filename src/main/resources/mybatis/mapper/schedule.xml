@@ -17,7 +17,10 @@
 	<select id="selectSmallCategory" parameterType="HashMap" resultMap="selectSmallCategory">
 		SELECT smcatego_no, fk_lgcatego_no, smcatego_name
 		  FROM tbl_schedule_small_category
-		 WHERE fk_lgcatego_no = #{fk_lgcatego_no} and fk_emp_id= #{fk_emp_id}
+		 WHERE fk_lgcatego_no = #{fk_lgcatego_no}
+		 <if test="fk_lgcatego_no == 2">
+			 AND fk_emp_id= #{fk_emp_id}
+		 </if> 
 		ORDER BY smcatego_no ASC
 	</select>
 	
