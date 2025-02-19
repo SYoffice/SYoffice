@@ -464,7 +464,7 @@
 						<td><textarea rows="10" cols="100" style="height: 200px;" name="schedule_content" id="schedule_content"  class="form-control" >${requestScope.map.schedule_content}</textarea></td>
 					</tr>
 				</table>
-				<input type="hidden" value="1000" name="fk_emp_id"/>
+				<input type="hidden" value="${sessionScope.loginuser.emp_id}" name="fk_emp_id"/>
 				<input type="hidden" value="${requestScope.map.schedule_no}" name="schedule_no"/>
 			</form>
 			<div style="float: right;">
