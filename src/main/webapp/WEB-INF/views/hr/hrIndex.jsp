@@ -20,7 +20,7 @@ $(document).ready(function() {
 	});// end of $("input:text[name='searchWord']").on("keydown", e => {}) -----	
 	
 	//검색 시 검색조건 및 검색어 값 유지시키기
-	if (${!empty requestScope.paraMap}) {
+	if (${!empty requestScope.paraMap.searchType && !empty requestScope.paraMap.searchWord}) {
 		$("select[name='searchType']").val("${requestScope.paraMap.searchType}");
 		$("input:text[name='searchWord']").val("${requestScope.paraMap.searchWord}");
 	}
@@ -33,6 +33,12 @@ function goSearch() {
 	frm.method = "GET";
 	frm.submit();
 }// end of function goSearch() ----------------------
+
+function goDetail(emp_id) {
+	
+	location.href="${pageContext.request.contextPath}/hr/employeeDetail?emp_id="+emp_id;
+	
+}
 
 </script>
 
@@ -53,8 +59,8 @@ function goSearch() {
 				<button type="button" class="btn btn-secondary btn-sm" onclick="goSearch()">검색</button>
 			</form>
 			
-			<table class="table table-bordered">
-				<thead>
+			<table class="table table-bordered table-hover">
+				<thead class="thead-light">
 					<tr>
 						<th style="width: 10%;  text-align: center;">사원번호</th>
 						<th style="width: 10%;  text-align: center;">지점</th>
@@ -69,7 +75,7 @@ function goSearch() {
 					<%-- 조회된 사원목록이 있을 경우 --%>
 				    <c:if test="${not empty requestScope.employeeList}">
 				    	<c:forEach var="employeevo" items="${requestScope.employeeList}">
-							<tr>
+							<tr onclick="goDetail(${employeevo.emp_id})">
 								<td style="width: 10%;  text-align: center;">${employeevo.emp_id}</td>
 								<td style="width: 10%;  text-align: center;">${employeevo.branch_name}</td>
 								<td style="width: 10%;  text-align: center;">${employeevo.dept_name}</td>
@@ -90,14 +96,16 @@ function goSearch() {
            	
            	 
 			<%-- 페이지네이션  --%>
+			<%-- li 태그 안의 a 태그의 주소값만 수정해주시면 됩니다. --%>
 			<nav class="text-center">
 				<ul class="pagination">
 					<!-- 첫 페이지  -->
 					<div class="pageBtn_box">
-						<li><a href="hrIndex?curPage=1" data-page="1"><span aria-hidden="true"><img class="pageBtn" src="${pageContext.request.contextPath}/images/icon/go_first.svg" /></span></a></li>
+						<li><a href="hrIndex?searchType=${requestScope.paraMap.searchType}&searchWord=${requestScope.paraMap.searchWord}&curPage=1" data-page="1"><span aria-hidden="true"><img class="pageBtn" src="${pageContext.request.contextPath}/images/icon/go_first.svg" /></span></a></li>
 						<!-- 이전 페이지 -->
 						<c:if test="${pagingDTO.firstPage ne 1}">
-							<li><a href="hrIndex?curPage=${i}?curPage=${pagingDTO.firstPage-1}" data-page="${pagingDTO.firstPage-1}"><span aria-hidden="true"><img class="pageBtn" src="${pageContext.request.contextPath}/images/icon/prev.svg" /></span></a></li>
+							<li><a href="hrIndex?searchType=${requestScope.paraMap.searchType}&searchWord=${requestScope.paraMap.searchWord}&curPage=${i}?curPage=${pagingDTO.firstPage-1}" data-page="${pagingDTO.firstPage-1}"><span aria-hidden="true"><img class="pageBtn" src="${pageContext.request.contextPath}/images/icon/prev.svg" /></span></a></li>
+							
 						</c:if>
 					</div>
 					
@@ -106,7 +114,7 @@ function goSearch() {
 						<c:forEach begin="${pagingDTO.firstPage}" end="${pagingDTO.lastPage}" var="i" >
 							
 							<c:if test="${pagingDTO.curPage ne i}">
-								<li><a class="pageNo"  href="hrIndex?curPage=${i}" data-page="${i}">${i}</a></li>
+								<li><a class="pageNo"  href="hrIndex?searchType=${requestScope.paraMap.searchType}&searchWord=${requestScope.paraMap.searchWord}&curPage=${i}" data-page="${i}">${i}</a></li>
 							</c:if>
 							
 							<c:if test="${pagingDTO.curPage eq i}">
@@ -119,11 +127,11 @@ function goSearch() {
 					<!-- 다음  페이지  -->
 					<div class="pageBtn_box">
 						<c:if test="${pagingDTO.lastPage ne pagingDTO.totalPageCount}">
-							<li><a href="hrIndex?curPage=${pagingDTO.lastPage+1}" data-page="${pagingDTO.lastPage+1}"><span aria-hidden="true"><img class="pageBtn" src="${pageContext.request.contextPath}/images/icon/next.svg" /></span></a></li>
+							<li><a href="hrIndex?searchType=${requestScope.paraMap.searchType}&searchWord=${requestScope.paraMap.searchWord}&curPage=${pagingDTO.lastPage+1}" data-page="${pagingDTO.lastPage+1}"><span aria-hidden="true"><img class="pageBtn" src="${pageContext.request.contextPath}/images/icon/next.svg" /></span></a></li>
 						</c:if>
 						
 						<!-- 마지막 페이지 -->
-						<li><a href="hrIndex?curPage=${pagingDTO.totalPageCount}" data-page="${pagingDTO.totalPageCount}"><span aria-hidden="true"><img class="pageBtn" src="${pageContext.request.contextPath}/images/icon/go_last.svg" /></span></a></li>
+						<li><a href="hrIndex?searchType=${requestScope.paraMap.searchType}&searchWord=${requestScope.paraMap.searchWord}&curPage=${pagingDTO.totalPageCount}" data-page="${pagingDTO.totalPageCount}"><span aria-hidden="true"><img class="pageBtn" src="${pageContext.request.contextPath}/images/icon/go_last.svg" /></span></a></li>
 					</div>
 				</ul>
 			</nav>
