@@ -15,6 +15,9 @@ public class KpiVO {
 	private String manager_id; 	// 부서장 사원번호
 	private String branch_name; // 지점명
 	
+	private String sum_result_price; // 해당 분기 실적 달성 총액
+	private String result_pct; 	// 해당 분기 실적 달성 비율
+	
 
 	
 	// Getter & Setter
@@ -67,6 +70,18 @@ public class KpiVO {
 	}
 	public void setBranch_name(String branch_name) {
 		this.branch_name = branch_name;
+	}
+	public String getSum_result_price() {
+		return sum_result_price;
+	}
+	public void setSum_result_price(String sum_result_price) {
+		this.sum_result_price = sum_result_price;
+	}
+	public String getResult_pct() {
+		return result_pct;
+	}
+	public void setResult_pct(String result_pct) {
+		this.result_pct = result_pct;
 	}
 	
 	

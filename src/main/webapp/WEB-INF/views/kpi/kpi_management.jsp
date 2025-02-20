@@ -19,7 +19,9 @@
 	        	<div style="margin: 4% 0 4% 0">
 			    	<span class="h3">목표 관리</span>
 		   		</div>
-		   		
+		   		<select id="searchYear" name="searchYear">
+		   			<option value="">연도선택</option>
+		   		</select>
 				<table id="kpi" class="table table-bordered">
 					<c:if test="${empty requestScope.deptKpiList}">
 						<tr>
@@ -36,20 +38,20 @@
 								<tr class="text-center">
 									<th></th>
 									<th>연도 - 분기</th>
-									<th>목표실적액</th>
-									<th>달성실적액</th>
-									<th>완료비율</th>
+									<th>목표실적액(원)</th>
+									<th>달성실적액(원)</th>
+									<th>달성비율(%)</th>
 									<th colspan="2">수정 / 삭제</th>
 								</tr>
 							</c:if>
 							<tr class="text-center">
-								<td></td>
+								<td><input type="hidden" id="fk_dept_id" value="${kpivo.fk_dept_id}"></td>
 								<td>${kpivo.kpi_year} - ${kpivo.kpi_quarter}분기</td>
 								<td><fmt:formatNumber pattern="#,###" value="${kpivo.kpi_index}"></fmt:formatNumber></td>
-								<td><fmt:formatNumber pattern="#,###" value="30000000"></fmt:formatNumber></td>
-								<td>100%</td>
-								<td class="text-center"><button type="button" class="buttonBorder" id="kpiEdit" style="margin-right: 10px; background-color: #99ccff;">수정</button></td>
-								<td class="text-center"><button type="button" class="buttonBorder" id="kpiDelete" style="margin-right: 10px; background-color: #ffcc99;">삭제</button></td>
+								<td><fmt:formatNumber pattern="#,###" value="${kpivo.sum_result_price}"></fmt:formatNumber></td>
+								<td>${kpivo.result_pct}</td>
+								<td class="text-center"><button type="button" class="buttonBorder" onclick="location.href='${pageContext.request.contextPath}/kpi/edit/${kpivo.kpi_no}'" style="margin-right: 10px; background-color: #99ccff;">수정</button></td>
+								<td class="text-center"><button type="button" class="buttonBorder" onclick="kpiDelete('${kpivo.kpi_no}', '${kpivo.kpi_year}', '${kpivo.kpi_quarter}')" style="margin-right: 10px; background-color: #ffcc99;">삭제</button></td>
 							</tr>
 						</c:forEach>
 					</c:if>

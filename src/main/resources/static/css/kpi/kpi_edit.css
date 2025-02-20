@@ -16,13 +16,6 @@ div#formBox {
 button.buttonBorder {
 	border-radius: 5px;
 	border: solid 1px black;
-	width: 4rem;
-	height: 1.5rem;
-	font-size: 14px;
-}
-
-/* 연도선택 필터 */
-select#searchYear {
-	float: right;
-	margin-bottom: 1%;
+	width: 5em;
+	height: 2.5em;
 }

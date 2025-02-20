@@ -16,4 +16,13 @@ public interface KpiDAO {
 	// === 기존에 등록한 목표가 있는지 확인하기 === //
 	int getExistKpi(KpiVO kpivo);
 
+	// === 목표실적 삭제 === //
+	int kpiDelete(String kpi_no);
+
+	// === 한개의 목표실적 가져오기 === //
+	KpiVO getKpiOne(String kpi_no);
+
+	// === 목표실적 수정 === //
+	int editKpi(KpiVO kpivo);
+
 }

@@ -14,7 +14,7 @@
         <div class="contents_inner_wrapper">
         	<div id="formBox">
         	<div style="margin: 4% 0 4% 0">
-		    	<span class="h3">목표 등록</span>
+		    	<span class="h3">목표실적 등록</span>
 	   		</div>
 	   		
 				<form name="kpiFrm">
@@ -47,7 +47,7 @@
 						<tr>
 							<th>목표실적액</th>
 							<td colspan="3">
-								<input type="text" size="50" id="inputKpi" />
+								<input type="text" size="39" id="inputKpi" /><span style="margin-left: 18px;">원</span>
 								<input type="hidden" name="kpi_index" />
 							</td>
 						</tr>
@@ -57,7 +57,7 @@
 				<div style="float: right;">
 					<%-- <button type="button" id="register" class="border-1 rounded-md" style="margin-right: 10px;">등록</button>--%>
 					<button type="button" class="buttonBorder" id="register" style="margin-right: 10px; background-color: #99ccff;">등록</button>
-					<button type="button" class="buttonBorder" style="background-color: ecf0f8;" onclick="javascript:location.href='<%= request.getContextPath()%>/schedule/scheduleIndex'">취소</button> 
+					<button type="button" class="buttonBorder" style="background-color: ecf0f8;" onclick="javascript:history.back()">취소</button> 
 				</div>
 			</div>
 		</div>
