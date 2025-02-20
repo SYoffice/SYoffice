@@ -98,7 +98,7 @@ $(document).ready(() => {
 	
 	
 	// 공유자 추가하기
-	$("input#joinSearchWord").bind("keyup",function(){
+	$("input#joinSearchWord").on("input",function(){
 		var joinSearchWord = $(this).val();
 		//	console.log("확인용 joinUserName : " + joinUserName);
 		$.ajax({
@@ -112,7 +112,6 @@ $(document).ready(() => {
 				//	console.log(json.length);
 				
 				if(json.length > 0){
-						
 					$.each(json, function(index, item){
 						var name = item.name;
 						if(name.includes(joinSearchWord) || item.dept_name.includes(joinSearchWord) || item.branch_name.includes(joinSearchWord)){

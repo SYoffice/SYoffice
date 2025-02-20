@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.syoffice.app.kpi.domain.KpiVO;
@@ -35,14 +34,6 @@ public class KpiController {
 	}// end of public String kpiRegister() -------------------
 	
 	
-	// === 목표 등록 시 중복체크 === //
-	@PostMapping("duplicateCheck")
-	@ResponseBody
-	public String kpiDuplicateCheck(KpiVO kpivo) {
-		return service.kpiDuplicateCheck(kpivo);
-	}// end of public String kpiDuplicateCheck(KpiVO kpivo) ----------------
-	
-	
 	// === 목표 등록 기능 === //
 	@PostMapping("register")
 	public ModelAndView kpiRegister(HttpServletRequest request, ModelAndView mav, KpiVO kpivo) {
@@ -56,7 +47,17 @@ public class KpiController {
 		return service.kpiManagement(request, mav, fk_dept_id);
 	}// end of public String kpiIndex() ---------------
 		
+	// === 목표실적 수정 페이지 === //
+	@GetMapping("edit/{kpi_no}")
+	public ModelAndView kpiEdit(HttpServletRequest request, ModelAndView mav, @PathVariable("kpi_no") String kpi_no) {
+		return service.kpiEdit(request, mav, kpi_no);
+	}// end of public ModelAndView kpiEdit(HttpServletRequest request, ModelAndView mav, @PathVariable("fk_dept_id") String kpi_no) ------------------- 
 	
-	 
+	
+	// === 목표 실적 수정 === //
+	@PostMapping("edit")
+	public ModelAndView kpiEditEnd(HttpServletRequest request, ModelAndView mav, KpiVO kpivo) {
+		return service.kpiEditEnd(request, mav, kpivo);
+	}// end of public ModelAndView kpiEditEnd(ModelAndView mav, KpiVO kpivo) -------------------------- 
 	
 }

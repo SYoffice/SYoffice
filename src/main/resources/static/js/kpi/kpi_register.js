@@ -1,11 +1,17 @@
 
 $(document).ready(function(){
-    const year = new Date().getFullYear();
     
     // == 연도에 최근 5년 값 넣어주기 == //
+    const year = new Date().getFullYear();
     let v_html = ``;
     for (let i=year; i>=year-5; i--) {
-        v_html += `<option value='${i}'>${i}</option>`;
+        if (i == year) {
+            v_html += `<option value="">선택하세요</option>`;
+            v_html += `<option value='${i}'>${i}</option>`;
+        }
+        else{
+            v_html += `<option value='${i}'>${i}</option>`;
+        }
     }// end of for() ----------------
     $("select[name='kpi_year']").html(v_html);
     
@@ -13,6 +19,17 @@ $(document).ready(function(){
     $("input#inputKpi").on("blur", function() {
         let input = $(this).val().split(",").join("");
         
+        if (isNaN(input)) {
+            Swal.fire({
+                title: '목표실적액은 숫자만 입력하세요!!',        // Alert 제목
+                icon: 'warning',
+            })
+            .then(()=>{
+                $("input[name='kpi_index']").val("");
+                $("input#inputKpi").val("");
+            });
+        }
+
         $("input[name='kpi_index']").val(input);
         $("input#inputKpi").val(Number(input).toLocaleString('en'));
     });// end of $("input#inputKpi").on("change", function() {}) ---------------------- 
@@ -50,7 +67,7 @@ $(document).ready(function(){
         const formData = $("form[name='kpiFrm']").serialize();
 
         $.ajax({
-            url: $("input#path").val()+"/kpi/duplicateCheck",
+            url: $("input#path").val()+"/api/kpi/duplicateCheck",
             data: formData,
             type: "POST",
             dataType: "JSON",
@@ -61,7 +78,7 @@ $(document).ready(function(){
                 if (json.result == 1) {
                     // 조회 된 것이 있는 경우
                     Swal.fire({
-                        title: '이미 등록한 목표실적입니다!!',        // Alert 제목
+                        title: '이미 등록한 기간의 목표실적입니다!!',        // Alert 제목
                         text: '목표 관리에서 확인하세요!',  
                         icon: 'error',
                     });

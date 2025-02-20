@@ -1,12 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%-- sweat alert --%>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.all.min.js"></script>
 <script type="text/javascript">
 	
+	window.onload = ()=> {
+		Swal.fire({
+            title: "${requestScope.message}",        // Alert 제목
+            //icon: 'warning',
+        })
+        .then(()=>{
+        	location.href = "${requestScope.loc}";
+        });
+	}
+	
 	// 메시지 출력해주기
-	alert("${requestScope.message}");
+	//alert("${requestScope.message}");
 
 	// 페이지 이동
-	location.href = "${requestScope.loc}";
+	//location.href = "${requestScope.loc}";
 	
 	/*   
 	   location.href="javascript:history.go(-2);";  // 이전이전 페이지로 이동 

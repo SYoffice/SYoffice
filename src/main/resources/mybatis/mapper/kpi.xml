@@ -14,20 +14,32 @@
 	
 	<!-- === 특정 부서의 목표실적 가져오기 === -->
 	<select id="getDeptKpi" parameterType="HashMap" resultType="KpiVO">
-		SELECT DISTINCT V.kpi_no, V.fk_dept_id, V.kpi_year, V.kpi_quarter, V.kpi_index
-			 , V.dept_name, V.manager_id, b.branch_name
+		SELECT B.kpi_no, B.fk_dept_id, B.kpi_year, B.kpi_quarter, B.kpi_index
+			 , B.dept_name, B.manager_id, B.branch_name , nvl(A.sum_result_price, 0) AS sum_result_price
+			 , nvl(round(A.sum_result_price / B.kpi_index * 100, 2), 0) AS result_pct
 		  FROM 
 			(
-			SELECT k.kpi_no, k.fk_dept_id, k.kpi_year, k.kpi_quarter, k.kpi_index
-				 , d.dept_name, nvl(d.manager_id, -1) AS manager_id
-			  FROM tbl_kpi k JOIN tbl_department d
-			    ON k.fk_dept_id = d.dept_id
-			 WHERE fk_dept_id = #{fk_dept_id}
-			) V
-		  JOIN tbl_employee e
-		    ON V.fk_dept_id = e.fk_dept_id
-		  JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
-		  ORDER BY V.kpi_year DESC, V.kpi_quarter ASC
+			SELECT fk_kpi_no, sum(result_price) AS sum_result_price
+			  FROM tbl_result
+			GROUP BY fk_kpi_no
+			) A RIGHT JOIN 
+			(
+			SELECT DISTINCT V.kpi_no, V.fk_dept_id, V.kpi_year, V.kpi_quarter, V.kpi_index
+				 , V.dept_name, V.manager_id, b.branch_name
+			  FROM 
+				(
+				SELECT k.kpi_no, k.fk_dept_id, k.kpi_year, k.kpi_quarter, k.kpi_index
+					 , d.dept_name, nvl(d.manager_id, -1) AS manager_id
+				  FROM tbl_kpi k JOIN tbl_department d
+				    ON k.fk_dept_id = d.dept_id
+				 WHERE fk_dept_id = #{fk_dept_id} AND kpi_year = #{searchYear}
+				) V
+			  JOIN tbl_employee e
+			    ON V.fk_dept_id = e.fk_dept_id
+			  JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
+			) B
+			 ON A.fk_kpi_no = B.kpi_no
+		ORDER BY B.kpi_year DESC, B.kpi_quarter ASC
 	</select>
 	
 	<!-- === 기존에 등록한 목표가 있는지 확인하기 === -->
@@ -36,5 +48,26 @@
 		  FROM tbl_kpi
 		 WHERE fk_dept_id = #{fk_dept_id} AND kpi_year = #{kpi_year} AND kpi_quarter = #{kpi_quarter}
 	</select>
+	
+	<!-- === 목표실적 삭제 === -->
+	<delete id="kpiDelete" parameterType="String">
+		DELETE FROM tbl_kpi
+ 		 WHERE kpi_no = #{kpi_no}
+	</delete>
+	
+	<!-- === 한개의 목표실적 가져오기 === -->
+	<select id="getKpiOne" parameterType="String" resultType="KpiVO">
+		SELECT kpi_no, fk_dept_id, kpi_year, kpi_quarter, kpi_index
+		  FROM tbl_kpi
+		 WHERE kpi_no = #{kpi_no}
+	</select>
+	
+	
+	<!-- === 목표실적 수정 === -->
+	<update id="editKpi" parameterType="KpiVO">
+		UPDATE tbl_kpi SET kpi_year = #{kpi_year}, kpi_quarter = #{kpi_quarter}, kpi_index = #{kpi_index}
+ 		 WHERE kpi_no = #{kpi_no}
+	</update>
+	
 	
 </mapper>
