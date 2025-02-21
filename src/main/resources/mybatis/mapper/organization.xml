@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="com.syoffice.app.organization.model.OraganizationDAO">
+	
+	<!-- 조직도 데이터 조회 -->
+    <select id="selectOrganization" resultType="map">
+       SELECT 
+            e.emp_id, e.name, e.fk_dept_id, e.fk_grade_no, e.fk_branch_no, e.mail, e.tel, to_char(hire_date, 'yyyy-mm-dd') AS hire_date
+            , e.profile_img, d.dept_name, d.manager_id , g.grade_name, b.branch_name
+       FROM tbl_employee e
+       JOIN tbl_department d ON e.fk_dept_id = d.dept_id
+       JOIN tbl_grade g ON e.fk_grade_no = g.grade_no
+       JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
+       ORDER BY e.fk_branch_no, d.dept_id, g.grade_no
+    </select>
+    
+    
+    
+    <!-- 조직도 차트 -->
+    <select id="selectOrganizationByDept" parameterType="String" resultType="map">
+	 SELECT 
+	    e.emp_id, e.name, e.profile_img, manager_id, e.leader_id, 
+	    g.grade_name, d.dept_name, b.branch_name
+	FROM tbl_employee e
+	JOIN tbl_department d ON e.fk_dept_id = d.dept_id
+	JOIN tbl_grade g ON e.fk_grade_no = g.grade_no
+	JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
+	WHERE d.dept_name = #{dept_name}
+	<if test="branch_name != null and branch_name != '' ">
+        AND b.branch_name = #{branch_name}
+    </if>
+		OR e.emp_id = (
+		    SELECT leader_id FROM tbl_employee 
+		    WHERE emp_id = (
+		        SELECT manager_id FROM tbl_department WHERE dept_name = #{dept_name}
+		    )
+		    AND leader_id IN (SELECT emp_id FROM tbl_employee WHERE fk_dept_id = (SELECT dept_id FROM tbl_department WHERE dept_name = '임원진'))
+		)
+		ORDER BY g.grade_name, e.emp_id
+    </select>
+
+
+
+
+  
+
+
+</mapper>
+
+
+
