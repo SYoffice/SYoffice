@@ -87,23 +87,28 @@
                     <a class="nav-link" href="#">메일함</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">캘린더</a>
+                    <a class="nav-link" href="<%=ctxPath%>/schedule/scheduleIndex">캘린더</a>
+                </li>
+                <li class="nav-item active">  
+                   <a class="nav-link" href="<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice">게시판</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">게시판</a>
+                     <a class="nav-link" href="<%=ctxPath%>/organization/chart">조직도</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">조직도</a>
+                    <a class="nav-link" href="<%=ctxPath%>/reservation/meetingRoomReservation">예약</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">예약</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">전자결재</a>
+                    <a class="nav-link" href="<%=ctxPath%>/approval/approval_main">전자결재</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="#">메신저</a>
                 </li>
+             
+                   <li class="nav-item active">
+                       <a class="nav-link" href="<%=ctxPath%>/kpi/index">실적관리</a>
+                   </li>
+
                 <c:if test="${sessionScope.loginuser.fk_dept_id eq 2}">
                    <li class="nav-item active">
                        <a class="nav-link" href="<%=ctxPath%>/hr/hrIndex">인사관리</a>
@@ -111,8 +116,11 @@
                 </c:if>
             </ul>
             <ul class="navbar-nav ml-auto">
+            	<li class="nav-item active">
+                    <a class="nav-link"  href="<%=ctxPath%>/empolyee/mypage">${loginuser.name}</a>
+                </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#"><img src="<%= ctxPath %>/css/header/heder.img/schedule.png" style="width:30px;"/>로그아웃</a>
+                    <a class="nav-link"  href="<%=ctxPath%>/">로그아웃</a>
                 </li>
             </ul>
         </div>

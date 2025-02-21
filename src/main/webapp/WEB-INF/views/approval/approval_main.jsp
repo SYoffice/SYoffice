@@ -5,7 +5,7 @@
    String ctxPath = request.getContextPath();
    //     /syoffice 
 %>      
-<jsp:include page="../approval/sidebar.jsp" />
+<jsp:include page="./sidebar.jsp" />
              <div class="common_title mb-80">전자결재</div>
              <div class="approval_wrapper">
                  <div class="contents">

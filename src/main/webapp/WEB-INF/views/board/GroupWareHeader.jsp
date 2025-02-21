@@ -32,7 +32,7 @@
   <script type="text/javascript" src="<%=ctxPath%>/js/jquery.form.min.js"></script> 
 
 
-<title>그룹웨어 게시판 header 만들기</title>
+<title>그룹웨어 게시판 header(검색바) 만들기</title>
 </head>
 
 <script type="text/javascript">
@@ -81,70 +81,23 @@ $(document).ready(function(){
 
 
 <div style="display:flex;">
-
-   <!-- 게시판 좌측 jsp 만들기 -->
-   <div id="container">
-      
-	      <div class="container p-3 my-3" style="height: 100vh; border: solid 2px #d8e5f3; position: fixed; width: 17%; background-color:#ecf2f9;">
-	      
-	         <div id="containerWrite">
-	         	<button type="button" style="font-size: 20pt; font-weight: bold; margin: 10% 0 15% 0;" class="btn btn-outline-light text-dark" id="write" onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_Write'">글쓰기</button>
-	         </div>
-	         
-	         
-	         <div id="containerAllBoard">
-	            <p style="font-size: 15pt;">전체 게시판</p>
-	            <ul style="list-style-type: circle;">
-	               <li>
-	                  <a style="font-size: 13pt;" href="">공지사항</a>
-	               </li>
-	            </ul>
-	         </div>
-	         
-	         
-	         <div id="containerDepartmentBoard">
-	         <div >
-	            <p id="departmentBoard" style="font-size: 15pt; margin-bottom: 0;">부서 게시판<div style="font-size: 10pt;">[부서명]</div></p>
-	         </div>   
-	            <ul style="list-style-type: circle;">
-	               <li>
-	                  <a style="font-size: 13pt;">공지사항</a>
-	               </li>
-	            </ul>
-	         </div>
-	      </div>
-   </div>
-
-
-
-
-
-
-
-
-
-
-
-   <!-- 게시판 검색바 만들기 -->
+   <!-- 게시판 검색바 만들기 시작-->
    <div style="width: 100%;">
-	   <form action="" style="display: flex; gap: 5px; margin-top: 2%; height: 30px;  width: 100%;">
+	   <form name="searchFrm" style="display: flex; gap: 5px; margin-top: 2%; height: 30px;  width: 100%;">
 		    <span class="dropdown" id="searchBar">
-		        <select class="form-select" name="dropdown_selection" style="height: 30px;">
+		        <select class="form-select" name="searchType" style="height: 30px;">
 		            <option value="subject">제목</option>
 		            <option value="name">작성자</option>
 		            <option value="content">내용</option>
 		            <option value="subject_content">제목+내용</option>
 		        </select>
 		     </span>
-		     
-		    <input class="form-control " type="text" placeholder="검색" style="height: 30px; width: 60%;">
-		 	<button class="btn btn-success" type="submit" style="display: flex; gap: 4px; text-align: center; margin-right: 2%; font-size: 10pt;">Search<i style='font-size:15px; padding-top: 5%' class='fas'>&#xf002;</i></button>
 	   </form> 
 	   
 	   
-	   <%-- === #87. 검색어 입력시 자동글 완성하기 1 === --%>
+	   <%-- === 검색어 입력시 자동글 완성하기 1 === --%>
 	  <div id="displayList" style="border:solid 1px gray; border-top:0px; height:50px; margin-left:60.5%; margin-top:-1px; margin-bottom:30px; margin-right: 10.9%; overflow:auto;">
 	  </div>
   
    <hr style="border-color: #e6ecff; margin: 5% 0 0 0;">
-      
+   <!-- 게시판 검색바 만들기 끝-->   

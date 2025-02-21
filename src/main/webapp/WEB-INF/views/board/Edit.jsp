@@ -7,9 +7,10 @@
    String ctxPath = request.getContextPath();
     //     /myspring
 %>
-
+<jsp:include page="../main/header.jsp" />
 <jsp:include page="../board/GroupWareHeader.jsp" /> 
 
+<link rel="stylesheet" href="<%= ctxPath%>/css/board/common.css">
 
 
 <!-- 페이지 공통 부분  -->

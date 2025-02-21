@@ -16,6 +16,7 @@ public class BoardVO {
    private String board_regDate;// 작성일자
    private String fk_bcate_no;  // 카테고리번호
    private String board_show;	// 공개여부		   0: 비공개, 1: 공개
+   private String name;			// 성명
 // private String pw;           // 글암호(int)
 // insert 용(String으로 호환 가능) 	
    
@@ -32,17 +33,12 @@ public class BoardVO {
    private String likeCount;       // 좋아요 개수
    
    
-   /*
-      === #147. 파일을 첨부하도록 VO 수정하기@@@
-      			먼저, 오라클에서 tbl_board 테이블에 3개 컬럼(fileName, orgFilename, fileSize)을 추가한 다음에 아래의 작업을 한다.
-   */
-   
     private MultipartFile attach; // jsp 파일의 파일선택 name 과 같게 써야한다.
     /*
-     	form 태그에서 type="file" 인 파일을 받아서 저장되는 필드이다. @@@
+     	form 태그에서 type="file" 인 파일을 받아서 저장되는 필드이다.
         진짜파일 ==> WAS(톰캣) 디스크에 저장됨.
         조심할것은 MultipartFile attach 는 오라클 데이터베이스 tbl_board 테이블의 컬럼이 아니다.  
-        /myspring/src/main/webapp/WEB-INF/views/mycontent1/board/add.jsp 파일에서 input type="file" 인 name 의 이름(attach)와
+        /myspring/src/main/webapp/WEB-INF/views/board/WriteHome.jsp 파일에서 input type="file" 인 name 의 이름(attach)와
         동일해야만 파일첨부가 가능해진다. !!!!!
     */
     private String fileName; 	//WAS(톰캣)에 저장될 파일명(2025020709291535243254235235234.png)                          (파일첨부 용도)                                 
@@ -145,6 +141,14 @@ public class BoardVO {
 
 	public void setBoard_show(String board_show) {
 		this.board_show = board_show;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getPreviousseq() {
