@@ -7,12 +7,502 @@
 <!--      매퍼.xml 파일이 DAO인터페이스를 구현하는 DAO클래스의 역할을 대신해준다. 
           namespace 는 DAO인터페이스명으로 해야 한다.!!!!!중요!!!!@@@  -->
 <mapper namespace="com.syoffice.app.board.model.BoardDAO">
-
-	<!-- === #31. 파일첨부가 없는 글쓰기 ===  -->
-	  <insert id="GroupWare_Write" parameterType="BoardVO">
-		insert into tbl_board(board_no, fk_dept_id, fk_emp_id, subject, content, view_count, board_status, board_regDate, fk_bcate_no, board_show)
-		values(board_seq.nextval, 5 , 1000 , #{subject} , #{content}, default, default, default , to_number(#{fk_bcate_no}) , to_number(#{board_show}))
+	  
+	  <!-- 부서 게시판 글쓰기 insert(파일첨부가 없는) -->
+	  <insert id="deptBoardWrite" parameterType="BoardVO">
+	  		insert into tbl_board(board_no, fk_dept_id, fk_emp_id, subject, content, view_count, board_status, board_regDate, fk_bcate_no, board_show)
+			values(board_seq.nextval, 5 , 1000 , #{subject} , #{content}, default, default, default , to_number(#{fk_bcate_no}) , to_number(#{board_show}))
 	  </insert>
+	  <!-- 공지사항 게시판 글쓰기 insert(파일첨부가 없는) -->
+	  <insert id="noticeBoardWrite" parameterType="NoticeBoardVO">
+	  		insert into tbl_notice(notice_no, notice_subject, notice_content, notice_regdate, notice_viewcount, fk_emp_id, notice_status)
+			values(notice_seq.nextval, #{notice_subject} , #{notice_content} , default, default, 1000 , default)
+	  </insert>
+	  
+	  
+	  <!-- 부서별 게시판에 글쓰기 insert(파일 첨부가 있는 경우라면) -->  
+	  <insert id="BoardWrite_withFile" parameterType="BoardVO">
+		    insert into tbl_attach_board(atboard_no, fk_board_no, atboard_filename, atboard_orgfilename ,atboard_filesize)
+		    values(atboard_seq.nextval, to_number(#{board_no}) , #{fileName} ,#{orgFilename}, #{fileSize} )
+	  </insert>
+	  
+	  
+	  <!-- 부서 게시판 마지막글번호 조회해오기(파일첨부시 필요) -->
+	  <select id="board_no" resultType="int">
+	  		select board_no
+	  		from tbl_board
+	  </select>
+	  
+	  
+	  <!-- 공지사항게시판 마지막 글번호 조회(파일첨부시 필요) -->
+	  <select id="notice_no" resultType="int">
+	  		select notice_no
+			from tbl_notice
+	  </select>
+	  
+	  <!-- 부서별 게시판에 글쓰기 insert(파일 첨부가 있는 경우라면) -->  
+	  <insert id="NoticeWrite_withFile" parameterType="NoticeBoardVO">
+		    insert into tbl_attach_notice(atnotice_no, fk_notice_no, atnotice_filename, atnotice_orgfilename ,atnotice_filesize)
+			values(atnotice_seq.nextval, to_number(#{notice_no}), #{atnotice_filename} ,#{atnotice_orgfilename}, #{atnotice_filesize} )
+	  </insert>
+	  
+	  
+	 <!--  	페이징 처리를 안한 검색어가 없는 공지사항 게시판 또는 부서게시판 전체 글목록 보여주기 -->
+	 <resultMap type="HashMap" id="BoardSelect">
+		<result property="notice_no" 			column="notice_no" 			javaType="String"/>
+		<result property="fk_emp_id" 			column="fk_emp_id" 			javaType="String"/>
+		<result property="notice_subject" 		column="notice_subject" 	javaType="String"/>
+		<result property="notice_viewcount" 	column="notice_viewcount"	javaType="String"/>
+		<result property="notice_regdate" 		column="notice_regdate" 	javaType="String"/>
+		<result property="name" 				column="name" 				javaType="String"/>
+		<result property="board_no" 			column="board_no" 			javaType="String"/>
+		<result property="subject" 				column="subject" 			javaType="String"/>
+		<result property="view_count" 			column="view_count"			javaType="String"/>
+		<result property="board_regDate" 		column="board_regDate"		javaType="String"/>
+	 </resultMap> 
+	 <select id="boardListNoSearch" resultMap="BoardSelect" parameterType="String">
+		<if test="boardLocation == 'boardDept'">
+			SELECT B.board_no, B.fk_emp_id, E.name, B.subject,
+			       B.view_count, 
+			       TO_CHAR(B.board_regDate, 'yyyy-mm-dd hh24:mi:ss') AS board_regDate
+			FROM tbl_board B
+			JOIN tbl_employee E ON E.emp_id = B.fk_emp_id
+			WHERE B.board_status = 1
+			ORDER BY B.board_no DESC
+		</if>
+		<if test="boardLocation == 'notice'">
+			SELECT B.notice_no, B.fk_emp_id, E.name, B.notice_subject,
+			       B.notice_viewcount, 
+			       TO_CHAR(B.notice_regdate, 'yyyy-mm-dd hh24:mi:ss') AS notice_regdate
+			FROM tbl_notice B
+			JOIN tbl_employee E ON E.emp_id = B.fk_emp_id
+			WHERE B.notice_status = 1
+			ORDER BY B.notice_no DESC
+		</if>
+	 </select>
+	  
+	  
+	  
+<!-- 총 게시물 건수 (totalCount) 구하기 // 검색이 있을 때와 검색이 없을때로 나뉜다.  -->
+	 <!-- 부서게시판 총 게시물 건수 -->
+	 <select id="getTotalCount" parameterType="HashMap" resultType="int">
+   	   <if test="boardLocation == 'boardDept'">
+			SELECT count(*)
+			FROM tbl_board B
+			JOIN tbl_employee E ON E.emp_id = B.fk_emp_id
+			WHERE board_status = 1
+	   <choose>
+	   		<when test='searchType == "subject" and searchWord != ""'>
+	   			and lower(subject) like '%'|| lower(#{searchWord}) ||'%'
+	   		</when>
+	   		<when test='searchType == "content" and searchWord != ""'>
+	   			and lower(content) like '%'|| lower(#{searchWord}) ||'%'
+	   		</when>
+	   		<when test='searchType == "subject_content" and searchWord != ""'>
+	   			and (lower(subject) like '%'|| lower(#{searchWord}) ||'%' or lower(content) like '%'|| lower(#{searchWord}) ||'%')
+	   		</when>
+	   		<when test='searchType == "name" and searchWord != ""'>
+	   			and lower(name) like '%'|| lower(#{searchWord}) ||'%'
+	   		</when>
+	   		<otherwise></otherwise>
+	   </choose>
+	   </if>
+	   
+	   <!-- 공지사항 게시판 총 게시물 건수 -->
+	    <if test="boardLocation == 'notice'">
+	   		SELECT count(*)
+			FROM tbl_notice B
+			JOIN tbl_employee E ON E.emp_id = B.fk_emp_id
+			WHERE notice_status = 1
+	    <choose>
+	   		<when test='searchType == "subject" and searchWord != ""'>
+	   			and lower(notice_subject) like '%'|| lower(#{searchWord}) ||'%'
+	   		</when>
+	   		<when test='searchType == "content" and searchWord != ""'>
+	   			and lower(notice_content) like '%'|| lower(#{searchWord}) ||'%'
+	   		</when>
+	   		<when test='searchType == "subject_content" and searchWord != ""'>
+	   			and (lower(notice_subject) like '%'|| lower(#{searchWord}) ||'%' or lower(notice_content) like '%'|| lower(#{searchWord}) ||'%')
+	   		</when>
+	   		<when test='searchType == "name" and searchWord != ""'>
+	   			and lower(name) like '%'|| lower(#{searchWord}) ||'%'
+	   		</when>
+	   		<otherwise></otherwise>
+	    </choose>	
+   		</if>
+    </select> 
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  <!-- 글목록 가져오기(페이징 처리 했으며, 검색어가 있는것 또는 검색어가 없는 것 모두 다 포함한 것이다.) -->
+	 <resultMap type="HashMap" id="BoardPaging">
+		<result property="notice_no" 			column="notice_no" 			javaType="String"/>
+		<result property="fk_emp_id" 			column="fk_emp_id" 			javaType="String"/>
+		<result property="notice_subject" 		column="notice_subject" 	javaType="String"/>
+		<result property="notice_viewcount" 	column="notice_viewcount"	javaType="String"/>
+		<result property="notice_regdate" 		column="notice_regdate" 	javaType="String"/>
+		<result property="name" 				column="name" 				javaType="String"/>
+		<result property="board_no" 			column="board_no" 			javaType="String"/>
+		<result property="subject" 				column="subject" 			javaType="String"/>
+		<result property="view_count" 			column="view_count"			javaType="String"/>
+		<result property="board_regDate" 		column="board_regDate"		javaType="String"/>
+		<result property="atboard_fileName" 	column="atboard_fileName"		javaType="String"/>
+		<result property="atnotice_filename" 	column="atnotice_filename"		javaType="String"/>
+	 </resultMap> 	  
+	 <select id="boardListSearch_withPaging" parameterType="HashMap" resultMap="BoardPaging"> 
+		<!-- 부서게시판 -->
+		<if test="boardLocation == 'boardDept'">
+		SELECT board_no, fk_emp_id, name, subject, view_count, board_regDate, atboard_fileName
+		FROM
+		(
+		  SELECT rownum AS rno
+		        , board_no, fk_emp_id, name, subject, view_count, board_regDate, atboard_fileName
+		  FROM
+		    (
+		        SELECT B.board_no, B.fk_emp_id, E.name, B.subject
+		             , B.view_count
+		             , TO_CHAR(B.board_regDate, 'yyyy-mm-dd hh24:mi:ss') AS board_regDate 
+		             , A.atboard_fileName
+		        FROM tbl_board B
+		        JOIN tbl_employee E ON E.emp_id = B.fk_emp_id
+		        LEFT JOIN tbl_attach_board A ON A.fk_board_no = B.board_no
+		        WHERE B.board_status = 1
+      <choose>
+          <when test='searchType == "subject" and searchWord != ""'>
+            and lower(subject) like '%'||lower(#{searchWord})||'%'
+          </when>
+          <when test='searchType == "content" and searchWord != ""'>
+            and lower(content) like '%'||lower(#{searchWord})||'%'
+          </when>
+          <when test='searchType == "subject_content" and searchWord != ""'>
+            and (lower(subject) like '%'||lower(#{searchWord})||'%' or lower(content) like '%'||lower(#{searchWord})||'%')
+          </when>
+          <when test='searchType == "name" and searchWord != ""'>
+            and lower(name) like '%'||lower(#{searchWord})||'%'
+          </when>
+          <otherwise></otherwise>
+       </choose>
+			        ORDER BY board_no DESC
+			    ) V
+			) T 
+			WHERE rno BETWEEN #{startRno} AND #{endRno}
+		</if>
+		
+		<!-- 공지사항 게시판 -->
+		<if test="boardLocation == 'notice'">
+			SELECT notice_no, fk_emp_id, name, notice_subject, notice_viewcount, notice_regdate, atnotice_filename
+			FROM
+			(
+			  SELECT rownum AS rno
+			        , notice_no, fk_emp_id, name, notice_subject, notice_viewcount, notice_regdate, atnotice_filename
+			  FROM
+			    (
+			        SELECT B.notice_no, B.fk_emp_id, E.name, B.notice_subject
+			             , B.notice_viewcount
+			             , TO_CHAR(B.notice_regdate, 'yyyy-mm-dd hh24:mi:ss') AS notice_regdate 
+			             , A.atnotice_filename
+			        FROM tbl_notice B
+			        JOIN tbl_employee E ON E.emp_id = B.fk_emp_id
+			        LEFT JOIN tbl_attach_notice A ON A.fk_notice_no = B.notice_no
+			        WHERE B.notice_status = 1
+	      <choose>
+	          <when test='searchType == "subject" and searchWord != ""'>
+	            and lower(notice_subject) like '%'||lower(#{searchWord})||'%'
+	          </when>
+	          <when test='searchType == "content" and searchWord != ""'>
+	            and lower(notice_content) like '%'||lower(#{searchWord})||'%'
+	          </when>
+	          <when test='searchType == "subject_content" and searchWord != ""'>
+	            and (lower(notice_subject) like '%'||lower(#{searchWord})||'%' or lower(notice_content) like '%'||lower(#{searchWord})||'%')
+	          </when>
+	          <when test='searchType == "name" and searchWord != ""'>
+	            and lower(name) like '%'||lower(#{searchWord})||'%'
+	          </when>
+	          <otherwise></otherwise>
+	       </choose>
+			        ORDER BY notice_no DESC
+			    ) V
+			) T 
+			WHERE rno BETWEEN #{startRno} AND #{endRno}
+		</if>
+    </select>
+	  
+	  
+	<!-- 글 조회수 증가는 없고 단순히 공지사항 게시판의 글 1개만 조회를 해오는 것 -->  
+	<select id="getNoticeBoardView_no_increase_readCount" resultType="NoticeBoardVO">
+			SELECT previousseq, 
+			       case when length(previoussubject) &lt; 30 then previoussubject 
+			       else substr(previoussubject, 1, 28)||'..' end AS previoussubject
+			      ,notice_no, fk_emp_id, name, notice_subject, notice_content, notice_viewcount, notice_regdate
+			      ,nextseq
+			      ,case when length(nextsubject) &lt; 30 then nextsubject 
+			       else substr(nextsubject, 1, 28)||'..' end AS nextsubject
+			FROM
+			(
+			SELECT 
+			LAG(notice_no) OVER(ORDER BY notice_no DESC) AS previousseq,
+			LAG(notice_subject) OVER(ORDER BY notice_no DESC) AS previoussubject,
+			N.notice_no, 
+			N.fk_emp_id, 
+			E.name,  -- 직원 이름 추가
+			N.notice_subject, 
+			N.notice_content, 
+			N.notice_viewcount, 
+			N.notice_regdate,
+			LEAD(notice_no) OVER(ORDER BY notice_no DESC) AS nextseq,
+			LEAD(notice_subject) OVER(ORDER BY notice_no DESC) AS nextsubject
+			FROM tbl_notice N
+			JOIN tbl_employee E ON N.fk_emp_id = E.emp_id  -- 직원 정보 조인
+			WHERE N.notice_status = 1
+			 <choose>
+	          <when test='searchType == "subject" and searchWord != ""'>
+	            and lower(notice_subject) like '%'||lower(#{searchWord})||'%'
+	          </when>
+	          <when test='searchType == "content" and searchWord != ""'>
+	            and lower(notice_content) like '%'||lower(#{searchWord})||'%'
+	          </when>
+	          <when test='searchType == "subject_content" and searchWord != ""'>
+	            and (lower(notice_subject) like '%'||lower(#{searchWord})||'%' or lower(notice_content) like '%'||lower(#{searchWord})||'%')
+	          </when>
+	          <when test='searchType == "name" and searchWord != ""'>
+	            and lower(name) like '%'||lower(#{searchWord})||'%'
+	          </when>
+	          <otherwise></otherwise>
+	       </choose>
+	       )V
+      WHERE V.notice_no = #{notice_no}
+	</select>  
+	  
+	  
+	<!-- 공지사항 게시판 글 1개 조회하기 -->  
+	<select id="getView" resultType="NoticeBoardVO" parameterType="HashMap">
+		SELECT previousseq, 
+		       CASE WHEN LENGTH(previoussubject) &lt;30 THEN previoussubject 
+		            ELSE SUBSTR(previoussubject, 1, 28) || '..' 
+		       END AS previoussubject,
+		       notice_no, fk_emp_id, name, notice_subject, notice_content, notice_viewcount, notice_regdate,
+		       nextseq, 
+		       CASE WHEN LENGTH(nextsubject) &lt;30 THEN nextsubject 
+		            ELSE SUBSTR(nextsubject, 1, 28) || '..' 
+		       END AS nextsubject,
+		       atnotice_no, atnotice_filename, atnotice_orgfilename, atnotice_filesize
+		FROM (
+		    SELECT 
+		        LAG(notice_no) OVER(ORDER BY notice_no DESC) AS previousseq,
+		        LAG(notice_subject) OVER(ORDER BY notice_no DESC) AS previoussubject,
+		        N.notice_no, 
+		        N.fk_emp_id, 
+		        E.name,
+		        N.notice_subject, 
+		        N.notice_content, 
+		        N.notice_viewcount, 
+		        N.notice_regdate,
+		        LEAD(notice_no) OVER(ORDER BY notice_no DESC) AS nextseq,
+		        LEAD(notice_subject) OVER(ORDER BY notice_no DESC) AS nextsubject,
+		        A.atnotice_no, A.atnotice_filename, A.atnotice_orgfilename, A.atnotice_filesize
+		    FROM tbl_notice N
+		    JOIN tbl_employee E ON N.fk_emp_id = E.emp_id
+		    LEFT JOIN tbl_attach_notice A ON N.notice_no = A.fk_notice_no 
+		    WHERE N.notice_status = 1 
+		    <choose>
+	          <when test='searchType == "subject" and searchWord != ""'>
+	            and lower(notice_subject) like '%'||lower(#{searchWord})||'%'
+	          </when>
+	          <when test='searchType == "content" and searchWord != ""'>
+	            and lower(notice_content) like '%'||lower(#{searchWord})||'%'
+	          </when>
+	          <when test='searchType == "subject_content" and searchWord != ""'>
+	            and (lower(notice_subject) like '%'||lower(#{searchWord})||'%' or lower(notice_content) like '%'||lower(#{searchWord})||'%')
+	          </when>
+	          <when test='searchType == "name" and searchWord != ""'>
+	            and lower(name) like '%'||lower(#{searchWord})||'%'
+	          </when>
+	          <otherwise></otherwise>
+	       </choose> 
+	       )V
+      WHERE V.notice_no = #{notice_no}
+	</select>  
+	  
+	<!-- 공지사항 게시판 글 조회수 1증가하기 -->  
+<!-- 	<select id="increase_noticeViewCount" resultType="int" parameterType="String">
+	   	update tbl_notice set notice_viewcount = notice_viewcount +1
+   		where notice_no = to_number(#{notice_no})
+	</select>   -->
+	  
+	  
+	  <update id="update_notice_board" parameterType="NoticeBoardVO">
+			UPDATE tbl_notice 
+			SET notice_subject = #{notice_subject}, 
+			    notice_content = #{notice_content},
+			    notice_regdate = default
+			WHERE notice_no = TO_NUMBER(#{notice_no})
+	  </update>
+	  
+	  
+   <!-- === #166. 1개 글을 삭제할 때 먼저 사진이미지파일명 및 첨부파일명을 알아오기 위한것 ===  resultMap="HashMap" 기억!! 스마트에디터 먼저 해야함-->  
+   <resultMap type="HashMap" id="noticeBoardView_delete_map">
+   	 <result property="notice_no" 			column="notice_no" 				javaType="String"/>	
+   	 <result property="atnotice_filename" 	column="atnotice_filename" 		javaType="String"/>
+   	 <result property="photofilename" 		column="photofilename"  		javaType="String"/>
+   </resultMap>
+   <select id="ischeckAttachfile" resultMap="noticeBoardView_delete_map" parameterType="String">
+		SELECT 
+		    n.notice_no, 
+		    a.atnotice_filename, 
+		    CASE 
+		        WHEN func_photo_upload_delete(n.notice_no) IS NOT NULL THEN 
+		            substr(func_photo_upload_delete(n.notice_no), 2) 
+		        ELSE NULL 
+		    END AS photofilename
+		FROM tbl_notice n
+		LEFT JOIN tbl_attach_notice a 
+		    ON n.notice_no = a.fk_notice_no
+		WHERE 
+		    (EXISTS (
+		        -- 첨부파일이 존재하는 경우
+		        SELECT 1 FROM tbl_attach_notice WHERE fk_notice_no = n.notice_no
+		    ) 
+		    OR 
+		    func_photo_upload_delete(n.notice_no) IS NOT NULL)
+		    <if test="noticeNo != null">
+		        AND n.notice_no = #{noticeNo} 
+		    </if>
+   </select>
+	  
+	  
+   <!-- === 1개 글을 삭제하는 페이지 완료하기 ===  -->
+   <delete id="noticeBoarDel" parameterType="String">
+   		delete from tbl_notice
+   		where notice_no = #{notice_no} 
+   </delete> 
+   
+   
+   
+   
+
+<!-- 	  
+	  
+	  
+	  
+	부서별 게시판과 공지사항 게시판에 글쓰기 insert(파일 첨부가 없는 경우라면)
+	<insert id="Board_Write" parameterType="HashMap">
+		<if test="boardLocation == 'notice'">
+			insert into tbl_notice(notice_no, notice_subject, notice_content, notice_regdate, notice_viewcount, fk_emp_id, notice_status)
+			values(notice_seq.nextval, #{notice_subject} , #{notice_content} , default, default, 1000 , default)
+		</if>
+		<if test="boardLocation == 'boardDept'">
+			insert into tbl_board(board_no, fk_dept_id, fk_emp_id, subject, content, view_count, board_status, board_regDate, fk_bcate_no, board_show)
+			values(board_seq.nextval, 5 , 1000 , #{subject} , #{content}, default, default, default , to_number(#{fk_bcate_no}) , to_number(#{board_show}))
+		</if>
+	</insert>  
+
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+    === 공지사항 게시판 또는 부서별 게시판 임시저장글 데이터 insert === 
+    <insert id="TempBoard_Write" parameterType="HashMap">
+	  <if test="boardLocation == 'notice'">
+		  insert into tbl_notice(notice_no, notice_subject, notice_content, notice_regdate, notice_viewcount, fk_emp_id, notice_status)
+		  values(notice_seq.nextval, #{notice_subject} , #{notice_content} , default, default, 1000 , 2)
+  	  </if>
+  	  <if test="boardLocation == 'boardDept'">
+		  insert into tbl_board(board_no, fk_dept_id, fk_emp_id, subject, content, view_count, board_status, board_regDate, fk_bcate_no, board_show)
+		  values(board_seq.nextval, 5 , 1000 , #{subject} , #{content}, default, 2, default , #{fk_bcate_no} , to_number(#{board_show}))
+  	  </if>
+    </insert>
+	  
+	  
+
+
+
+
+	<resultMap type="HashMap" id="tempBoard">
+		<result property="notice_no" 			column="notice_no" 			javaType="String"/>
+		<result property="fk_emp_id" 			column="fk_emp_id" 			javaType="String"/>
+		<result property="notice_subject" 		column="notice_subject" 	javaType="String"/>
+		<result property="notice_viewcount" 	column="notice_viewcount"	javaType="String"/>
+		<result property="notice_content" 		column="notice_content"		javaType="String"/>
+		<result property="notice_regdate" 		column="notice_regdate" 	javaType="String"/>
+		<result property="name" 				column="name" 				javaType="String"/>
+		<result property="board_no" 			column="board_no" 			javaType="String"/>
+		<result property="subject" 				column="subject" 			javaType="String"/>
+		<result property="view_count" 			column="view_count"			javaType="String"/>
+		<result property="board_regDate" 		column="board_regDate"		javaType="String"/>
+	</resultMap>
+	
+	
+	
+	
+	 페이징 처리를 안한 검색어가 없는 공지사항게시판 또는 부서게시판에 작성한 임시저장글 목록 보여주기
+	 <select id="temporaryBoardSearch" parameterType="String" resultMap="BoardSelect">
+		SELECT 
+		    notice_no AS post_no,     
+		    NULL AS fk_emp_id,         
+		    notice_subject AS subject, 
+		    notice_content AS content, 
+		    notice_regdate AS regdate, 
+		    NULL AS fk_bcate_no,       
+		    NULL AS board_show,        
+		    '공지사항' AS post_type    
+		FROM tbl_notice
+		WHERE notice_status = 2
+		
+		UNION ALL
+		
+		SELECT 
+		    board_no AS post_no, 
+		    fk_emp_id,                
+		    subject,                   
+		    content,                  
+		    board_regdate AS regdate,  
+		    fk_bcate_no,               
+		    board_show,                
+		    '부서 게시판' AS post_type 
+		FROM tbl_board
+		WHERE board_status = 2
+	 </select> -->
+	
+	
+	
+	<!--
+ 	<select id="temporaryBoardSearch" parameterType="String" resultMap="BoardSelect">
+		<if test="boardLocation == 'boardDept'">
+			SELECT B.board_no, B.fk_emp_id, E.name, B.subject,
+			       B.view_count, 
+			       TO_CHAR(B.board_regDate, 'yyyy-mm-dd hh24:mi:ss') AS board_regDate
+			FROM tbl_board B
+			JOIN tbl_employee E ON E.emp_id = B.fk_emp_id
+			WHERE B.board_status = 2
+			ORDER BY B.board_no DESC
+		</if>
+		<if test="boardLocation == 'notice'">
+			SELECT B.notice_no, B.fk_emp_id, E.name, B.notice_subject,
+			       B.notice_viewcount, 
+			       TO_CHAR(B.notice_regdate, 'yyyy-mm-dd hh24:mi:ss') AS notice_regdate
+			FROM tbl_notice B
+			JOIN tbl_employee E ON E.emp_id = B.fk_emp_id
+			WHERE B.notice_status = 2
+			ORDER BY B.notice_no DESC
+		</if>
+	</select> -->
+ 
 
 </mapper>
 

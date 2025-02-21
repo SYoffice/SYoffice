@@ -6,6 +6,7 @@ package com.syoffice.app.board.domain;
 public class CommentVO {
 	
 	private String comment_no; 	  // 댓글번호
+	private String fk_board_no;	  // 게시글번호
 	private String fk_emp_id; 	  //사용자ID
 	private String cmt_content;   //댓글내용
 	private String cmt_regdate;   //작성일자
@@ -19,6 +20,15 @@ public class CommentVO {
 		this.comment_no = comment_no;
 	}
 	
+	
+	public String getFk_board_no() {
+		return fk_board_no;
+	}
+
+	public void setFk_board_no(String fk_board_no) {
+		this.fk_board_no = fk_board_no;
+	}
+
 	public String getFk_emp_id() {
 		return fk_emp_id;
 	}
@@ -50,10 +60,6 @@ public class CommentVO {
 	public void setCmt_status(String cmt_status) {
 		this.cmt_status = cmt_status;
 	}
-	
-	
-	
-	
 	
 	
 }

@@ -5,11 +5,13 @@
 
 
     <!-- domain(VO) package -->
-	<typeAliases>
-		<typeAlias type="com.syoffice.app.employee.domain.EmployeeVO" alias="EmployeeVO"/>
-		<typeAlias type="com.syoffice.app.board.domain.BoardVO" alias="BoardVO"/>
-		<typeAlias type="com.syoffice.app.kpi.domain.KpiVO" alias="KpiVO"/>
-	</typeAliases>
+   <typeAliases>
+      <typeAlias type="com.syoffice.app.employee.domain.EmployeeVO" alias="EmployeeVO"/>
+      <typeAlias type="com.syoffice.app.board.domain.BoardVO" alias="BoardVO"/><!-- 부서게시판VO -->
+      <typeAlias type="com.syoffice.app.board.domain.NoticeBoardVO" alias="NoticeBoardVO"/><!-- 공지사항 게시판 VO -->
+      <typeAlias type="com.syoffice.app.board.domain.CommentVO" alias="CommentVO"/><!-- 댓글VO -->
+      <typeAlias type="com.syoffice.app.kpi.domain.KpiVO" alias="KpiVO"/>
+   </typeAliases>
 
 
 </configuration>

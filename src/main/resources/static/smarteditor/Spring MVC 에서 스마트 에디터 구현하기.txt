@@ -249,7 +249,7 @@
 
  6. /myspring/src/main/resources/static/smarteditor/sample/photo_uploader/attach_photo.js 에 가서
     
-   ==> 479번째 줄의 callFileUploader () 함수(단일사진첨부함수)를 보면 
+   ==> 479번째 줄의 callFileUploader () 함수(단일사진첨부함수)를 보면 (사진을 하나씩 첨부해야하는것이므로 지금은 번거로우니 사용하지 않는다.)
 
      sUrl  : location.href.replace(/\/[^\/]*$/, '') + '/file_uploader.php',  //샘플 URL입니다.
      sCallback : location.href.replace(/\/[^\/]*$/, '') + '/callback.html',  //업로드 이후에 iframe이 redirect될 콜백페이지의 주소
