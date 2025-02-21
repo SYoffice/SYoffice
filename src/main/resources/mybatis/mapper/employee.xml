@@ -8,12 +8,13 @@
 	
 	<!-- 로그인 처리 -->	
 	<select id="login" resultType="EmployeeVO" parameterType="HashMap">
-		SELECT emp_id, fk_dept_id, name, password, tel, personal_mail, hire_date, mail, leader_id, G.grade_name,
+		SELECT emp_id, fk_dept_id, name, password, tel, personal_mail, hire_date, mail, leader_id, G.grade_name, D.dept_name, B.branch_name,
 		       postcode, address, detailaddress, extraaddress, gender, birthday, fk_grade_no, NVL(D.manager_id, -1) AS manager_id,
 		       status, pwdchangedate, pwdchangestatus, leave_count, profile_img, trunc( months_between(sysdate, pwdchangedate) ) AS pwdchangegap
 		FROM tbl_employee E
 		JOIN tbl_department D ON E.fk_dept_id = D.dept_id
 		JOIN tbl_grade G ON E.fk_grade_no = G.grade_no
+		JOIN tbl_branch B ON E.fk_branch_no = B.branch_no
 		WHERE emp_id = #{emp_id} 
 		AND password = #{password}
 		ANd status != 3	<!-- 퇴직상태일 때는 로그인 불가 -->

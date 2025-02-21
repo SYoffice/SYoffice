@@ -99,13 +99,20 @@
 	</select>
 	
 	<!-- 신규 사원정보 insert -->
-	<insert id="employeeRegister">
+	<insert id="employeeRegister" parameterType="HashMap">
 		INSERT INTO tbl_employee  ( emp_id, fk_dept_id, name, password, tel, personal_mail, hire_date, mail, 
                            			postcode, address, detailaddress, extraaddress, gender, birthday, fk_grade_no,
                            			status, pwdchangedate, pwdchangestatus, leave_count, profile_img, fk_branch_no, leader_id )
 		VALUES (TO_NUMBER(EXTRACT(YEAR FROM SYSDATE) || LPAD(emp_seq.NEXTVAL, 3, '0')), #{dept_id}, #{name}, '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', #{tel},
 				#{personal_mail}, default, #{mail}, #{postcode}, #{address}, #{detailaddress}, #{extraaddress}, #{gender}, #{birthday},
-				#{grade_no}, default, null, default, default, #{profile_img	}, #{branch_no}, #{leader_id})
+				#{grade_no}, default, null, default, default, #{profile_img	}, #{branch_no},
+				<if test='leader_id == null'>
+					default
+				</if>
+				<if test='leader_id != null'>
+					#{leader_id}
+				</if>
+				)
 	</insert>
 	
 	
