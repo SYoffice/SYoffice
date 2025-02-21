@@ -81,7 +81,7 @@
     <select id="getWeeklyAccumulated" parameterType="string" resultType="string">
         SELECT 
             NVL(FLOOR(SUM((attend_end - attend_start) * 24)), 0) || 'h ' ||
-            NVL(ROUND(MOD(SUM((attend_end - attend_start) * 24 * 60), 60)), 0) || 's' AS total_work_time
+            NVL(ROUND(MOD(SUM((attend_end - attend_start) * 24 * 60), 60)), 0) || 'm' AS total_work_time
         FROM tbl_attendance
         WHERE fk_emp_id = #{empId}
           AND attend_date BETWEEN TRUNC(SYSDATE, 'IW') AND TRUNC(SYSDATE)
@@ -93,7 +93,7 @@
     <select id="getMonthlyAccumulated" parameterType="string" resultType="string">
         SELECT 
             NVL(FLOOR(SUM((attend_end - attend_start) * 24)), 0) || 'h ' ||
-            NVL(ROUND(MOD(SUM((attend_end - attend_start) * 24 * 60), 60)), 0) || 's' AS total_work_time
+            NVL(ROUND(MOD(SUM((attend_end - attend_start) * 24 * 60), 60)), 0) || 'm' AS total_work_time
         FROM tbl_attendance
         WHERE fk_emp_id = #{empId}
           AND attend_date BETWEEN TRUNC(SYSDATE, 'MM') AND TRUNC(SYSDATE)
