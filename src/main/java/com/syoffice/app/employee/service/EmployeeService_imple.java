@@ -60,13 +60,7 @@ public class EmployeeService_imple implements EmployeeService {
 			
 			// 비밀번호 변경이 필요없이 로그인에 성공한 경우
 			else {
-				String message = "로그인 성공!!";
-				String loc = request.getContextPath() + "/index";	// 메인페이지로 이동시키기 
-				
-				mav.addObject("message", message);
-				mav.addObject("loc", loc);
-	
-				mav.setViewName("common/msg");
+				mav.setViewName("redirect:/index");
 			}
 			
 		}// end of if(loginuser != null) -----
@@ -84,6 +78,39 @@ public class EmployeeService_imple implements EmployeeService {
 		
 		return mav;
 	}// end of public ModelAndView login(Map<String, String> paraMap, ModelAndView mav, HttpServletRequest request) -----
+
+
+	// 비밀번호 변경
+	@Override
+	public ModelAndView pwdChange(String newPwd, String emp_id, ModelAndView mav, HttpServletRequest request) {
+		// 새로 입력받은 비밀전호 암호화
+		newPwd = Sha256.encrypt(newPwd);
+		
+		int n = dao.pwdChange(newPwd, emp_id);
+		
+		if(n == 1) {
+			// 비밀번호변경에 성공한 경우
+			
+			// 비밀번호 변경 상태 업데이트
+			dao.pwdStatusUpdate(emp_id);
+			
+			String message = "비밀번호가 성공적으로 변경되었습니다.";
+			String loc = request.getContextPath() + "/index"; 
+			
+			mav.addObject("message", message);
+			mav.addObject("loc", loc);
+
+			mav.setViewName("common/msg");
+		}
+		else {
+			// 비밀번호변경에 실패한 경우
+			mav.addObject("message", "비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+            mav.addObject("loc", request.getContextPath() + "/employee/pwdChange");
+            
+            mav.setViewName("common/msg");
+		}
+		return mav;
+	}// end of public ModelAndView pwdChange(String newPwd, String emp_id, ModelAndView mav, HttpServletRequest request) -----
 	
 
 	

@@ -152,6 +152,8 @@ public class HrController {
 										 MultipartHttpServletRequest mrequest,
 										 @RequestParam("profile_img") MultipartFile file) {
 		
+		String mail = paraMap.get("mailId")+paraMap.get("mailAddr");
+		paraMap.put("mail", mail);
 		paraMap.put("profile_img", file.getOriginalFilename());
 		
 		// WAS 의 webapp 의 절대경로를 알아와야 한다.
@@ -215,7 +217,22 @@ public class HrController {
 		return mav;
 	}// end of public ModelAndView employeeRegister(HttpServletRequest request, ModelAndView mav, RequestParam Map<String, String> paraMap) -----
 	
+	// 사원 등록 시 사내이메일 중복체크
+	@PostMapping("/checkMail")
+	@ResponseBody
+	public String checkMail(@RequestParam String mail) {
+	//	System.out.println("컨트롤러의 mail : " + mail);
+		
+		String result = service.checkMail(mail);
+		// result 는 중복이면 1 중복이 아니면 0을 반환
+		
+	//	System.out.println("확인용 컨트롤러의 result : " + result);
+		
+		return result;
+	}// end of public String checkMail(@RequestParam("mail") String mail ) -----
 	
+	
+	// 회원 상세정보 조회 페이지
 	@GetMapping("employeeDetail")
 	public ModelAndView employeeDetail(ModelAndView mav, @RequestParam String emp_id) {
 		
@@ -229,5 +246,6 @@ public class HrController {
 		mav.setViewName("/hr/employeeDetail");
 		return mav;
 	}// end of public ModelAndView employeeDetail(ModelAndView mav, @RequestParam String emp_id) -----
+	
 	
 }// end of public class HrController ----- 

@@ -26,7 +26,7 @@
 			            <c:if test="${empty requestScope.employeevo.profile_img}">
 			            	<td rowspan="5" class="first_row" style="background-image: url('../resources/profile/기본이미지.png'); background-size: cover;"></td>
 			            </c:if>
-			            <td class="second_row">사원번호</td>
+			            <td style="font-weight: bold;" class="second_row">사원번호</td>
 			            <td style="border: solid 1px black;">${requestScope.employeevo.emp_id}</td>
 			        </tr>
 			        <tr>

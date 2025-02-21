@@ -119,4 +119,6 @@ div.select {
 	margin-right: 65px;
 }
 
-
+div#mailBox{
+	display: flex;
+}

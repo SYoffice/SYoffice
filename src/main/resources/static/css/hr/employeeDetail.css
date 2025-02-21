@@ -57,4 +57,6 @@ button.EditBtn {
 	border-radius: 3px;
 }
 
-
+tr > td:nth-child(1) {
+	font-weight: bold;
+}

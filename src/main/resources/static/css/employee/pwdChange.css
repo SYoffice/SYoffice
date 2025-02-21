@@ -1,0 +1,80 @@
+@charset "UTF-8";
+
+div#container {
+   width: 50%;
+   margin: 5% auto;
+   font-size: 20px;
+}
+
+form {
+	width: 80%;
+	margin: 30% auto;
+	height: 300px;
+	border: solid 2px black;
+}
+
+div#main {
+	width: 90%;
+	margin: auto;
+	margin-top: 70px;
+}
+
+div#box {
+	height: 70px;
+}
+
+div.inputBox {
+	display: flex;
+}
+
+div.inputText {
+	width: 30%;
+	margin-right: 20px;
+}
+
+input {
+	width: 60%;
+	font-size: 20px;
+}
+
+div#error {
+	color: red;
+}
+
+div#buttonBox {
+	width: 90%;
+	margin: 7% auto;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+}
+
+button#cancle_button {
+	font-size: 20px;
+	background-color: #BFD2FA;
+	border: none;
+	border-radius: 3px;
+	width: 20%;
+	margin-right: 120px;
+	height: 40px;
+}
+
+button#update_button {
+	font-size: 20px;
+	background-color: #BFD2FA;
+	border: none;
+	border-radius: 3px;
+	width: 20%;
+}
+
+button#update_button2 {
+	font-size: 20px;
+	background-color: #BFD2FA;
+	border: none;
+	border-radius: 3px;
+	width: 60%;
+}
+
+button:hover {
+	cursor: pointer;
+}
