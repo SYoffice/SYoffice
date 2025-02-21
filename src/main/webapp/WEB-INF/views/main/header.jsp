@@ -90,7 +90,7 @@
                     <a class="nav-link" href="#">캘린더</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">게시판</a>
+                    <a class="nav-link" href="<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice">게시판</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="#">조직도</a>

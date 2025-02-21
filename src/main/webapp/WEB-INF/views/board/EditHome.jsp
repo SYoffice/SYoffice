@@ -66,7 +66,7 @@
 		
 		
 
-		$("button#add").click(function(){ // 등록 버튼	
+		$("button#edit").click(function(){ // 등록 버튼	
 		
 			/* 스마트 에디터를 사용할 경우 */
 			<%-- === 스마트 에디터 구현 시작 === --%>
@@ -148,20 +148,17 @@
 				// 폼(form)을 전송(submit)
 				const frm = document.BoardFrm;
 				frm.method = "post";
-				frm.action = "<%= ctxPath%>/board/GroupWare_deptWrite"; 
+				frm.action = "<%= ctxPath%>/board/GroupWare_deptEdit"; // 부서 수정할때 다시 만들어야함. 
 		        frm.submit();
 			}
 			else if(boardLocation == "notice"){
 				const frm = document.BoardFrm;
 				frm.method = "post";
-				frm.action = "<%= ctxPath%>/board/GroupWare_noticeWrite"; 
+				frm.action = "<%= ctxPath%>/board/GroupWare_Edit";
 		        frm.submit();
 			}
 			
-			
-
-			
-		});// end of $("button#add").click(function(){})-----------------
+		});// end of $("button#edit").click(function(){})-----------------
 		
 		$("button#temporaryBoard").click(function(){// 임시저장 버튼을 클릭
 			
@@ -280,7 +277,7 @@
         	
 <!-- 페이지 공통 부분  -->
 <div style="border: solid 0px gray; display: flex;">
-	<p class="bg-light text-dark" style="font-size: 20pt; font-weight: bold; padding: 1% 0 1% 4.5%;">글쓰기 홈</p><i style='font-size:30px; margin-left: 2%; padding-top: 1%;' class='far'>&#xf328;</i>
+	<p class="bg-light text-dark" style="font-size: 20pt; font-weight: bold; padding: 1% 0 1% 4.5%;">글수정 홈</p><i style='font-size:30px; margin-left: 2%; padding-top: 1%;' class='far'>&#xf044;</i>
 </div>	  
 <!-- 페이지 공통 부분  -->
 
@@ -289,7 +286,7 @@
 	<form name="BoardFrm" enctype="multipart/form-data">
 		<table style="width: 100%; margin-left: 5%; margin-top: 3%; ">
 			 <tr style="margin-bottom: 5%; border: solid 0px red; height: 60px;">
-			    <th style="width: 10%;"><i style="font-size:20px;" class='fas'>&#xf08d; 위치 </i></th>
+			    <td style="width: 10%;"><i style="font-size:20px;" class='fas'>&#xf08d; 위치 </i></td>
 			    <td >
 					<span class="dropdown">
 					   <select class="form-select" name="boardLocation">
@@ -314,15 +311,15 @@
 				   </span>
 				   <button type="button" class="btn btn-outline-secondary" style="float: right; width: 20%;" data-toggle="modal" data-target="#myModal">임시저장글보기</button>
 				</td>
-				
 			 </tr> 
 			          	
 			<tr style="margin-bottom: 5%; border: solid 0px red; height: 60px;">
 				<td style="width: 10%;">
 					<span style="font-size:20px;" class='fas'>제목</span>
+					<input type="hidden" name="notice_no" value="${requestScope.noticeboardvo.notice_no}"/>
 				</td>
 				<td>
-					<input type="text" name="subject" class="form-control" id="subject"/>
+					<input type="text" name="subject" class="form-control" id="subject" value="${requestScope.noticeboardvo.notice_subject}"/>
 				</td>
 			</tr>
 			<tr style="margin-bottom: 5%; border: solid 0px red; height: 60px;">
@@ -330,7 +327,7 @@
 					<span style="font-size:20px;" class='fas'>파일첨부</span>
 				</td>
 				<td>
-					<input type="file" name="attach" class="form-control-file border" style=" height: 35px; padding-top: 0.8%;">
+					<input type="file" name="attach" class="form-control-file border" style=" height: 35px; padding-top: 0.8%;" value="${requestScope.noticeboardvo.atnotice_orgfilename}">
 				</td>
 			</tr>
 			
@@ -339,13 +336,13 @@
 					<div style="font-size:20px;" class='fas'>내용</div>
 				</td>
 				<td>
-					<textarea name="content" class="form-control-file border" style="width: 100%; height: 500px;" id="content"></textarea>
+					<textarea name="content" class="form-control-file border" style="width: 100%; height: 500px;" id="content">${requestScope.noticeboardvo.notice_content}</textarea>
 				</td>
 			</tr>
 			
 			<tr id = "board_show" style=" border: solid 0px red; height: 80px;">
 				<td style="width: 8%;">
-					<span style="font-size:20px; padding-top: 18%; vertical-align: middle;" class='fas'>공개설정</span>
+					<span style="font-size:20px; padding-top: 33%; vertical-align: middle;" class='fas'>공개설정</span>
 				</td>
 				<td style="width: 100%; padding-left: 2%;">
 			        <div style="position: relative;">
@@ -370,9 +367,9 @@
 <hr style="border-color: #e6ecff; margin: 1% 0 3% 0%;">
 			   
 <div style="text-align: center; margin-bottom: 3%;">
-	<button style="margin-right: 4%; width: 8%;" type="button" class="btn btn-info" id="add">등록</button>
+	<button style="margin-right: 4%; width: 8%;" type="button" class="btn btn-info" id="edit">수정</button>
 	<button style="margin-right: 4%; width: 10%;" type="button" class="btn btn-success" id="temporaryBoard">임시저장</button>
-	<button style="width: 8%;" type="button" class="btn btn-secondary" onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_Board'">취소</button>
+	<button style="width: 8%;" type="button" class="btn btn-secondary" onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice'">취소</button>
 </div>			
 			
 
