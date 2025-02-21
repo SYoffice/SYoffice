@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.syoffice.app.kpi.domain.KpiVO;
+import com.syoffice.app.kpi.domain.ResultVO;
 
 public interface KpiDAO {
 
@@ -24,5 +25,14 @@ public interface KpiDAO {
 
 	// === 목표실적 수정 === //
 	int editKpi(KpiVO kpivo);
+	
+	// === 실적입력을 위한 목표실적 번호 채번 === //
+	String getKpi_no(Map<String, String> paraMap);
+
+	// === 엑셀파일을 통한 실적 입력 === //
+	int add_resultList(Map<String, String> paraMap);
+
+	// === 연도, 분기별 부서원 실적 정보 === //
+	List<ResultVO> getResultBydeptKpi(Map<String, String> paraMap);
 
 }
