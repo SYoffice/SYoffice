@@ -40,10 +40,8 @@ public class AttendanceController {
         try {
             if ("checkIn".equals(action)) {
                 attendanceService.checkIn(empId);
-                System.out.println("[INFO] 출근 체크 완료 - empId: " + empId);
             } else if ("checkOut".equals(action)) {
                 attendanceService.checkOut(empId);
-                System.out.println("[INFO] 퇴근 체크 완료 - empId: " + empId);
             }
         } catch (Exception e) {
             System.err.println("[ERROR] 출퇴근 체크 중 오류 발생: " + e.getMessage());

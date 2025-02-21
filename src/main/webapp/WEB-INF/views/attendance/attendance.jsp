@@ -139,7 +139,7 @@
             <div class="user-name">
                 <c:choose>
                     <c:when test="${not empty sessionScope.loginuser}">
-                        ${sessionScope.loginuser.name} 님
+                        ${sessionScope.loginuser.name} ${employee.grade_name}
                     </c:when>
                     <c:otherwise>
                         로그인 필요
@@ -158,7 +158,7 @@
                     </c:when>
                     <c:otherwise>N/A</c:otherwise>
                 </c:choose>
-                <br>
+               
                 퇴근시간:
                 <c:choose>
                     <c:when test="${not empty attendanceVO.attendEnd}">
@@ -167,6 +167,7 @@
                     <c:otherwise>N/A</c:otherwise>
                 </c:choose>
             </div>
+  			<hr>
             <!-- 출근/퇴근 버튼 -->
             <div class="btn-area">
                 <!-- 출근 버튼 -->
@@ -433,12 +434,12 @@ $(document).ready(function(){
             
             // 연차 내역 테이블 업데이트
             var tbody = $('#leaveTable tbody');
-            tbody.empty(); // 기존 내용 클리어
+            tbody.empty(); 
             $.each(response.leaveList, function(index, leave){
-                // leave.leaveDate는 서버에서 yyyy-MM-dd 문자열로 보내거나, 필요시 클라이언트에서 포맷팅
+               
                 var row = $('<tr/>');
                 row.append($('<td/>').text(leave.leaveDate));
-                row.append($('<td/>').text(response.userName)); // 예를 들어 로그인 사용자의 이름
+                row.append($('<td/>').text(response.userName)); 
                 row.append($('<td/>').text(leave.leaveType));
                 tbody.append(row);
             });
