@@ -8,11 +8,11 @@
 	
 	<!-- 로그인 처리 -->	
 	<select id="login" resultType="EmployeeVO" parameterType="HashMap">
-		SELECT emp_id, fk_dept_id, name, password, tel, personal_mail, hire_date, mail, 
-       		   postcode, address, detailaddress, extraaddress, gender, birthday, fk_grade_no,
-       		   status, pwdchangedate, pwdchangestatus, leave_count, profile_img,
-       		   TRUNC( months_between(sysdate, pwdchangedate) ) AS pwdchangegap
-		FROM tbl_employee
+		SELECT emp_id, fk_dept_id, name, password, tel, personal_mail, hire_date, mail, leader_id,
+		       postcode, address, detailaddress, extraaddress, gender, birthday, fk_grade_no, NVL(D.manager_id, -1) AS manager_id,
+		       status, pwdchangedate, pwdchangestatus, leave_count, profile_img, trunc( months_between(sysdate, pwdchangedate) ) AS pwdchangegap
+		FROM tbl_employee E
+		JOIN tbl_department D ON E.fk_dept_id = D.dept_id
 		WHERE emp_id = #{emp_id} 
 		AND password = #{password}
 		ANd status != 3	<!-- 퇴직상태일 때는 로그인 불가 -->
@@ -23,7 +23,20 @@
 		UPDATE tbl_employee SET pwdchangestatus = 0
 		WHERE emp_id = #{emp_id}
 	</update>
-
+	
+	<!-- 비밀번호 변경 -->
+	<update id="pwdChange" parameterType="String">
+		UPDATE tbl_employee SET password = #{newPwd}
+		WHERE emp_id = #{emp_id}
+	</update>
+	
+	<!-- 비밀번호 변경이 필요하지 않은 상태로 전환 -->
+	<update id="pwdStatusUpdate" parameterType="String">
+		UPDATE tbl_employee SET pwdchangestatus = 1
+		WHERE emp_id = #{emp_id}
+	</update>
+	
+	
 </mapper>
 
 

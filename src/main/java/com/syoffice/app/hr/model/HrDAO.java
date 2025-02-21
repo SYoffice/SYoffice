@@ -33,6 +33,12 @@ public interface HrDAO {
 	
 	// 사원 한명의 정보를 select
 	EmployeeVO employeeDetail(String emp_id);
+	
+	// 사원 등록 시 사내이메일 중복체크
+	String checkMail(String mail);
+	
+	// 직속 상관 사번 알아오기
+	String getLeaderId(String dept_id);
 
 	
 	

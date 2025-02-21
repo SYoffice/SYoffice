@@ -1,10 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%-- sweat alert --%>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.all.min.js"></script>
+    
 <script type="text/javascript">
-
+	
 	// 메시지 출력해주기
 	alert("${requestScope.message}");
-
+	
+	/*
+	Swal.fire({
+	    title: "${requestScope.message}",        // Alert 제목
+	    icon: 'success',
+	});
+	*/
 	// 페이지 이동
 	location.href = "${requestScope.loc}";
 	

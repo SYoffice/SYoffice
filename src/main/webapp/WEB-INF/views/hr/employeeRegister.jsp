@@ -9,7 +9,10 @@
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/hr/employeeRegister.css" />
 <script src='<%= request.getContextPath() %>/js/hr/employeeRegister.js'></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
+<script>
+    // 전역 변수로 contextPath 설정
+    window.contextPath = "${pageContext.request.contextPath}";
+</script>
 
 			<span class="h2"><i class="fa-solid fa-seedling"></i> 신규사원 등록</span>
 			
@@ -52,7 +55,11 @@
 						
 						<div class="input_box">
 							<div class="input_text">사내메일</div> 
-							<input type="text" id="mail" name="mail" readonly />
+							<div id="mailBox">
+								<input type="text" id="mailId" name="mailId"/>
+								<input type="text" id="mailAddr" name="mailAddr" value="@syoffice.syo"/>
+							</div>
+							<div class="error mail_error">중복된 이메일입니다.</div>
 						</div>
 						
 						<div class="input_box">
@@ -69,7 +76,6 @@
 							<div class="input_text">우편번호</div>
 							<div id="inputBox">
 								<input type="text" name="postcode" id="postcode" size="6" maxlength="5" readonly placeholder="'우편번호 찾기' 클릭 "/>
-			                       <%-- 우편번호 찾기 --%>
 								<button id="find_Zip" type="button">
 									<span>우편번호 찾기</span>
 								</button>

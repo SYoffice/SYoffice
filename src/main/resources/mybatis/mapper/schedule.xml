@@ -17,7 +17,10 @@
 	<select id="selectSmallCategory" parameterType="HashMap" resultMap="selectSmallCategory">
 		SELECT smcatego_no, fk_lgcatego_no, smcatego_name
 		  FROM tbl_schedule_small_category
-		 WHERE fk_lgcatego_no = #{fk_lgcatego_no} and fk_emp_id= #{fk_emp_id}
+		 WHERE fk_lgcatego_no = #{fk_lgcatego_no}
+		 <if test="fk_lgcatego_no == 2">
+			 AND fk_emp_id= #{fk_emp_id}
+		 </if> 
 		ORDER BY smcatego_no ASC
 	</select>
 	
@@ -35,7 +38,7 @@
 		    ON e.fk_dept_id = d.dept_id
 	      JOIN tbl_branch b
    			ON e.fk_branch_no = b.branch_no
-		WHERE (lower(e.name) like '%'|| #{joinSearchWord} ||'%' OR lower(d.dept_name) like '%'|| #{joinSearchWord} ||'%' OR lower(b.branch_name) like '%'|| #{joinSearchWord} ||'%')
+		WHERE (lower(e.name) like '%'|| #{joinSearchWord} ||'%' OR lower(d.dept_name) like '%'|| #{joinSearchWord} ||'%' OR lower(b.branch_name) like '%'|| #{joinSearchWord} ||'%') AND rownum &lt;= 5
 	</select>
 	
 	

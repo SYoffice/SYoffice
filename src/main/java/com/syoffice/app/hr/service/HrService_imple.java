@@ -66,6 +66,13 @@ public class HrService_imple implements HrService {
 	public int employeeRegister(Map<String, String> paraMap) {
 		
 	//	System.out.println("Service_imple" + paraMap.get("profile")); 
+		String dept_id = paraMap.get("dept_id");
+		
+	//	System.out.println(dept_id);
+		// 직속 상관 사번 알아오기
+		String leader_id = dao.getLeaderId(dept_id);
+		
+		paraMap.put("leader_id", leader_id);
 		
 		int n = dao.employeeRegister(paraMap);
 		return n;
@@ -80,6 +87,26 @@ public class HrService_imple implements HrService {
 		
 		return employeevo;
 	}// end of public EmployeeVO employeeDetail(String emp_id) -----
+
+	
+	// 사원 등록 시 사내이메일 중복체크
+	@Override
+	public String checkMail(String mail) {
+		
+		String result = dao.checkMail(mail);
+		
+		if("1".equals(result)) {
+			// 이메일이 중복된 경우 1 보내주기
+			result = "1";
+			return result;
+		}
+		else {
+			// 이메일이 중복되지 않은 경우 0 보내주기
+			result = "0";
+			return result;
+		}
+		
+	}// end of public String checkMail(String mail) ----
 
 
 

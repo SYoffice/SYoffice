@@ -7,6 +7,8 @@ let emailCheckValid = false; // 이메일이 유효한 경우 true
 
 let telCheckVaild = false; // 전화번호가 유효한 경우 true
 
+let mailCheckVaild = false;	// 사내메일이 유효한 경우 true
+
 $(document).ready(function() {
 	
 	$("div.error").hide();
@@ -53,7 +55,38 @@ $(document).ready(function() {
 			emailCheckValid = true;
 		}
 		
-	});	
+	});
+	
+	// 사내 메일 유효성 검사
+	$(document).on("blur", "input[name='mailId']", function(e) {
+        let mailId = $(e.target).val().trim();	// 입력한 사내 메일 (@ 앞까지)
+        let mailAddr = $("#mailAddr").val().trim();	// 사내 메일 주소 (@부터 끝까지)
+        let mail = mailId + mailAddr;
+		
+        if (mail === "") {
+			// 공백일때 에러메시지 감추기
+            $(".mail_error").hide();
+            return;
+        }
+
+        $.ajax({
+            url: window.contextPath + "/hr/checkMail",
+            type: "POST",
+            data: { mail: mail },
+			success: function (response) {
+	            if (response === "1") { 
+	                $(".mail_error").show(); // 중복이면 에러 메시지 표시
+	            } 
+				else {
+	                $(".mail_error").hide(); // 중복이 아니면 숨김
+					mailCheckVaild = true;
+	            }
+	        },
+	        error: function (request, status, error) {
+	            alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
+	        },
+		});// end of $.ajax() ----
+    });
 	
 	// 전화번호 유효성 검사
 	$(document).on("blur", "input[name='tel']", function(e) {
@@ -69,17 +102,6 @@ $(document).ready(function() {
 		}
 		
 	});	
-	
-	
-	
-	// ==== 이메일 값 사내메일 칸으로 보내주기 ==== //
-	$("input#personal_mail").change(function() {
-	    const personal_mail = $(this).val();
-	    const mail = personal_mail.split('@')[0];
-	    $("input#mail").val(mail + "@syoffice.syo");
-	});
-	// ==== 이메일 값 사내메일 칸으로 보내주기 ==== // 
-	
 	
 	
 	// ==== "우편번호찾기"를 클릭했을 때 이벤트 처리하기 ==== //
@@ -206,6 +228,12 @@ function goRegister() {
 		return;
 	}
 	
+	// 사내메일을 입력하지 않은 경우
+	if (!mailCheckVaild) {
+		alert("사내메일을 다시 입력하여 주세요.");
+		return;
+	}
+	
 	// 전화번호를 입력하지 않은 경우
 	if (!telCheckVaild) {
 		alert("전화번호를 입력하여 주세요.")
@@ -259,6 +287,6 @@ $(function(){
 
 		image.src = ImageTempUrl;
 
-		$("#preview").append(image);
+		$("#preview").html(image);
 	});
 });

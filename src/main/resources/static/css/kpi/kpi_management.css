@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+
+:root{
+	font-family: "Noto Sans", serif;
+	 font-optical-sizing: auto;
+}
+
+/* form 태그 감싸는 공간 */
+div#formBox {
+	width: 75%;
+	margin: 0 auto;
+}
+
+/* 등록 취소 버튼 */
+button.buttonBorder {
+	border-radius: 5px;
+	border: solid 1px black;
+	width: 4rem;
+	height: 1.5rem;
+	font-size: 14px;
+}
+
+/* 연도선택 필터 */
+select#searchYear {
+	float: right;
+	margin-bottom: 1%;
+}

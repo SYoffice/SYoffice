@@ -28,8 +28,12 @@ public interface HrService {
 	// 신규 사원정보 insert
 	int employeeRegister(Map<String, String> paraMap);
 	
+	// 사원 등록 시 사내이메일 중복체크
+	String checkMail(String mail);
+	
 	// 사원 한명의 정보를 조회
 	EmployeeVO employeeDetail(String emp_id);
+
 
 	
 	

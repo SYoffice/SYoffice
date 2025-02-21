@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -153,7 +152,7 @@ public class ScheduleController {
 			EmployeeVO loginuser = (EmployeeVO) session.getAttribute("loginuser");
 			
 			Map<String,String> map = service.detailSchedule(schedule_no);
-			/*
+			
 			if( !loginuser.getEmp_id().equals( map.get("fk_emp_id") ) ) {
 				String message = "다른 사용자가 작성한 일정은 수정이 불가합니다.";
 				String loc = "javascript:history.back()";
@@ -168,15 +167,10 @@ public class ScheduleController {
 				
 				mav.setViewName("schedule/editSchedule");
 			}
-			*/
-			mav.addObject("map", map);
-			mav.addObject("gobackURL_detailSchedule", gobackURL_detailSchedule);
 			
-			mav.setViewName("schedule/editSchedule");
 		} catch (NumberFormatException e) {
 			mav.setViewName("redirect:/schedule/scheduleIndex");
 		}
-		
 		
 		
 		return mav;
@@ -209,6 +203,6 @@ public class ScheduleController {
 		}
 			
 		return mav;
-	}
+	}// end of public ModelAndView editSchedule_end(@RequestParam Map<String, String> paraMap, HttpServletRequest request, ModelAndView mav) ------------------------ 
 	
 }

@@ -41,7 +41,6 @@ public class EmployeeVO {
 	private String leave_count;		/* 잔여연차 */
 	
 	private String profile_img;		/* 프로필이미지명 */
-
 	
 	//////////////////////////////////////////////////////////////////////
 	
@@ -52,9 +51,13 @@ public class EmployeeVO {
 	
     private String grade_name;	/* 직급명 */
     
-    private String dept_name;	/* 부서명명 */
+    private String dept_name;	/* 부서명 */
+    
+    private String manager_id;	/* 부서장 사원번호 */
+    
+    private String leader_id;	/* 직속 상관 사원번호 */	
     ///////// 검색 및 join 해오기 위한 용도 /////////
-    ///
+
 	//////////////////////////////////////////////////////////////////////
 	
 	
@@ -273,5 +276,24 @@ public class EmployeeVO {
 	public void setDept_name(String dept_name) {
 		this.dept_name = dept_name;
 	}
+
+	
+	public String getManager_id() {
+		return manager_id;
+	}
+
+	public void setManager_id(String manager_id) {
+		this.manager_id = manager_id;
+	}
+
+	
+	public String getLeader_id() {
+		return leader_id;
+	}
+
+	public void setLeader_id(String leader_id) {
+		this.leader_id = leader_id;
+	}
+	
 	
 }// end of public class EmployeeVO ------ 

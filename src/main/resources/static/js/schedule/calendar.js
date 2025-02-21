@@ -351,7 +351,7 @@ window.onload = () => {
 	 	}
 	});// end of var calendar = new FullCalendar.Calendar(calendarEl, {}) ----------------- 
 	
-	setTimeout(()=>{ calendar.render();}, 300)  // 풀캘린더 보여주기 보이다 말다 하므로 timeout 설정
+	setTimeout(()=>{ calendar.render();}, 400)  // 풀캘린더 보여주기 보이다 말다 하므로 timeout 설정
 	
 	/*
 	let render = new Promise(function (resolve, reject) {
@@ -674,6 +674,8 @@ function delCalendar(smcatego_no, smcatego_name){ // smcatgono => 캘린더 소�
 		showCancelButton: true,
 		confirmButtonText: "삭제",
 		cancelButtonText: "취소",
+		confirmButtonColor: "#3085d6",
+  		cancelButtonColor: "#d33",
 	})
 	.then((result) => {
 		if (result.isConfirmed){	// 삭제 버튼 클릭 시
@@ -688,8 +690,11 @@ function delCalendar(smcatego_no, smcatego_name){ // smcatgono => 캘린더 소�
 							title: '캘린더를 삭제했습니다.',        // Alert 제목
 							text: '삭제된 캘린더명 : '+ smcatego_name,
 							icon: 'success',
-						});
-						setTimeout( () => {location.href="javascript:history.go(0);";}, 1000) ;	// 페이지 새로고침
+							confirmButtonText: "확인"
+						})
+						.then((result) => {
+							location.href="javascript:history.go(0)";	// 페이지 새로고침
+                        })
 					}
 				},
 				error: function(request, status, error){

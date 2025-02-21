@@ -8,6 +8,7 @@
 	<typeAliases>
 		<typeAlias type="com.syoffice.app.employee.domain.EmployeeVO" alias="EmployeeVO"/>
 		<typeAlias type="com.syoffice.app.board.domain.BoardVO" alias="BoardVO"/>
+		<typeAlias type="com.syoffice.app.kpi.domain.KpiVO" alias="KpiVO"/>
 	</typeAliases>
 
 
