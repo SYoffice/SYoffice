@@ -1,14 +1,8 @@
 @charset "UTF-8";
 
-
-:root{
-	font-family: "Noto Sans", serif;
-	 font-optical-sizing: auto;
-}
-
 /* form 태그 감싸는 공간 */
 div#formBox {
-	width: 75%;
+	width: 100%;
 	margin: 0 auto;
 }
 

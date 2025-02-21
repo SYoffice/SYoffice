@@ -11,17 +11,48 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.syoffice.app.employee.domain.EmployeeVO;
 import com.syoffice.app.kpi.domain.KpiVO;
+import com.syoffice.app.kpi.domain.ResultVO;
 import com.syoffice.app.kpi.model.KpiDAO;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class KpiService_imple implements KpiService {
 	
 	@Autowired
 	private KpiDAO dao;
+	
+	
+	// === 실적관리 메인페이지(부서원 실적 정보 담김) === //
+	@Override
+	public ModelAndView getKpiInfo(ModelAndView mav, String kpi_year, String kpi_quarter, HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		
+		EmployeeVO empvo = (EmployeeVO) session.getAttribute("loginuser");
+		Map<String, String> paraMap = new HashMap<>();
+		
+		if (empvo != null) {
+			paraMap.put("fk_dept_id", empvo.getFk_dept_id());
+		}
+		paraMap.put("kpi_year", kpi_year);
+		paraMap.put("kpi_quarter", kpi_quarter);
+		
+		List<ResultVO> resultvoList = dao.getResultBydeptKpi(paraMap);	// 연도, 분기별 부서원 실적 정보
+		
+		if (resultvoList != null && resultvoList.size() > 0) {
+			mav.addObject("resultvoList", resultvoList);
+		}
+		
+		mav.setViewName("kpi/kpi_index");
+		return mav;
+	}// end of public ModelAndView getKpiInfo(ModelAndView mav, String kpi_year, String kpi_quarter, HttpServletRequest request) ----------------------
 
+	
+	
 	// === 목표 등록 시 중복체크 === //
 	@Override
 	public String kpiDuplicateCheck(KpiVO kpivo) {
@@ -157,6 +188,26 @@ public class KpiService_imple implements KpiService {
 		return mav;
 	}// end of public ModelAndView kpiEditEnd(HttpServletRequest request, ModelAndView mav, KpiVO kpivo) ---------------------
 
+	
+	
+	// === 실적입력을 위한 목표실적 번호 채번 === //
+	@Override
+	public String getKpi_no(Map<String, String> paraMap) {
+		return dao.getKpi_no(paraMap);
+	}// end of public String getKpi_no(Map<String, String> paraMap) -----------------------
 
+	
+	
+	// === 엑셀파일을 통한 실적 입력 === //
+	@Override
+	public int add_resultList(List<Map<String, String>> paraMapList) {
+		int insert_count = 0;
+		
+		for(Map<String, String> paraMap :paraMapList) {
+			insert_count += dao.add_resultList(paraMap);
+		}// end of for() ---------------
+		
+		return insert_count;
+	}// end of public int add_resultList(List<Map<String, String>> paraMapList) ------------------------ 
 	
 }
