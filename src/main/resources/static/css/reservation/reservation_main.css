@@ -1,0 +1,117 @@
+@charset "UTF-8";
+h2 {
+  color: #333;
+  margin: 0;
+}
+
+/* 버튼 */
+.contents_wrapper button {
+  background-color: transparent;
+  margin: 2px;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+}
+
+/* 타임라인 ui 스타일 */
+#timeline {
+  width: 100%;
+  margin-bottom: 80px;
+  font-size: small;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.timeline-noti {
+  font-size: small;
+  color: gray;
+}
+
+.prev-button,
+.next-button {
+  border: 1px solid black;
+  border-radius: 50px;
+}
+
+.vis-timeline {
+  margin-top: 20px;
+  border: 1px solid #bfbfbf;
+  border-radius: 10px;
+}
+
+.vis-group {
+  cursor: pointer;
+}
+
+.vis-panel vis-top {
+  border: none !important;
+}
+
+/* 타임라인 위쪽 영문 날짜 영역 없앰 */
+.vis-even div {
+  display: none !important;
+}
+
+.vis-labelset .vis-label .vis-inner {
+  align-content: center;
+  height: 35px;
+}
+
+.vis-item.vis-range {
+  border: none;
+  background-color: #ecf0f8;
+}
+
+.vis-item-,
+.vis-item-overflow {
+  white-space: normal;
+}
+
+.vis-item,
+.vis-item-overflow {
+  top: 0 !important;
+  height: 100%;
+  align-content: center;
+  align-items: center;
+}
+
+.vis-timeline {
+  border: 1px solid #ecf0f8;
+}
+
+.vis-selected {
+  /* background-color: azure; */
+  background-color: #c6d4ee !important;
+}
+
+/* 내 예약/대여 현황 테이블 */
+table {
+  font-size: small;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+th {
+  background-color: #ecf0f8;
+  color: black;
+}
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+button {
+  background-color: #d2d0d0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}

@@ -4,8 +4,9 @@
 <%
    String ctxPath = request.getContextPath();
    //     /syoffice 
-%>      
+%>       
 <jsp:include page="../main/header.jsp" />
+
 <link rel="stylesheet" href="<%= ctxPath%>/css/approval/approval_main.css">
 <div class="common_wrapper">
     <div class="side_menu_wrapper">
