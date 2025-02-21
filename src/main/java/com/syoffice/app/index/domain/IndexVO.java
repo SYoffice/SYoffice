@@ -5,8 +5,16 @@ public class IndexVO {
     private String name;
     private String mail;
     private String gradeName; 
+    private String maanager_id;
+    
 
-    public int getEmpId() {
+    public String getMaanager_id() {
+		return maanager_id;
+	}
+	public void setMaanager_id(String maanager_id) {
+		this.maanager_id = maanager_id;
+	}
+	public int getEmpId() {
         return empId;
     }
     public void setEmpId(int empId) {

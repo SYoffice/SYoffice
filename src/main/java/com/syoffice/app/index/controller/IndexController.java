@@ -29,6 +29,9 @@ public class IndexController {
         
         // 세션에 저장된 객체는 EmployeeVO입니다.
         EmployeeVO emp = (EmployeeVO) session.getAttribute("loginuser");
+        
+        System.out.println("아이디: " + emp);
+        
         if (emp == null) {
             return "redirect:/login";
         }

@@ -21,11 +21,11 @@
         }
         /* 버튼 내부 텍스트를 중앙 정렬 */
         .button-area button {
-            display: inline-flex;       /* 내부에서 flex를 사용 */
-            align-items: center;        /* 수직 중앙 정렬 */
-            justify-content: center;    /* 수평 중앙 정렬 */
-            min-width: 60px;           /* 텍스트가 줄바꿈되지 않도록 충분한 너비 */
-            white-space: nowrap;        /* 한 줄 유지 */
+            display: inline-flex;       
+            align-items: center;        
+            justify-content: center;    
+            min-width: 60px;           
+            white-space: nowrap;        
         }
     </style>
 </head>
@@ -34,11 +34,9 @@
     <div class="container-fluid content-wrapper">
         <div class="row-flex">
             <!-- 왼쪽 컬럼 -->
-            <div class="col-3 left-col">
-                <div class="profile-box">
+            <div class="col-3 left-col">           
                     <!-- 로그인한 사용자 이름 출력 -->
-                    <h4>${loginUser.name} ${loginUser.gradeName}</h4>
-                    
+                    <h4>${loginUser.name} </h4>                 
                     <div class="button-area">
                         <button>메일함</button>
                         <button>결재함</button>
@@ -51,7 +49,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            
 
             <!-- 오른쪽 컬럼 -->
             <div class="right-col">

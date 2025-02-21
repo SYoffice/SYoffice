@@ -35,15 +35,6 @@ a {
     color: #454545;
     font-size: 17px;
 }
-
-.content-wrapper {
-            margin-top: 90px;      
-            min-height: 100vh;     
-            display: flex;
-            flex-direction: column;                   
-            box-sizing: border-box;
-           
-        }      
         
 body {
     margin-top: 80px; 
