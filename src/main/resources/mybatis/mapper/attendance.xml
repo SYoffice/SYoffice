@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.syoffice.app.attendance.model.AttendanceDAO">
+
+    <!-- 오늘의 출퇴근 정보 조회 -->
+    <select id="getTodayAttendance" parameterType="string" resultType="com.syoffice.app.attendance.domain.AttendanceVO">
+        SELECT 
+            attend_no,
+            attend_date,
+            attend_start AS attendStart,  
+            attend_end AS attendEnd,
+            fk_emp_id AS empId,
+            attend_status AS attendStatus
+        FROM tbl_attendance
+        WHERE fk_emp_id = #{empId}
+          AND attend_date = TRUNC(SYSDATE)
+    </select>
+
+    <!-- 출근 -->
+    <insert id="checkIn" parameterType="string">
+    INSERT INTO tbl_attendance (attend_no, attend_date, attend_start, attend_status, fk_emp_id)
+    SELECT attend_seq.nextval, TRUNC(SYSDATE), SYSDATE,
+           CASE WHEN SYSDATE > TRUNC(SYSDATE) + (9/24) THEN 2 ELSE 1 END,
+           #{empId}
+    FROM dual
+    WHERE NOT EXISTS (
+        SELECT 1 FROM tbl_attendance
+        WHERE fk_emp_id = #{empId}
+        AND attend_date = TRUNC(SYSDATE)
+    )
+	</insert>
+
+
+    <!-- 퇴근 -->
+    <update id="checkOut" parameterType="string">
+    UPDATE tbl_attendance
+    SET attend_end = SYSDATE
+    WHERE fk_emp_id = #{empId}
+      AND attend_date = TRUNC(SYSDATE)
+      AND attend_start IS NOT NULL
+      AND attend_end IS NULL
+</update>
+
+    <!-- 캘린더에 표시할 출/퇴근 이벤트 조회 -->
+    <select id="getCalendarEvents" parameterType="string" resultType="com.syoffice.app.attendance.domain.AttendanceVO">
+	    SELECT 
+	        attend_date AS attendDate,
+	        attend_start AS attendStart,
+	        attend_end AS attendEnd,
+	        attend_status AS attendStatus
+	    FROM tbl_attendance
+	    WHERE fk_emp_id = #{empId}
+	</select>
+
+    <!-- 근태 이력 조회 (출퇴근 리스트)
+    <select id="getAttendanceHistory" parameterType="string" resultType="com.syoffice.app.attendance.domain.AttendanceVO">
+        SELECT 
+            attend_date,
+            attend_start AS attendStart,  
+            attend_end AS attendEnd,
+            attend_status AS attendStatus
+        FROM tbl_attendance
+        WHERE fk_emp_id = #{empId}
+        ORDER BY attend_date DESC
+    </select>
+-->
+    <!-- 연차 이력 조회 
+    <select id="getLeaveList" parameterType="string" resultType="com.syoffice.app.attendance.domain.AttendanceVO">
+        SELECT 
+            leave_date AS leaveDate,
+            leave_type AS leaveType,
+            leave_reason AS leaveReason
+        FROM tbl_leave
+        WHERE fk_emp_id = #{empId}
+        ORDER BY leave_date DESC
+    </select>
+-->
+		<!-- 주간 누적 근무시간 -->
+    <select id="getWeeklyAccumulated" parameterType="string" resultType="string">
+        SELECT 
+            NVL(FLOOR(SUM((attend_end - attend_start) * 24)), 0) || 'h ' ||
+            NVL(ROUND(MOD(SUM((attend_end - attend_start) * 24 * 60), 60)), 0) || 's' AS total_work_time
+        FROM tbl_attendance
+        WHERE fk_emp_id = #{empId}
+          AND attend_date BETWEEN TRUNC(SYSDATE, 'IW') AND TRUNC(SYSDATE)
+          AND attend_start IS NOT NULL
+          AND attend_end IS NOT NULL
+    </select>
+
+    <!-- 월간 누적 근무시간 -->
+    <select id="getMonthlyAccumulated" parameterType="string" resultType="string">
+        SELECT 
+            NVL(FLOOR(SUM((attend_end - attend_start) * 24)), 0) || 'h ' ||
+            NVL(ROUND(MOD(SUM((attend_end - attend_start) * 24 * 60), 60)), 0) || 's' AS total_work_time
+        FROM tbl_attendance
+        WHERE fk_emp_id = #{empId}
+          AND attend_date BETWEEN TRUNC(SYSDATE, 'MM') AND TRUNC(SYSDATE)
+          AND attend_start IS NOT NULL
+          AND attend_end IS NOT NULL
+    </select>
+
+    <!--  연차 내역 
+    <select id="getLeaveList" parameterType="string" resultType="map">
+	  SELECT 
+	      l.leave_startdate AS leaveDate,
+	      l.leave_subject   AS leaveType,
+	      l.leave_content   AS leaveReason
+	  FROM tbl_leaveform l
+	  JOIN tbl_document d ON l.fk_doc_no = d.doc_no
+	  WHERE d.fk_emp_id = #{empId}
+	  ORDER BY l.leave_startdate DESC
+	</select>
+    -->
+    
+    
+
+		
+
+
+
+    
+    
+    
+
+</mapper>

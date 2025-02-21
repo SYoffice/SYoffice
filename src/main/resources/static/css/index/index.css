@@ -1,16 +1,19 @@
 @charset "UTF-8";
+ body {
+   background-color: #f8f9fa;
+}
 
 .row-flex {
-    display: flex;
-    flex: 1;                
-    min-height: 0;          
+    display: flex;       
 }
-.left-col {
-    flex: 0 0 15%;         
-    max-width: 15%;        
-    box-sizing: border-box;
+.left-col {   
+    margin-top: 20px; 
+    flex: 0 0 15%;
+    max-width: 15%;
+    border: 1px solid #ddd;
+    padding: 20px;
+    text-align: center;
     background-color: #EAF0FF;
-    border: 1px solid #ccc;
 }
 .profile-box {
     text-align: center;
@@ -86,6 +89,5 @@
 .chart-area {
     border: 1px solid #ccc;
     height: 700px;
-    box-sizing: border-box;
-   
+    box-sizing: border-box; 
 }
