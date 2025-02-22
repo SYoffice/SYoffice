@@ -132,10 +132,17 @@
 	<!-- 사원정보 update -->
 	<update id="employeeEdit" parameterType="HashMap">
 		UPDATE tbl_employee 
-		SET name = #{name}, birthday = #{birthday}, gender = #{gender}, personal_mail = #{personal_mail},
-				   mail = #{mail}, tel = #{tel}, postcode = #{postcode}, detailaddress = #{detailaddress},
-				   extraaddress = #{extraaddress}, fk_branch_no = #{branch_no}, fk_dept_id = #{dept_id},
-				   fk_grade_no = #{grade_no}, status = #{empstatus}, profile_img = #{profile_img}, leader_id = #{leader_id}
+		SET    name = #{name}, birthday = #{birthday}, gender = #{gender}, personal_mail = #{personal_mail},
+			   mail = #{mail}, tel = #{tel}, postcode = #{postcode}, detailaddress = #{detailaddress},
+			   extraaddress = #{extraaddress}, fk_branch_no = #{branch_no}, fk_dept_id = #{dept_id},
+			   fk_grade_no = #{grade_no}, status = #{empstatus}, profile_img = #{profile_img},
+			   leader_id = 
+			   <if test='leader_id == null'>
+				   default
+			   </if>
+			   <if test='leader_id != null'>
+				   #{leader_id}
+			   </if>
 		WHERE emp_id = #{emp_id}
 	</update>
 	

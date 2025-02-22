@@ -279,8 +279,6 @@ public class HrController {
 									 @RequestParam Map<String, String> paraMap,
 									 @RequestParam("profile_img") MultipartFile file) {
 		
-		System.out.println("employeeEdit POST 요청 받음");
-		
 		String mail = paraMap.get("mailId")+paraMap.get("mailAddr");
 		paraMap.put("mail", mail);
 		
@@ -325,7 +323,7 @@ public class HrController {
 		
 		if(n != 1) {	// 수정에 실패한 경우	
 			String message = "사원 정보수정이 실패했습니다.";
-			String loc = request.getContextPath() + "/hr/employeeEdit?emp_id="+emp_id; 
+			String loc = request.getContextPath() + "/hr/employeeDetail?emp_id="+emp_id; 
 			
 			mav.addObject("message", message);
 			mav.addObject("loc", loc);
@@ -335,7 +333,7 @@ public class HrController {
 		else {	// 수정에 성공한 경우
 			
 			String message = "사원 정보수정이 완료되었습니다.";
-			String loc = request.getContextPath() + "/hr/employeeEdit?emp_id="+emp_id; 
+			String loc = request.getContextPath() + "/hr/employeeDetail?emp_id="+emp_id; 
 			
 			mav.addObject("message", message);
 			mav.addObject("loc", loc);
@@ -344,6 +342,6 @@ public class HrController {
 		}
 		
 		return mav;
-	}
+	}// end of public ModelAndView employeeEdit( ) -----
 	
 }// end of public class HrController ----- 
