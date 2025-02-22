@@ -185,7 +185,8 @@ public class ApiKpiController {
 	            	
 	            }// end of for() ---------------------
 	            workbook.close();
-	            
+				excel_file.delete();	// 업로드 된 파일 삭제하기
+
 	            int insert_count = service.add_resultList(paraMapList);
 	            
 	            if (insert_count == paraMapList.size()) {
@@ -196,7 +197,7 @@ public class ApiKpiController {
 	            	jsonObj.put("result", 0);
 	            }
 	            	
-	            excel_file.delete();	// 업로드 된 파일 삭제하기
+
 	            
 			} catch (Exception e) {
 				e.printStackTrace();
