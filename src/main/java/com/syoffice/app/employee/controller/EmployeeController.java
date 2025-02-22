@@ -59,4 +59,10 @@ public class EmployeeController {
 		return mav;
 	}// end of public ModelAndView pwdchange(ModelAndView mav, HttpServletRequest request, @RequestParam String newPwd) ----- 
 	
+	// 내정보 페이지 요청
+	@GetMapping("/mypage")
+	public String mypage() {
+		return "employee/mypage";
+	}// end of public String mypage() -----
+	
 }// end of public class EmployeeController -----

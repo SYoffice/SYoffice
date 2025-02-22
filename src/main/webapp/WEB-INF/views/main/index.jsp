@@ -27,6 +27,9 @@
             min-width: 60px;           
             white-space: nowrap;        
         }
+        .user-name {
+            font-size: 1.4em;
+            
     </style>
 </head>
 <body>
@@ -36,7 +39,9 @@
             <!-- 왼쪽 컬럼 -->
             <div class="col-3 left-col">           
                     <!-- 로그인한 사용자 이름 출력 -->
-                    <h4>${loginUser.name} </h4>                 
+                     <div class="user-name">
+                    <h4>${loginUser.name} ${sessionScope.loginuser.grade_name} </h4>      
+                    </div>           
                     <div class="button-area">
                         <button>메일함</button>
                         <button>결재함</button>
