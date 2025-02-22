@@ -27,16 +27,18 @@ public class KpiController {
 	
 	// === 실적관리 메인페이지(부서원 실적 정보 담김) === //
 	@GetMapping("index")
-	public ModelAndView kpiIndex(ModelAndView mav, @RequestParam String kpi_year
-												 , @RequestParam String kpi_quarter
+	public ModelAndView kpiIndex(ModelAndView mav, @RequestParam (defaultValue = "") String kpi_year
+												 , @RequestParam (defaultValue = "") String kpi_quarter
 												 , HttpServletRequest request) {
 		
-		if (kpi_year == null) {
+//		if (kpi_year == null) {
+		if ("".equals(kpi_year)) {
 			Calendar cal = Calendar.getInstance();
 			kpi_year = String.valueOf(cal.get(Calendar.YEAR));
 		}
 		
-		if (kpi_quarter == null) {
+//		if (kpi_quarter == null) {
+		if ("".equals(kpi_quarter)) {
 			Calendar cal = Calendar.getInstance();
 			int month = cal.get(Calendar.MONTH)+1;
 			
