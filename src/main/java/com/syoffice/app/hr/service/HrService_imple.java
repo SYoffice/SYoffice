@@ -107,6 +107,24 @@ public class HrService_imple implements HrService {
 		}
 		
 	}// end of public String checkMail(String mail) ----
+	
+	// 사원정보 update
+	@Override
+	public int employeeEdit(Map<String, String> paraMap) {
+		
+		// 직속상관 사번을 알아오기 위한 용도(부서번호)
+		String dept_id = paraMap.get("dept_id");
+		
+		// 직속 상관 사번 알아오기
+		String leader_id = dao.getLeaderId(dept_id);
+		
+		// 직속 상관 사번도 Map 에 담아주기
+		paraMap.put("leader_id", leader_id);
+		
+		int n = dao.employeeEdit(paraMap);
+		
+		return n;
+	}// end of public int employeeEdit(Map<String, String> paraMap) ----
 
 
 

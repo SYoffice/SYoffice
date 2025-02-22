@@ -6,7 +6,9 @@
 <%
 	String ctxPath = request.getContextPath();
 %>
-
+<c:if test="${sessionScope.loginuser.pwdchangestatus == 1}">
+	<jsp:include page="../employee/sidebar.jsp" />
+</c:if>
 <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/employee/pwdChange.css" />
 <%-- Optional JavaScript --%>
 <script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
@@ -92,7 +94,7 @@
 	    	<%-- 비밀번호 변경이 필요한 상태일 때 --%>
 	    	<c:if test="${sessionScope.loginuser.pwdchangestatus == 1}">
 		    	<div id="buttonBox">
-				    <button type="button" id="cancle_button" onclick="location.href='${pageContext.request.contextPath}/index'">메인으로</button>
+				    <button type="button" id="cancle_button" onclick="location.href='${pageContext.request.contextPath}/employee/mypage'">취소하기</button>
 					<button type="button" id="update_button" onclick="go_update()">변경하기</button>
 				</div>
 			</c:if>

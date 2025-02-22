@@ -6,7 +6,7 @@
 <jsp:include page="./sidebar.jsp" />
 
 <%-- custom CSS --%>
-<link href='<%= request.getContextPath() %>/css/kpi/kpi_management.css'rel='stylesheet' />
+<link href='<%= request.getContextPath() %>/css/kpi/kpi_edit.css'rel='stylesheet' />
 
 <script type="text/javascript">
 	$(document).ready(function() {

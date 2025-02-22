@@ -8,6 +8,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+      <title>SYOFFICE</title>
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" >
@@ -16,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/header/header.css" >
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>    
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-thin-straight/css/uicons-thin-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-straight/css/uicons-bold-straight.css'>
     
     	
 	<!-- sidebar common CSS -->
@@ -103,12 +105,12 @@
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="#">메신저</a>
-                </li>
-             
+                </li>            
+                <c:if test="${sessionScope.loginuser.emp_id eq sessionScope.loginuser.manager_id}">">
                    <li class="nav-item active">
                        <a class="nav-link" href="<%=ctxPath%>/kpi/index">실적관리</a>
                    </li>
-
+                </c:if>
                 <c:if test="${sessionScope.loginuser.fk_dept_id eq 2}">
                    <li class="nav-item active">
                        <a class="nav-link" href="<%=ctxPath%>/hr/hrIndex">인사관리</a>
@@ -117,10 +119,10 @@
             </ul>
             <ul class="navbar-nav ml-auto">
             	<li class="nav-item active">
-                    <a class="nav-link"  href="<%=ctxPath%>/empolyee/mypage">${loginuser.name}</a>
+                    <a class="nav-link"  href="<%=ctxPath%>/employee/mypage">${loginuser.name}</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link"  href="<%=ctxPath%>/">로그아웃</a>
+                    <a class="nav-link"  href="<%=ctxPath%>/"><i class="fi fi-bs-sign-out-alt"></i></a>
                 </li>
             </ul>
         </div>

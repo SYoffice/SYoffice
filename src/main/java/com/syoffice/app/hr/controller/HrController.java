@@ -172,9 +172,6 @@ public class HrController {
 		byte[] bytes = null;
 		// 첨부파일의 내용물을 담는 것
 		
-		long filesize = 0;
-		// 첨부파일의 크기
-		
 		try {
 			bytes = file.getBytes();
 			
@@ -189,8 +186,6 @@ public class HrController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		String fileName = file.getOriginalFilename();
 		
 		// 신규 사원정보 insert
 		int n = service.employeeRegister(paraMap);
@@ -232,7 +227,7 @@ public class HrController {
 	}// end of public String checkMail(@RequestParam("mail") String mail ) -----
 	
 	
-	// 회원 상세정보 조회 페이지
+	// 사원 상세정보 조회 페이지
 	@GetMapping("employeeDetail")
 	public ModelAndView employeeDetail(ModelAndView mav, @RequestParam String emp_id) {
 		
@@ -247,5 +242,106 @@ public class HrController {
 		return mav;
 	}// end of public ModelAndView employeeDetail(ModelAndView mav, @RequestParam String emp_id) -----
 	
+	
+	// 사원 정보 수정페이지 요청
+	@GetMapping("employeeEdit")
+	public ModelAndView employeeEdit(ModelAndView mav, @RequestParam String emp_id) {
+		
+		// 지점 정보 조회
+		List<BranchVO> branchList = service.selectBranchList();
+		
+		// 부서 정보 조회
+		List<DepartmentVO> departmentList =  service.selectDepartmentList();
+		
+		// 직급 정보 조회
+		List<GradeVO> gradeList = service.selectGradeList();
+		
+		
+		// EmployeeVO 초기화
+		EmployeeVO employeevo = null;
+		
+		// 사원 한명의 정보를 조회
+		employeevo = service.employeeDetail(emp_id);
+		
+		mav.addObject("branchList", branchList);
+		mav.addObject("departmentList", departmentList);
+		mav.addObject("gradeList", gradeList);
+		mav.addObject("employeevo", employeevo);
+		
+		mav.setViewName("/hr/employeeEdit");
+		return mav;
+	}// end of public String employeeEdit ----
+	
+	// Post 요청인 경우 사원 정보 변경
+	@PostMapping("employeeEdit")
+	public ModelAndView employeeEdit(HttpServletRequest request, ModelAndView mav, 
+									 MultipartHttpServletRequest mrequest,
+									 @RequestParam Map<String, String> paraMap,
+									 @RequestParam("profile_img") MultipartFile file) {
+		
+		String mail = paraMap.get("mailId")+paraMap.get("mailAddr");
+		paraMap.put("mail", mail);
+		
+		String originalProfileImg = paraMap.get("originalProfileImg");
+		
+		// 프로필 사진을 바꾸지 않은 경우
+		if (file.isEmpty()) {
+			// 기존에 있던 파일명을 다시 맵에 넣어주기
+			paraMap.put("profile_img", originalProfileImg);
+		}
+		// 프로필 사진을 바꾼 경우
+		else {
+			// 새로 첨부된 사진명을 맵에 담아준다.
+			paraMap.put("profile_img", file.getOriginalFilename());
+			
+			HttpSession session = mrequest.getSession();
+			String root = session.getServletContext().getRealPath("/");
+			
+			String path = root+"resources"+File.separator+"profile";
+			
+			byte[] bytes = null;
+			
+			try {
+				bytes = file.getBytes();
+				
+				String originalFilename = file.getOriginalFilename();
+
+				// 첨부되어진 사진 업로드
+				fileManager.doProfileUpload(bytes, originalFilename, path);
+				
+				// 기존에 있던 프로필 사진은 삭제해준다.
+				fileManager.doFileDelete(originalProfileImg, path);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// 사원정보 update
+		int n = service.employeeEdit(paraMap);
+		
+		String emp_id = paraMap.get("emp_id");
+		
+		if(n != 1) {	// 수정에 실패한 경우	
+			String message = "사원 정보수정이 실패했습니다.";
+			String loc = request.getContextPath() + "/hr/employeeDetail?emp_id="+emp_id; 
+			
+			mav.addObject("message", message);
+			mav.addObject("loc", loc);
+
+			mav.setViewName("common/msg");
+		}
+		else {	// 수정에 성공한 경우
+			
+			String message = "사원 정보수정이 완료되었습니다.";
+			String loc = request.getContextPath() + "/hr/employeeDetail?emp_id="+emp_id; 
+			
+			mav.addObject("message", message);
+			mav.addObject("loc", loc);
+
+			mav.setViewName("common/msg");
+		}
+		
+		return mav;
+	}// end of public ModelAndView employeeEdit( ) -----
 	
 }// end of public class HrController ----- 

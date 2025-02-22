@@ -54,13 +54,13 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     public String getWeeklyAccumulated(String empId) {
         String result = attendanceDAO.getWeeklyAccumulated(empId);
-        return result != null ? result : "0h 0s";  // NULL 방지
+        return result != null ? result : "0h 0m";  // NULL 방지
     }
 
     @Override
     public String getMonthlyAccumulated(String empId) {
         String result = attendanceDAO.getMonthlyAccumulated(empId);
-        return result != null ? result : "0h 0s";  // NULL 방지
+        return result != null ? result : "0h 0m";  // NULL 방지
     }
     /*
  

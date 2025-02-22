@@ -11,6 +11,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface KpiService {
 
+	// === 실적관리 메인페이지(부서원 실적 정보 담김) === //
+	ModelAndView getKpiInfo(ModelAndView mav, String kpi_year, String kpi_quarter, HttpServletRequest request);
+	
 	// === 목표 실적액 등록하기 === //
 	ModelAndView kpiRegister(HttpServletRequest request, ModelAndView mav, KpiVO kpivo);
 
@@ -31,5 +34,11 @@ public interface KpiService {
 	
 	// === 목표실적 수정하기 === //
 	ModelAndView kpiEditEnd(HttpServletRequest request, ModelAndView mav, KpiVO kpivo);
+	
+	// === 실적입력을 위한 목표실적 번호 채번 === //
+	String getKpi_no(Map<String, String> paraMap);
+	
+	// === 엑셀파일을 통한 실적 입력 === //
+	int add_resultList(List<Map<String, String>> paraMapList);
 
 }

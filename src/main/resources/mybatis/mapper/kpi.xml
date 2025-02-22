@@ -70,4 +70,55 @@
 	</update>
 	
 	
+	<!-- === 실적입력을 위한 목표실적 번호 채번 === -->
+	<select id="getKpi_no" parameterType="HashMap" resultType="String">
+		SELECT kpi_no
+		  FROM tbl_kpi
+		 WHERE fk_dept_id = #{fk_dept_id} AND kpi_year = #{kpi_year} AND kpi_quarter = #{kpi_quarter}
+	</select>
+	
+	<!-- === 엑셀파일을 통한 실적 입력 === -->
+	<insert id="add_resultList" parameterType="HashMap">
+		INSERT INTO tbl_result (result_no, fk_emp_id, result_name, result_date, result_price, fk_kpi_no)
+		VALUES (result_seq.nextval, to_number(#{fk_emp_id}), #{result_name}, to_date(#{result_date},'yyyy-mm-dd'), to_number(#{result_price}), to_number(#{fk_kpi_no}))
+	</insert>
+	
+	
+	<!-- === 연도, 분기별 부서원 실적 정보 === -->
+	<select id="getResultBydeptKpi" parameterType="HashMap" resultType="ResultVO">
+		SELECT b.branch_name, d.dept_name, A.emp_id, A.name, g.grade_name, A.result_name
+			 , A.result_date, A.result_price, k.kpi_year, k.kpi_quarter, A.fk_branch_no,  A.fk_dept_id
+		  FROM 
+			(
+			SELECT e.emp_id, e.name, e.fk_dept_id, e.fk_grade_no, e.fk_branch_no
+				 , r.fk_kpi_no, to_char(r.result_date, 'yyyy-mm-dd') AS result_date, r.result_price, r.result_name
+			  FROM 
+				(
+				SELECT emp_id, name, fk_dept_id, fk_grade_no, fk_branch_no
+				  FROM tbl_employee
+				 WHERE 1=1
+				   AND fk_dept_id = #{fk_dept_id}
+				) e JOIN tbl_result r
+				ON e.emp_id = r.fk_emp_id
+			) A JOIN tbl_kpi k
+			ON A.fk_kpi_no = k.kpi_no
+		  JOIN tbl_department d
+		    ON A.fk_dept_id = d.dept_id
+		  JOIN tbl_branch b
+		    ON A.fk_branch_no = b.branch_no
+		  JOIN tbl_grade g
+		    ON A.fk_grade_no = g.grade_no
+		 WHERE 1=1
+		 	<choose>
+		 		<when test="kpi_year != ''">
+		 			AND k.kpi_year = #{kpi_year}
+		 		</when>
+		 		<when test="kpi_quarter != ''">
+					AND k.kpi_quarter = #{kpi_quarter}		 		
+		 		</when>
+		 		<otherwise></otherwise>
+		 	</choose>
+		ORDER BY k.kpi_year DESC, k.kpi_quarter ASC, b.branch_no ASC, A.fk_dept_id ASC, g.grade_no ASC
+	</select>
+	
 </mapper>

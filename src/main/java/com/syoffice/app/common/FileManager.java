@@ -224,7 +224,7 @@ public class FileManager {
 
    // ===  파일 삭제하기 === //
    public void doFileDelete(String filename, String path) throws Exception {// filepath변수명을 path로 바꿈
-      
+	   
       String pathname = path + File.separator + filename;
       
       File file = new File(pathname);
