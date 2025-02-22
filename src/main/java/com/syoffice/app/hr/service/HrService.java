@@ -33,6 +33,9 @@ public interface HrService {
 	
 	// 사원 한명의 정보를 조회
 	EmployeeVO employeeDetail(String emp_id);
+	
+	// 사원정보 update
+	int employeeEdit(Map<String, String> paraMap);
 
 
 	
