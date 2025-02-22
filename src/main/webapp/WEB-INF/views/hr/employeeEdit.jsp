@@ -147,7 +147,7 @@
 							
 							<div class="input_box select">
 								<div class="input_text">상태</div> 
-								<select name="status">
+								<select name="empstatus">
 									    <option value="1" ${employeevo.status == 1 ? 'selected' : ''}>재직</option>
 									    <option value="2" ${employeevo.status == 2 ? 'selected' : ''}>휴직</option>
 									    <option value="3" ${employeevo.status == 3 ? 'selected' : ''}>퇴직</option>
