@@ -24,9 +24,9 @@
 					
 					<div id="img_container">
 						<div class="input_box">
+							<input type="hidden" id="originalProfileImg" name="originalProfileImg" value="${employee.profile_img}" />
 							<div class="input_text">사진첨부</div> 
 							<div id="preview">
-								<input type="hidden" id="originalProfileImg" name="originalProfileImg" value="${employee.profile_img}" />
 								<%-- 등록된 프로필 사진이 있을 때 --%>
 								<c:if test="${not empty employee.profile_img}">
 									<img src="${pageContext.request.contextPath}/resources/profile/${employee.profile_img}"/>
