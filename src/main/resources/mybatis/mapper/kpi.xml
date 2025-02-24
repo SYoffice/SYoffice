@@ -86,11 +86,11 @@
 	
 	<!-- === 연도, 분기별 부서원 실적 정보 === -->
 	<select id="getResultBydeptKpi" parameterType="HashMap" resultType="ResultVO">
-		SELECT b.branch_name, d.dept_name, A.emp_id, A.name, g.grade_name, A.result_name
+		SELECT b.branch_name, d.dept_name, A.fk_emp_id, A.name, g.grade_name, A.result_name
 			 , A.result_date, A.result_price, k.kpi_year, k.kpi_quarter, A.fk_branch_no,  A.fk_dept_id
 		  FROM 
 			(
-			SELECT e.emp_id, e.name, e.fk_dept_id, e.fk_grade_no, e.fk_branch_no
+			SELECT r.fk_emp_id, e.name, e.fk_dept_id, e.fk_grade_no, e.fk_branch_no
 				 , r.fk_kpi_no, to_char(r.result_date, 'yyyy-mm-dd') AS result_date, r.result_price, r.result_name
 			  FROM 
 				(
