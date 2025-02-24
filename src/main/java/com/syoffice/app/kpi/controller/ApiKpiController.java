@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.syoffice.app.kpi.domain.KpiVO;
+import com.syoffice.app.kpi.domain.ResultVO;
 import com.syoffice.app.kpi.service.KpiService;
 
 import jakarta.servlet.http.HttpSession;
@@ -79,11 +80,14 @@ public class ApiKpiController {
 	}// end of public String kpiDelete(@RequestParam String kpi_no) -------------------- 
 	
 	
+	// == 부서별 연도, 분기 목표실적 조회 == // 
 	@GetMapping("deptKpiByYear")
-	public List<KpiVO> deptKpiByYear (@RequestParam Map<String, String> paraMap) {
-		return service.deptKpiByYear(paraMap);
+	public List<KpiVO> deptKpiByYearQuarter (@RequestParam Map<String, String> paraMap) {
+		return service.deptKpiByYearQuarter(paraMap);
 	}// end of public List<KpiVo> deptKpiByYear (@RequestParam Map<String, String> paraMap) ------------------------- 
 	
+	
+	// === 개인실적 엑셀파일 업로드 === //
 	@PostMapping("uploadExcelFile")
 	public String uploadExcelFile(MultipartHttpServletRequest mtp_request) {
 		MultipartFile mtp_excel_file = mtp_request.getFile("excel_file");	// input:file 태그의 name
@@ -212,6 +216,12 @@ public class ApiKpiController {
 		return jsonObj.toString();
 	}// end of public String uploadExcelFile(MultipartHttpServletRequest mtp_request) --------------------------- 
 	
+	
+	// === 부서별 개인 실적 내역 조회 === //
+	@GetMapping("deptResultByYearQuarter")
+	public List<ResultVO> deptResultByYearQuarter(@RequestParam Map<String, String> paraMap) {		
+		return service.getDeptResultByYearQuarter(paraMap);
+	}// end of public List<ResultVO> deptResultByYearQuarter(@RequestParam Map<String, String> paraMap) -----------------------
 	
 	
 }

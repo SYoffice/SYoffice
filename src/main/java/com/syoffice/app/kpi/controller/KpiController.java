@@ -1,9 +1,12 @@
 package com.syoffice.app.kpi.controller;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -98,5 +101,28 @@ public class KpiController {
 	public String kpiEditEnd() {
 		return "kpi/kpi_resultRegister";
 	}// end of public ModelAndView kpiEditEnd(ModelAndView mav, KpiVO kpivo) -------------------------- 
+	
+	
+	// === 엑셀다운로드 === //
+	@PostMapping("downloadExcelFile")
+	public String downloadExcelFile(@RequestParam(defaultValue="") String fk_dept_id,
+									@RequestParam(defaultValue="") String searchYear,
+									@RequestParam(defaultValue="") String searchQuarter,
+									Model model) {	// Model : 저장소 기능만 있는 객체
+	
+		System.out.println("fk_dept_id : "+ fk_dept_id);
+		System.out.println("searchYear : "+ searchYear);
+		System.out.println("searchQuarter	 : "+ searchQuarter);
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("fk_dept_id", fk_dept_id);
+		paraMap.put("kpi_year", searchYear);
+		paraMap.put("kpi_quarter", searchQuarter);
+
+		
+		service.kpiResult_to_Excel(paraMap, model);
+		
+		return "excelDownloadView";		// ViewConfig 에 설정 된 Bean Name
+	}// end of public String downloadExcelFile() ------------------------------------- 
 	
 }

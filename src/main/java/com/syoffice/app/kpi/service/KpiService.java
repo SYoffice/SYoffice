@@ -3,9 +3,11 @@ package com.syoffice.app.kpi.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.syoffice.app.kpi.domain.KpiVO;
+import com.syoffice.app.kpi.domain.ResultVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -27,7 +29,7 @@ public interface KpiService {
 	String kpiDelete(String kpi_no);
 
 	// == 부서별 연도, 분기 목표실적 조회 == //
-	List<KpiVO> deptKpiByYear(Map<String, String> paraMap);
+	List<KpiVO> deptKpiByYearQuarter(Map<String, String> paraMap);
 	
 	// === 목표실적 수정하기 페이지 === //
 	ModelAndView kpiEdit(HttpServletRequest request, ModelAndView mav, String kpi_no);
@@ -40,5 +42,11 @@ public interface KpiService {
 	
 	// === 엑셀파일을 통한 실적 입력 === //
 	int add_resultList(List<Map<String, String>> paraMapList);
+
+	// === 엑셀다운로드 === //
+	void kpiResult_to_Excel(Map<String, String> paraMap, Model model);
+
+	// === 부서별 개인 실적 내역 조회 === //
+	List<ResultVO> getDeptResultByYearQuarter(Map<String, String> paraMap);
 
 }
