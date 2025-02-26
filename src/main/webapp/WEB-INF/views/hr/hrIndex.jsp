@@ -6,6 +6,7 @@
 %>
 
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/hr/hrIndex.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 
 <jsp:include page="../hr/sidebar.jsp" />
 
@@ -44,7 +45,7 @@ function goDetail(emp_id) {
 
 
             	
-			<span class="h2">사원목록</span>
+			<span class="h2"><i class="bi bi-people-fill"></i>&nbsp;사원목록</span>
 			
 			<form name="searchFrm" style="margin: 20px auto;">
 				<select name="searchType" style="height: 26px;">

@@ -64,13 +64,15 @@ public class HrService_imple implements HrService {
 	// 신규 사원정보 insert
 	@Override
 	public int employeeRegister(Map<String, String> paraMap) {
-		
-	//	System.out.println("Service_imple" + paraMap.get("profile")); 
+		 
+		// 직속상관 사번을 알아오기 위한 용도(부서번호)
 		String dept_id = paraMap.get("dept_id");
 		
-	//	System.out.println(dept_id);
+		// 직속상관 사번을 알아오기 위한 용도(지점번호)
+		String branch_no = paraMap.get("branch_no");
+		
 		// 직속 상관 사번 알아오기
-		String leader_id = dao.getLeaderId(dept_id);
+		String leader_id = dao.getLeaderId(dept_id, branch_no);
 		
 		paraMap.put("leader_id", leader_id);
 		
@@ -115,8 +117,11 @@ public class HrService_imple implements HrService {
 		// 직속상관 사번을 알아오기 위한 용도(부서번호)
 		String dept_id = paraMap.get("dept_id");
 		
+		// 직속상관 사번을 알아오기 위한 용도(지점번호)
+		String branch_no = paraMap.get("branch_no");
+		
 		// 직속 상관 사번 알아오기
-		String leader_id = dao.getLeaderId(dept_id);
+		String leader_id = dao.getLeaderId(dept_id, branch_no);
 		
 		// 직속 상관 사번도 Map 에 담아주기
 		paraMap.put("leader_id", leader_id);

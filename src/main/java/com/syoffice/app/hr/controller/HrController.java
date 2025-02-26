@@ -344,4 +344,15 @@ public class HrController {
 		return mav;
 	}// end of public ModelAndView employeeEdit( ) -----
 	
+	
+	////////////////////// 부서관리 //////////////////////
+	@GetMapping("DepartmentManagement")
+	public ModelAndView DepartmentManagement (HttpServletRequest request, ModelAndView mav) {
+		
+		mav.setViewName("/hr/DepartmentManagement");
+		
+		return mav;
+	}// end of public String DepartmentManagement () -----
+	
+	
 }// end of public class HrController ----- 

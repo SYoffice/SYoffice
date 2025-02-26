@@ -93,9 +93,21 @@
 	
 	<!-- 직속 상관 사번 알아오기 -->
 	<select id="getLeaderId" parameterType="String">
-		SELECT manager_id
-		FROM tbl_department
-		WHERE dept_id = #{dept_id}
+		<!-- 본사일 경우 -->
+		<!-- 소속 부서의 부서장 사원번호 -->
+		<if test='branch_no == 1'>
+			SELECT manager_id
+			FROM tbl_department
+			WHERE dept_id = #{dept_id}
+		</if>
+		<!-- 본사가 아닐 경우 -->
+		<!-- 해당 지점에 상급자 사원번호 -->
+		<if test='branch_no != 1'>
+			SELECT emp_id
+			FROM tbl_employee
+			WHERE fk_branch_no = #{branch_no}
+			AND fk_grade_no = (SELECT MIN(fk_grade_no) FROM tbl_employee where fk_branch_no = #{branch_no})
+		</if>
 	</select>
 	
 	<!-- 신규 사원정보 insert -->

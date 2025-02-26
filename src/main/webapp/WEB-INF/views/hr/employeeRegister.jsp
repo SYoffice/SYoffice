@@ -12,6 +12,38 @@
 <script>
     // 전역 변수로 contextPath 설정
     window.contextPath = "${pageContext.request.contextPath}";
+    
+    $(document).ready(function() {
+        const $branchSelect = $('#branchSelect'); // 지점 선택
+        const $deptSelect = $('#deptSelect'); // 부서 선택
+
+        // 모든 부서 옵션을 저장
+        const allDepartments = $deptSelect.find('option:not(:first)').clone();
+
+        // 지점 선택 시 부서 목록 변경
+        $branchSelect.on('change', function() {
+            const selectedBranch = $(this).val(); // 선택한 지점 번호
+            $deptSelect.empty().append('<option value="">부서선택</option>'); // 초기화 (중복 방지)
+
+            if (selectedBranch === "1") { 
+                // 본사(1) 선택 시, 판매부(8) 제외
+                allDepartments.each(function() {
+                    if ($(this).data('dept-id') !== 8) {
+                        $deptSelect.append($(this).clone());
+                    }
+                });
+            } else if (selectedBranch === "2" || selectedBranch === "3") {
+                // 강남지점(2), 강북지점(3) 선택 시 판매부(8)만 보이게
+                allDepartments.each(function() {
+                    if ($(this).data('dept-id') === 8) {
+                        $deptSelect.append($(this).clone());
+                    }
+                });
+            }
+        });
+    });
+    
+    
 </script>
 
 			<span class="h2"><i class="fa-solid fa-seedling"></i> 신규사원 등록</span>
@@ -93,7 +125,7 @@
 						
 							<div class="input_box select">
 								<div class="input_text">지점</div> 
-								<select name="branch_no">
+								<select name="branch_no" id="branchSelect">
 									<option value="">지점선택</option>
 									<c:forEach items="${requestScope.branchList}" var="barnchVO">
 										<option value="${barnchVO.branch_no}">${barnchVO.branch_name}</option>
@@ -103,11 +135,13 @@
 							
 							<div class="input_box select">
 								<div class="input_text">부서</div> 
-								<select name="dept_id">
-									<option value="">부서선택</option>
-									<c:forEach items="${requestScope.departmentList}" var="departmentVO">
-										<option value="${departmentVO.dept_id}">${departmentVO.dept_name}</option>
-									</c:forEach>
+								<select name="dept_id" id="deptSelect">
+								    <option value="">부서선택</option>
+								    <c:forEach items="${requestScope.departmentList}" var="departmentVO">
+								        <option value="${departmentVO.dept_id}" data-dept-id="${departmentVO.dept_id}">
+								            ${departmentVO.dept_name}
+								        </option>
+								    </c:forEach>
 								</select>
 							</div>
 							
