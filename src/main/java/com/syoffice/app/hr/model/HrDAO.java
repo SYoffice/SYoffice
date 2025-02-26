@@ -38,7 +38,7 @@ public interface HrDAO {
 	String checkMail(String mail);
 	
 	// 직속 상관 사번 알아오기
-	String getLeaderId(String dept_id);
+	String getLeaderId(String dept_id, String branch_no);
 	
 	// 사원정보 update
 	int employeeEdit(Map<String, String> paraMap);
