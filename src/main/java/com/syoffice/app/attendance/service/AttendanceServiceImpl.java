@@ -62,27 +62,49 @@ public class AttendanceServiceImpl implements AttendanceService {
         String result = attendanceDAO.getMonthlyAccumulated(empId);
         return result != null ? result : "0h 0m";  // NULL 방지
     }
-    /*
- 
+   
     // 연차 내역 리스트 조회 (각 행을 Map<String, Object>로 구성)
     @Override
     public List<Map<String, Object>> getLeaveList(String empId) {
         
         return attendanceDAO.getLeaveList(empId);
     }
-
+    /*
+    
     // 사용자의 총 연차 일수 조회
     @Override
     public int getTotalLeave(String empId) {
     	
         return attendanceDAO.getTotalLeave(empId);
     }
-
-    // 사용한 연차 일수 조회
+ */
+    // 잔여 연차 
     @Override
     public int getUsedLeave(String empId) {
        
         return attendanceDAO.getUsedLeave(empId);
     }
-    */
+    
+   
+    
+    @Override
+    public void updateAbsenceForEmployees() {
+        attendanceDAO.updateAbsenceForEmployees();
+    }
+
+    // 조직도 데이터 가져오기
+    public List<Map<String, Object>> selectOrganization(String date) {
+        return attendanceDAO.selectOrganization(date);  // 기존 메소드 그대로 사용
+    }
+
+ 	@Override
+ 	public List<Map<String, Object>> selectOrganizationByDept(Map<String, Object> param) {
+ 	    System.out.println("✅ 전달받은 파라미터: " + param); // 기존 로그
+ 	    System.out.println("🟢 실행되는 SQL: SELECT * FROM tbl_attendance WHERE dept_name = '"
+ 	        + param.get("dept_name") + "' AND branch_name = '" + param.get("branch_name") + "'");
+
+ 	    return attendanceDAO.selectOrganizationByDept(param);
+ 	}
+
+
 }
