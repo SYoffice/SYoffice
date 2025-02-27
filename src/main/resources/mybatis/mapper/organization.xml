@@ -21,30 +21,55 @@
     
     
     <!-- 조직도 차트 -->
-    <select id="selectOrganizationByDept" parameterType="String" resultType="map">
-	 SELECT 
-	    e.emp_id, e.name, e.profile_img, manager_id, e.leader_id, 
-	    g.grade_name, d.dept_name, b.branch_name
-	FROM tbl_employee e
-	JOIN tbl_department d ON e.fk_dept_id = d.dept_id
-	JOIN tbl_grade g ON e.fk_grade_no = g.grade_no
-	JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
-	WHERE d.dept_name = #{dept_name}
-	<if test="branch_name != null and branch_name != '' ">
-        AND b.branch_name = #{branch_name}
-    </if>
-		OR e.emp_id = (
-		    SELECT leader_id FROM tbl_employee 
-		    WHERE emp_id = (
-		        SELECT manager_id FROM tbl_department WHERE dept_name = #{dept_name}
+    <select id="selectOrganizationByDept" parameterType="map" resultType="map">
+		    SELECT e.emp_id, e.name, e.profile_img, 
+		    manager_id, leader_id, d.executive_id,
+		    g.grade_name, d.dept_name, b.branch_name
+		FROM tbl_employee e
+		JOIN tbl_department d ON e.fk_dept_id = d.dept_id
+		JOIN tbl_grade g ON e.fk_grade_no = g.grade_no
+		JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
+		WHERE d.dept_name = #{dept_name}
+		<if test="branch_name != null and branch_name != ''">
+		        AND b.branch_name = #{branch_name}
+		    </if>
+		OR (
+		    e.emp_id = (
+		        SELECT leader_id FROM tbl_employee 
+		        WHERE emp_id = (
+		            SELECT manager_id FROM tbl_department WHERE dept_name = #{dept_name}
+		        )
+		        AND leader_id IN (
+		            SELECT emp_id FROM tbl_employee 
+		            WHERE fk_dept_id = (SELECT dept_id FROM tbl_department WHERE dept_name = '임원진')
+		        )
 		    )
-		    AND leader_id IN (SELECT emp_id FROM tbl_employee WHERE fk_dept_id = (SELECT dept_id FROM tbl_department WHERE dept_name = '임원진'))
 		)
-		ORDER BY g.grade_name, e.emp_id
-    </select>
+		OR e.emp_id = ( 
+		    SELECT executive_id FROM tbl_department WHERE dept_name = #{dept_name}
+		)
+		ORDER BY g.grade_no, e.emp_id
+		</select>
 
 
 
+
+
+
+	 <!-- 부서 목록 조회 -->
+	<select id="selectDepartments" resultType="map">
+	    SELECT dept_name 
+	    FROM tbl_department 
+	    ORDER BY dept_id
+	</select>
+	
+	
+	<!-- 지점 목록 조회 -->
+	<select id="selectBranches" resultType="map">
+	    SELECT branch_name 
+	    FROM tbl_branch
+	    ORDER BY branch_no
+	</select>
 
   
 
