@@ -12,6 +12,7 @@
       <typeAlias type="com.syoffice.app.board.domain.CommentVO" alias="CommentVO"/><!-- 댓글VO -->
       <typeAlias type="com.syoffice.app.kpi.domain.KpiVO" alias="KpiVO"/>
       <typeAlias type="com.syoffice.app.kpi.domain.ResultVO" alias="ResultVO"/>
+       <typeAlias type="com.syoffice.app.attendance.domain.AttendanceVO" alias="AttendanceVO"/><!-- 근태VO -->
    </typeAliases>
 
 
