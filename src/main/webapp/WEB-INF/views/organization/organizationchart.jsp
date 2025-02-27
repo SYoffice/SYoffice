@@ -3,6 +3,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 
+
 <%
 	String ctxPath = request.getContextPath();
 %>
@@ -89,6 +90,8 @@
 
 <jsp:include page="../main/header.jsp"/>
 
+
+
 <%-- 모달 창 --%>
 <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document" >
@@ -134,20 +137,26 @@
         
         	<div style="border: solid 0px black; width: 80%; margin: 6% 14% 0 auto;">
         
-        	<div id="organization" style="text-align: center; margin-top: 3%;">
-			  <button type="button" class="btn btn-light; border border-dark;" data-val="임원진">임원진</button>
-			  <button type="button" class="btn btn-light; border border-dark;" data-val="인사부">인사부</button>
-			  <button type="button" class="btn btn-light; border border-dark;" data-val="총무부">총무부</button>
-			  <button type="button" class="btn btn-light; border border-dark;" data-val="회계부">회계부</button>
-			  <button type="button" class="btn btn-light; border border-dark;" data-val="영업부">영업부</button>
-			  <button type="button" class="btn btn-light; border border-dark;" data-val="기획부">기획부</button>
-			  <button type="button" class="btn btn-light; border border-dark;" data-val="마케팅부">마케팅부</button>
-			  <button type="button" class="btn btn-light; border border-dark;" data-val="강남지점">강남지점</button>
-			  <button type="button" class="btn btn-light; border border-dark;" data-val="강북지점">강북지점</button>
+        	<div id="organization" style="text-align: center; ">
+		    <%-- 부서 버튼 (판매부 제외) --%>
+		    <c:forEach var="dept" items="${departments}">
+		        <c:if test="${dept.DEPT_NAME != '판매부'}">
+		            <button type="button"  class="btn btn-light; border border-dark;" data-val="${dept.DEPT_NAME}">
+		                ${dept.DEPT_NAME}
+		            </button>
+		        </c:if>
+		    </c:forEach>
+		
+		    <%-- 지점 버튼 (본사 제외) --%>
+		    <c:forEach var="branch" items="${branches}">
+		        <c:if test="${branch.BRANCH_NAME != '본사'}">
+		            <button type="button"  class="btn btn-light; border border-dark;" data-val="${branch.BRANCH_NAME}">
+		                ${branch.BRANCH_NAME}
+		            </button>
+		        </c:if>
+		    </c:forEach>
 			</div>
 
-            	
-            	
             	
             	<figure class="highcharts-figure">
 				    <div  id="container"></div>
@@ -155,8 +164,6 @@
 			</div>	
         </div>
     </div>
-
-
 
 
 <script type="text/javascript">
@@ -176,10 +183,6 @@ $(document).ready(function(){
 	
  // Function Declaration
  function func_choice(searchTypeVal) {  // searchType의 value 값
-	    if (searchTypeVal == "부서를 선택하세요") {
-	    	$("div#container").empty();
-	        return;
-	    }
 
 	    let deptName = searchTypeVal;
 	    let branchName = "";
@@ -202,9 +205,9 @@ $(document).ready(function(){
 	        },
 	        dataType: "json",
 	        success: function(json) {
-	       //     console.log( JSON.stringify(json));
+	        //  console.log( JSON.stringify(json));
 	            /*
-	            [{"LEADER_ID":2025015,"DEPT_NAME":"마케팅부","EMP_ID":2025007,"PROFILE_IMG":"곽철이.png","GRADE_NAME":"주임","BRANCH_NAME":"본사","MANAGER_ID":2025007,"NAME":"곽철이따봉"}
+	            [{"EXECUTIVE_ID":2025015,"DEPT_NAME":"마케팅부","EMP_ID":2025007,"PROFILE_IMG":"곽철이.png","GRADE_NAME":"주임","BRANCH_NAME":"본사","MANAGER_ID":2025007,"NAME":"곽철이따봉"}
 	            ,{"DEPT_NAME":"마케팅부","EMP_ID":2025003,"GRADE_NAME":"사원","BRANCH_NAME":"본사","MANAGER_ID":2025007,"NAME":"실험용"}
 	            ,{"DEPT_NAME":"마케팅부","EMP_ID":2025009,"PROFILE_IMG":"펭구.png","GRADE_NAME":"사원","BRANCH_NAME":"본사","MANAGER_ID":2025007,"NAME":"김펭구"}
 	            ,{"DEPT_NAME":"마케팅부","EMP_ID":2025010,"PROFILE_IMG":"곽철이 미쳤따.png","GRADE_NAME":"사원","BRANCH_NAME":"본사","MANAGER_ID":2025007,"NAME":"이곽철"}
@@ -232,19 +235,18 @@ $(document).ready(function(){
 	            
 	            json.forEach(emp => {
 	            	
-	            	if (branchName == "본사" && emp.DEPT_NAME != "임원진") { // 지점이 본사이고, 부서명이 임원진이 아닐때
-	            	
+	            	if (branchName == "본사" ) { // 지점이 본사이고, 부서명이 임원진이 아닐때
 	            		
-	            		 if (emp.MANAGER_ID && emp.LEADER_ID) { // 매니저 아이디, 리더아이디 있을때
+	            		 if (emp.MANAGER_ID && emp.EXECUTIVE_ID) { // 매니저 아이디, 임원진아이디 있을때
 	                        
-	                         if (emp.LEADER_ID != emp.EMP_ID && empMap[emp.LEADER_ID]) {
-	                             data.push([ empMap[emp.LEADER_ID], emp.NAME ]);
+	                         if (emp.EXECUTIVE_ID != emp.EMP_ID && empMap[emp.EXECUTIVE_ID]) {
+	                             data.push([ empMap[emp.EXECUTIVE_ID], empMap[emp.MANAGER_ID] ]);
 	                         }
 	                         if (emp.MANAGER_ID != emp.EMP_ID && empMap[emp.MANAGER_ID]) {
 	                             data.push([ empMap[emp.MANAGER_ID], emp.NAME ]);
 	                         }
 	                     } 
-	            		 else if (emp.MANAGER_ID && !emp.LEADER_ID) { // 매니저 아이디있고 리더아이디 없을때
+	            		 else if (emp.MANAGER_ID && !emp.EXECUTIVE_ID) { // 매니저 아이디있고 없을때
  
 	                         if (manager) { 
 	                             nodes.push({
@@ -260,7 +262,7 @@ $(document).ready(function(){
 	                         
 	                     }
 	            	
-	            		 else if (!emp.MANAGER_ID && emp.LEADER_ID) { // 매니저 아이디 없고 리더아이디 있을때
+	            		 else if (!emp.MANAGER_ID && emp.EXECUTIVE_ID) { // 매니저 아이디 없고 임원진아이디 있을때
 	            			    if (!manager) { 
 	            			        nodes.push({
 	            			            id: "공석",
@@ -269,19 +271,17 @@ $(document).ready(function(){
 	            			        manager = true;
 	            			    }
 
-           			    // 리더가 있는 경우 "공석"을 매니저 노드로 연결
-           			    if (emp.LEADER_ID != emp.EMP_ID && empMap[emp.LEADER_ID]) {
-           			        data.push([empMap[emp.LEADER_ID], "공석"]);
+           			    // 임원진가 있는 경우 "공석"을 매니저 노드로 연결
+           			    if (emp.EXECUTIVE_ID != emp.EMP_ID && empMap[emp.EXECUTIVE_ID]) {
+           			        data.push([empMap[emp.EXECUTIVE_ID], "공석"]);
            			    }
 
            			    // 공석을 통해 사원을 연결
            			    data.push(["공석", emp.NAME]);
-           			}
+           			    
+           				}
 
-	            	
-	            		
-	            		 
-	            		 else if (!emp.MANAGER_ID && !emp.LEADER_ID) { // 매니저아이디, 리더아이디 둘다 없을때
+	            		 else if (!emp.MANAGER_ID && !emp.EXECUTIVE_ID) { // 매니저아이디, 임원진아이디 둘다 없을때
 	                    	 
 	                         if (!allnull) {
 	                             nodes.push({
@@ -295,35 +295,47 @@ $(document).ready(function(){
 	                             allnull = true;
 	                             
 	                             
-	                             data.push(["공석1", "공석2"]);  // 먼저 리더아이디에서 매니저아이디로 연결
+	                             data.push(["공석1", "공석2"]);  // 먼저 임원진아이디에서 매니저아이디로 연결
 	                         }
 	                         
 	                         data.push(["공석2", emp.NAME]); // 매니저아이디에서 사원으로 연결
 	                     } 
 	            		 
 	            	
+	            		 else if (emp.DEPT_NAME == "임원진"){ // 부서가 임원진일때
+	 	            		
+		            		 if (emp.EXECUTIVE_ID != emp.EMP_ID && empMap[emp.EXECUTIVE_ID]) { 
+	                             data.push([empMap[emp.EXECUTIVE_ID], emp.NAME]);   // 임원진아이디 > 사원
+	                         }
+		            		
+		            	}
 	            	
-	                 }
+	            	}
+	                 
 	            	
 	            	else { // 본사가 아니고 지점일경우
 	                     
-	                     if (emp.LEADER_ID && emp.LEADER_ID !== emp.EMP_ID && empMap[emp.LEADER_ID]) {
+	                     if (emp.LEADER_ID && emp.LEADER_ID != emp.EMP_ID && empMap[emp.LEADER_ID]) {
 	                         data.push([ empMap[emp.LEADER_ID], emp.NAME ]);
 	                     }
+	            	
+	                     
 	                 }
-
+	            	
 	            	
                     data = [...new Set(data.map(JSON.stringify))].map(JSON.parse); // 데이터 중복 제거
 	                
-	                nodes.push({
-	                    id: emp.NAME,
-	                    name: emp.NAME + "\n" + emp.GRADE_NAME,
-	                    image: `<%= ctxPath %>/resources/profile/\${emp.PROFILE_IMG}`
-	                });
+                    nodes.push({
+                        id: emp.NAME,
+                        name: emp.NAME + "\n" + (branchName != "본사" && emp.LEADER_ID == emp.EMP_ID ? "지점장" : emp.GRADE_NAME),  // 본사는 직급명 지점은 지점장
+                        image: `<%= ctxPath %>/resources/profile/\${emp.PROFILE_IMG || "기본이미지.png"}`,
+                        color: emp.GRADE_NAME == "대표이사" ? "#808080" : undefined  // 직급이 대표이사는 회색으로 만듬
+                    });
+
 	            });
 	            
 	            
-             	  console.log(data);
+             	 console.log(data);
 	            /*
 	            ['서영학', '김영학']  '부모', '자식' 관계로 서영학이 김영학, 박영학, 이영학의 부모여서 1-3 로 나옴.
 				['서영학', '박영학']

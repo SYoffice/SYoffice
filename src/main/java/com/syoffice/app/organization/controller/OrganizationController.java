@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.syoffice.app.organization.service.OrganizationService;
 
@@ -48,13 +49,22 @@ public class OrganizationController {
 	@Autowired  // Type에 따라 알아서 Bean 을 주입해준다.
 	private OrganizationService service;
 	
-
-	@GetMapping("chart") 
-	public String organizationchart(HttpServletRequest request) {
+	
+	@GetMapping("chart")
+	public ModelAndView organizationchart() {
 		
-		return "/organization/organizationchart";
-		//   /WEB-INF/views/organization/organizationchart.jsp 페이지를 만들어야 한다.
+	    ModelAndView mav = new ModelAndView("/organization/organizationchart");
+
+	    List<Map<String, Object>> departments = service.selectDepartments();
+	    List<Map<String, Object>> branches = service.selectBranches();
+
+	    // jsp로 데이터 전달
+	    mav.addObject("departments", departments);
+	    mav.addObject("branches", branches);
+
+	    return mav;
 	}
+	
 	
 	@GetMapping("")
 	public String organization(HttpServletRequest request) {
@@ -72,7 +82,7 @@ public class OrganizationController {
     }
 	
     
-    // 부서별로 조직도 차트 
+    //  조직도 차트 
     @GetMapping("/dataByDept")
     @ResponseBody
     public List<Map<String, Object>> selectOrganizationByDept(@RequestParam("dept_name") String dept_name,
