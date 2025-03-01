@@ -3,9 +3,12 @@ package com.syoffice.app.kpi.model;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.syoffice.app.kpi.domain.KpiVO;
 import com.syoffice.app.kpi.domain.ResultVO;
 
+@Mapper
 public interface KpiDAO {
 
 	// === 목표 실적액 등록하기 === //
