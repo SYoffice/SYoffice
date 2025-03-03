@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+/* 메일 옵션 정보 입력 */
+div.mailbox_wrap {
+    margin-top: 2%;
+}
+
+/* 메일목록 행들 */
+table#mailbox_table tr {
+    cursor: pointer;
+}
+
+/* 읽은 메일 */
+tr.read {
+    color: #666666
+}
+
+/* 메일 제목 */
+td.subject {
+    width: 70%;
+}
+
+/* 중요 메일 표시 */
+span.important {
+    float: left;
+    color: red;
+}

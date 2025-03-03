@@ -1,0 +1,96 @@
+@charset "UTF-8";
+
+/* 메일 옵션 정보 입력 */
+div.mail_write_option {
+    display: flex;
+    margin-top: 5%;
+}
+
+/* 수신자 정보 입력 */
+div.user_list {
+    display: flex;
+}
+
+/* 받는사람 입력 공간 */
+input#recipient {
+    border-radius: 5px;
+    border: solid 1px #ccc;
+}
+
+/* 조직도 버튼 */
+button.buttonBorder {
+	border-radius: 5px;
+	border: solid 1px black;
+	width: 5em;
+	height: 2.3em;
+    margin-left: 3%;
+}
+
+/* 파일첨부 공간 */
+div.fileDrop{ 
+    display: inline-block; 
+    width: 100%; 
+    height: 100px;
+    overflow: auto;
+    background-color: #fff;
+    padding-left: 10px;
+    border-radius: 5px;
+    border: solid 1px #ccc;
+    margin-top: 0.5%;
+}
+/*
+div.option_area {
+    display: flex;
+}
+
+strong.option_title {
+    font-size: 16px;
+    font-weight: 600;
+    display: inline-block;
+    line-height: 26px;
+}
+*/
+label {
+    cursor: pointer;
+}
+
+/* 메일 작성 제목부분 */
+th.title_area {
+    padding-top: 1.2%;
+}
+
+input.title_checkbox {
+    margin: 0 3% 0 10%;
+}
+
+/* 수신자, 참조자 추가 시 블럭 관련 */
+div.displayRecipientList,
+div.displayCCUserList {
+    margin-top: 2%;
+	margin-bottom: 0.5%;
+}
+
+span.plusUser{
+	transition: .8s;
+	padding: 8px; 
+	background-color: #EAF0FF;
+	margin-right: 10px;
+	border-radius: 20px;
+	border: solid 1px black;
+}
+
+/* 파일첨부 관련 */
+div.fileDrop > div.fileList > span.delete{
+    display:inline-block; 
+    width: 20px; 
+    border: solid 0px gray; 
+    cursor: pointer;
+}
+div.fileDrop > div.fileList > span.fileName{
+    padding-left: 10px;
+}
+div.fileDrop > div.fileList > span.fileSize{
+    padding-right: 20px;
+    float:right;
+}
+span.clear{clear: both;}
