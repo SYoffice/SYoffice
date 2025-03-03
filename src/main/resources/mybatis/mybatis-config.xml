@@ -13,6 +13,8 @@
       <typeAlias type="com.syoffice.app.kpi.domain.KpiVO" alias="KpiVO"/>
       <typeAlias type="com.syoffice.app.kpi.domain.ResultVO" alias="ResultVO"/>
        <typeAlias type="com.syoffice.app.attendance.domain.AttendanceVO" alias="AttendanceVO"/><!-- 근태VO -->
+       <typeAlias type="com.syoffice.app.mail.domain.MailVO" alias="MailVO"/>
+       <typeAlias type="com.syoffice.app.mail.domain.MailAttachVO" alias="MailAttachVO"/>
    </typeAliases>
 
 

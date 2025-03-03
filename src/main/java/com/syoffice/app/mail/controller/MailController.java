@@ -1,9 +1,15 @@
 package com.syoffice.app.mail.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.syoffice.app.mail.domain.MailAttachVO;
+import com.syoffice.app.mail.domain.MailVO;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -109,11 +115,13 @@ public class MailController {
 			
 			List<Map<String, String>> mailList	= service.getMailBox(paraMap);		// 메일목록 가져오기
 			Map<String, Integer> mailCntMap 	= service.getMailCount(paraMap);	// 안읽은메일, 전체메일 개수 가져오기
-			
+
+//			System.out.println(mailList.toString());
+
 			mav.addObject("mailList", mailList);
 			mav.addObject("mailCntMap", mailCntMap);
 			mav.addObject("pageBar", pageBar);
-			mav.setViewName("/mail/mailbox");
+			mav.setViewName("/mail/mailbox_"+division);
 			
 		} catch (NumberFormatException e) {
 			mav.addObject("message", "메일함이 존재하지 않습니다.\\n받은메일함으로 이동합니다.");
@@ -131,5 +139,61 @@ public class MailController {
 		return "/mail/mailwrite";
 	}// end of public String mailWrite() -------------------- 
 	
-	
+
+	// === 메일 상세보기 === //
+	@GetMapping("{fk_mail_no}")
+	public ModelAndView mailViewDetail(HttpServletRequest request, ModelAndView mav, @PathVariable String fk_mail_no) {
+		try {
+			Integer.parseInt(fk_mail_no);
+
+			HttpSession session = request.getSession();
+			EmployeeVO empvo = (EmployeeVO) session.getAttribute("loginuser");
+
+			Map<String, String> paraMap = new HashMap<>();
+			paraMap.put("fk_emp_id", empvo.getEmp_id());
+			paraMap.put("fk_mail_no", fk_mail_no);
+
+			List<MailVO> mailVOList 	= service.getMailDetail(paraMap);	// update 처리 후 조회 해와야
+			List<MailVO> mailVOFileList = service.getMailAttachFile(paraMap);	// update 처리 후 조회 해와야
+
+
+			if (mailVOList == null || mailVOList.size() == 0) {
+				// URL 로 없는 것을 조회한 경우
+				mav.setViewName("redirect:/mail/box/0");
+			}
+			else {
+				mav.addObject("mailVOList", mailVOList);
+				mav.addObject("mailVOFileList", mailVOFileList);
+				mav.setViewName("/mail/maildetail");
+			}
+
+		} catch (NumberFormatException e) {
+			mav.setViewName("redirect:/mail/box/0");
+		}
+
+		return mav;
+	}// end of public ModelAndView mailViewDetail(HttpServletRequest request, ModelAndView mav, @PathVariable String fk_mail_no) -------------------------------
+
+
+	// === 메일 첨부파일 다운로드 === //
+	@GetMapping("/file/{atmail_no}")
+	public void mailFileDownload(HttpServletRequest request, HttpServletResponse response, @PathVariable String atmail_no) {
+		response.setContentType("text/html; charset=UTF-8");	// html 로 결과를 보여줄 것이며 문자인코딩은 UTF-8 이다.
+		PrintWriter out = null;
+
+		try{
+			Integer.parseInt(atmail_no);
+
+			service.downloadMailOneAttachFile(request, response, atmail_no);
+
+		} catch (NumberFormatException e) {
+			try {
+				out = response.getWriter();
+				out.println("<script type='text/javascript'>alert('비정상적인 접근입니다.'); history.back();</script>");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}// end of public void mailFileDownload(HttpServletRequest request, HttpServletResponse response, @PathVariable String atmail_no) ---------------------------
+
 }

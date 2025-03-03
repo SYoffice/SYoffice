@@ -56,7 +56,6 @@ window.onload = () => {
 
         if (isChecked) {
             // 나에게 보내기
-            receive_division = 3;
             sendMailToMe(sender);
         }
         else {
@@ -160,13 +159,13 @@ function getEmployeeInfo(emp_id) {
             /*
                 {"mail":"seoyh@syoffice.syo","branch_name":"본사","name":"서영학","dept_name":"임원진","emp_id":"2025001"}
             */
-            //const mail = json.mail;
+            const mail = json.mail;
             const branch_name = json.branch_name
             const name = json.name
             const dept_name = json.dept_name
             const emp_id = json.emp_id
 
-            const recipient = `${name}(${branch_name}-${dept_name})`;
+            const recipient = `${name} &lt;${mail}&gt;`;
             if (isRecipient){
                 addRecipient(recipient, emp_id);
             }
@@ -186,10 +185,11 @@ function getEmployeeInfo(emp_id) {
 
 // div.displayRecipientList 에 수신자를 넣어주는 함수
 function addRecipient(value, fk_emp_id){  // value 가 수신자로 선택한이름 이다.
-	var plusUser_es = $("div.displayRecipientList > span.plusUser").text();
- // console.log("확인용 plusUser_es => " + plusUser_es);
+	//var plusUser_es = $("div.displayRecipientList > span.plusUser").text();
+	var plusUser_es = $("div.displayRecipientList > span.plusUser > input").val();
+    //console.log("확인용 plusUser_es => " + plusUser_es);
 
-	if(plusUser_es.includes(value)) {  // plusUser_es 문자열 속에 value 문자열이 들어있다라면 
+	if(plusUser_es == fk_emp_id) {  // plusUser_es 문자열 속에 value 문자열이 들어있다라면 
 		//alert("이미 추가한 사원입니다.");
         Swal.fire({
             title: '이미 추가한 사원입니다.',        // Alert 제목
@@ -203,7 +203,7 @@ function addRecipient(value, fk_emp_id){  // value 가 수신자로 선택한이
 	else {
 
         const length = $("div.displayRecipientList").children("span").length;
-        if (length >= 6) {
+        if (length >= 4) {
             $("div.displayRecipientList").append("<br><br>")
         }
 
@@ -215,10 +215,11 @@ function addRecipient(value, fk_emp_id){  // value 가 수신자로 선택한이
 
 // div.displayCCUserList 에 참조자를 넣어주는 함수
 function addCCUser(value, fk_emp_id){  // value 가 수신자로 선택한이름 이다.
-	var plusUser_es = $("div.displayCCUserList > span.plusUser").text();
+	//var plusUser_es = $("div.displayCCUserList > span.plusUser").text();
+    var plusUser_es = $("div.displayRecipientList > span.plusUser > input").val();
  // console.log("확인용 plusUser_es => " + plusUser_es);
 
-	if(plusUser_es.includes(value)) {  // plusUser_es 문자열 속에 value 문자열이 들어있다라면 
+	if(plusUser_es == fk_emp_id) {  // plusUser_es 문자열 속에 value 문자열이 들어있다라면 
 		//alert("이미 추가한 사원입니다.");
         Swal.fire({
             title: '이미 추가한 사원입니다.',        // Alert 제목
@@ -232,7 +233,7 @@ function addCCUser(value, fk_emp_id){  // value 가 수신자로 선택한이름
 	else {
 
         const length = $("div.displayCCUserList").children("span").length;
-        if (length >= 6) {
+        if (length >= 4) {
             $("div.displayCCUserList").append("<br><br>")
         }
 
@@ -334,7 +335,7 @@ function sendMail(sender) {
     $("input[name='recipient']").val(recipient);
 
     // 참조인 넣어주기
-    let $ccuser = document.querySelectorAll("div.displayCCUserList > span.plusUser > input.recipient");
+    let $ccuser = document.querySelectorAll("div.displayCCUserList > span.plusUser > input.cc");
     let ccuserArr = [];
     if ($ccuser.length > 0) {
         // 참조한 사람이 있을 경우
@@ -393,8 +394,28 @@ function sendMail(sender) {
         dataType: "JSON",
         success:function(json){
             console.log(JSON.stringify(json));
-
-
+            
+            if (json.result == 1) {
+                Swal.fire({
+                    title: '메일을 발송했습니다.',        // Alert 제목
+                    icon: 'success',
+                    confirmButtonText: "확인"
+                })
+                .then((result) => {
+                    location.href = $("input#path").val()+"/mail/box/0";	// 받은 메일함으로 이동
+                })
+            }
+            else {
+                Swal.fire({
+                    title: '메일 발송에 실패했습니다.',        // Alert 제목
+                    icon: 'error',
+                    confirmButtonText: "확인"
+                })
+                .then((result) => {
+                    location.href = $("input#path").val()+"/mail/box/0";	// 받은 메일함으로 이동
+                })
+            }
+            
         },
         error: function(request, status, error){
             alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);

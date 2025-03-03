@@ -25,12 +25,13 @@
 		<result property="mail_important" 	column="mail_important" javaType="String"/>
 		<result property="name" 			column="name" 			javaType="String"/>
 		<result property="mail" 			column="mail" 			javaType="String"/>
+		<result property="attachCnt" 		column="attachCnt" 		javaType="String"/>
 	</resultMap>
 	<select id="getMailBox" parameterType="HashMap" resultMap="getMailBox_Map">
-		SELECT B.rno, B.receive_no, B.fk_mail_no, B.fk_emp_id, B.receive_status
+		SELECT DISTINCT B.rno, B.receive_no, B.fk_mail_no, B.fk_emp_id, B.receive_status
 			 , m.mail_subject, to_char(m.mail_senddate, 'yyyy-mm-dd hh24:mi:ss') AS mail_senddate, m.mail_important
-			 , e.name, e.mail
-		  FROM 
+			 , e.name, e.mail, (SELECT count(*) FROM tbl_attach_mail WHERE fk_mail_no = B.fk_mail_no) AS attachCnt
+		  FROM
 			(
 			SELECT A.rno, A.receive_no, A.fk_mail_no, A.fk_emp_id, A.receive_status
 			  FROM 
@@ -40,7 +41,7 @@
 				  FROM tbl_mailbox
 				 WHERE fk_emp_id = #{fk_emp_id}
 				 	<choose>
-				 		<when test="division != '-1'">
+				 		<when test="division != -1">
 				 			AND receive_division = #{division}	
 				 		</when>
 				 		<otherwise></otherwise>
@@ -50,7 +51,7 @@
 			) B JOIN tbl_mail m
 			ON B.fk_mail_no = m.mail_no	
 		  JOIN tbl_employee e
-		    ON B.fk_emp_id = e.emp_id
+		    ON m.fk_emp_id = e.emp_id
 	</select>
 	
 	<!-- === 메일의 개수 가져오기 === -->
@@ -107,7 +108,7 @@
 	<!-- 메일번호 채번하기 -->
 	<select id="getMailNo" resultType="Integer">
 		SELECT mail_seq.nextval
-  		  FROM dual;
+  		  FROM dual
 	</select>
 	
 	<!-- === 메일 정보 입력하기 === -->
@@ -121,5 +122,54 @@
 		INSERT INTO tbl_mailbox (receive_no, fk_mail_no, fk_emp_id, receive_status, receive_division, receivercc)
 		VALUES (receive_seq.nextval, to_number(#{mailNo}), to_number(#{recipient}), 0, to_number(#{receive_division}), to_number(#{receivercc}))
 	</insert>
-	
+
+	<!-- === 메일 첨부파일 정보 입력하기 === -->
+	<insert id="insertAttachFile" parameterType="HashMap">
+		INSERT INTO tbl_attach_mail (atmail_no, fk_mail_no, atmail_filename, atmail_orgfilename, atmail_filesize)
+		VALUES (atmail_seq.nextval, to_number(#{mailNo}), #{newFileName}, #{originalFilename}, to_number(#{fileSize}))
+	</insert>
+
+	<!-- === 메일 상세조회하기 (수신인정보) === -->
+	<select id="getMailDetail" parameterType="HashMap" resultType="MailVO">
+		SELECT A.fk_mail_no, e.emp_id AS receiver, A.receivercc, e.name AS receiver_name, e.mail AS receiver_mail
+		FROM
+			(
+				SELECT fk_mail_no, fk_emp_id, receivercc
+				FROM tbl_mailbox
+				WHERE fk_mail_no = #{fk_mail_no}
+			) A
+				JOIN tbl_employee e
+					 ON A.fk_emp_id = e.emp_id
+	</select>
+
+	<!-- === 메일 정보, 첨부파일, 발신인 정보 가져오기 === -->
+	<select id="getMailAttachFile" parameterType="HashMap" resultType="MailVO">
+		SELECT A.mail_no, A.fk_emp_id AS sender, A.mail_subject, A.mail_content, A.mail_senddate
+			 , e.name AS sender_name, e.mail AS sender_mail, nvl(atm.atmail_no, -1) AS atmail_no, atm.atmail_filename, atm.atmail_orgfilename
+			 , atm.atmail_filesize
+		FROM
+			(
+				SELECT mail_no, fk_emp_id, mail_subject, mail_content, to_char(mail_senddate, 'yyyy-mm-dd hh24:mi:ss') AS mail_senddate
+				FROM tbl_mail
+				WHERE mail_no = #{fk_mail_no}
+			) A
+				JOIN tbl_employee e
+					 ON A.fk_emp_id = e.emp_id
+				LEFT JOIN tbl_attach_mail atm
+						  ON A.mail_no = atm.fk_mail_no
+	</select>
+
+	<!-- 메일 읽음처리 -->
+	<update id="mailRead" parameterType="HashMap">
+		UPDATE tbl_mailbox SET receive_status = 1
+		 WHERE fk_mail_no = #{fk_mail_no} AND fk_emp_id = #{fk_emp_id}
+	</update>
+
+	<!-- === 한개의 첨부파일 정보를 가져오기 === -->
+	<select id="getMailOneAttachFile" parameterType="String" resultType="MailAttachVO">
+		SELECT atmail_no, atmail_filename, atmail_orgfilename, atmail_filesize, fk_mail_no
+		  FROM tbl_attach_mail
+		 WHERE atmail_no = #{atmailNo}
+	</select>
+
 </mapper>
