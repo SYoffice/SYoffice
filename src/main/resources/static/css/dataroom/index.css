@@ -1,0 +1,136 @@
+@charset "UTF-8";
+
+@charset "UTF-8";
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    table-layout: fixed;
+    border: 1px solid #ddd;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 12px;
+}
+
+/* 테이블 헤더 스타일 */
+th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 파일명 왼쪽 정렬 */
+td:first-child {
+    text-align: left;
+    padding-left: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 🔹 파일 크기 가운데 정렬 */
+td:nth-child(2) {
+    text-align: center;
+    font-weight: normal;
+}
+
+
+#download:hover {
+    background-color: #BFD2FA;
+    box-shadow: none;
+}
+
+td:last-child {
+    text-align: right;
+    padding-right: 15px;
+}
+
+
+#categoryName
+{
+    width: 80%;
+    height: 30px;
+    margin-top: 15px;
+    font-size: 16px;
+    background-color: transparent;
+    border: 1px solid #000;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#newFolderForm > button.submit,
+#newFolderForm > button.cancel{
+	width: 39%;
+    height: 30px;
+    margin-top: 15px;
+    font-size: 16px;
+    background-color: transparent;
+    border: 1px solid #000;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#delFloderForm{
+	width: 30%;
+}
+
+#delFloderForm > button{
+	border: none;
+	font-size: 12pt;
+	margin-top: -10%;
+	margin-left: -15%;
+}
+
+
+div.side_menu_wrapper > div > ul > li{
+	 line-height: 2.8;
+}
+
+/* 페이징바의 숫자를 감싸고 있는 박스 */
+/* 가운데 정렬을 위해 사용 */
+div#pageNo_box {
+	width: 250px;
+	display: flex;
+	justify-content: center;
+	margin: 0 2%;	
+}
+
+div#pageNo_box > li {
+	width: 50px;
+	margin: 0 2%;
+}
+
+/* 페이징바의 숫자 요소들 (1 2 3 4 5) */
+a.pageNo {
+	font-size: 22px;
+	font-weight: lighter;	
+	border-bottom: solid 0.7px black;
+	color: gray;
+}
+
+/* 페이징바의 버튼을 감싸고 있는 박스 */
+div.pageBtn_box {
+	display: flex;
+	width: 60	px;
+}
+
+div.pageBtn_box > li {
+	margin: 0 3%;
+}
+
+/* 페이지바의 이동하는 버튼 (< << > >>) */
+img.pageBtn {
+	width: 25px;
+	height: 30px;
+}
+
+nav.text-center {
+	/* border: solid 1px red; */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

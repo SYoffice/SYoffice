@@ -116,7 +116,7 @@ $(document).ready(function() {
 function formatNumber(Number) {
     return Number.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
 }	
-		
+
 
 // jsTree 형식으로 변환
 function convertToJsTreeFormat(data) {
@@ -146,7 +146,6 @@ function convertToJsTreeFormat(data) {
         }
 
         
-        
      	// 지점 추가
         if (!branch[branchId]) {	  
         	branch[branchId] = {
@@ -160,7 +159,6 @@ function convertToJsTreeFormat(data) {
         }
 
         
-        
      	// 부서 추가
         if (!dept[deptId]) { 
         	dept[deptId] = {
@@ -172,7 +170,6 @@ function convertToJsTreeFormat(data) {
             result.push(dept[deptId]);
         }
 
-     	
      	
         // 사원 추가
         result.push({	 
