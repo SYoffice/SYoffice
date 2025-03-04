@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="com.syoffice.app.dataroom.model.DataroomDAO">
+	
+	<!-- 전체 파일 개수 가져오기  -->
+	<select id="getTotalFile" parameterType="map" resultType="int">
+	    select COUNT(*)
+	    FROM tbl_data
+	    WHERE 1=1
+	    <if test="data_cateno != null and data_cateno != ''">
+	        AND fk_data_cateno = #{data_cateno}
+	    </if>
+	    <if test="searchType != null and searchWord != ''">
+	        AND ${searchType} LIKE '%' || #{searchWord} || '%'
+	    </if>
+	</select>
+
+
+	<!-- 검색, 페이징한 파일 리스트 가져오기 -->
+	<select id="getFileList" parameterType="map" resultType="DataVO">
+    select data_no, fk_emp_id, data_filename, data_orgfilename, data_filesize, fk_data_cateno
+    FROM (
+        select data_no, fk_emp_id, data_filename, data_orgfilename, data_filesize, fk_data_cateno,
+               ROW_NUMBER() OVER (ORDER BY data_no DESC) AS rnum
+        FROM tbl_data
+        WHERE fk_data_cateno = #{data_cateno}
+        <if test="searchType != null and searchWord != ''">
+            AND ${searchType} LIKE '%' || #{searchWord} || '%'
+        </if>
+    ) WHERE rnum BETWEEN #{startRno} AND #{endRno}
+	</select>
+	
+	
+	<!-- 자료실 폴더 목록 조회-->
+    <select id="getDataCategoryList" resultType="DatacategoryVO">
+        select data_cateno, data_catename
+        from tbl_data_category
+        ORDER BY data_cateno ASC
+    </select>
+    
+    
+     <!-- 특정 폴더에 있는 파일 목록 가져오기 -->
+    <select id="getFileListByCategory" resultType="DataVO">
+        select data_no, fk_emp_id, data_filename, data_orgfilename, data_filesize, fk_data_cateno
+        from tbl_data
+        WHERE fk_data_cateno = #{data_cateno}
+        ORDER BY data_no DESC
+    </select>
+    
+    <!-- 새폴더 추가 -->
+    <insert id="insertCategory" parameterType="DatacategoryVO">
+    	insert into tbl_data_category(data_cateno, data_catename)
+		values(data_category_seq.nextval, #{data_catename})
+    </insert>
+	
+	<!-- 폴더안에 파일 삭제 -->
+	<delete id="deleteFilesInCategory" parameterType="String">
+		delete from tbl_data
+		where fk_data_cateno = #{fk_data_cateno}
+	</delete>
+	
+	<!-- 폴더 삭제 -->
+	<delete id="deleteCategory" parameterType="String">
+		delete from tbl_data_category
+		where data_cateno = #{data_cateno}
+	</delete>
+	
+	
+	<!-- 파일 업로드 -->
+	<insert id="insertFile" parameterType="DataVO">
+	    insert into tbl_data (data_no, fk_emp_id, data_filename, data_orgfilename, data_filesize, fk_data_cateno)
+	    VALUES (data_seq.nextval, #{fk_emp_id}, #{data_filename}, #{data_orgfilename}, #{data_filesize}, #{fk_data_cateno})
+	</insert>
+	
+	<!-- 파일 다운로드 -->
+	<select id="getFile" parameterType="String" resultType="DataVO">
+	    select data_no, data_filename, data_orgfilename, data_filesize, fk_data_cateno
+	    from tbl_data
+	    WHERE data_no = #{data_no}
+	</select>
+	
+	<select id="getCategoryName" parameterType="String" resultType="String">
+    	select data_catename
+    	from tbl_data_category 
+    	WHERE data_cateno = #{data_cateno}
+	</select>
+	
+	<!-- 파일 삭제  -->
+	<delete id="deleteFile" parameterType="String">
+    	delete from tbl_data
+    	WHERE data_no = #{data_no}
+	</delete>
+	
+</mapper>
+
+
+
