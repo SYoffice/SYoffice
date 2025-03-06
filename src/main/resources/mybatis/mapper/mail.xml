@@ -28,6 +28,7 @@
 		<result property="attachCnt" 		column="attachCnt" 		javaType="String"/>
 	</resultMap>
 	<select id="getMailBox" parameterType="HashMap" resultMap="getMailBox_Map">
+	<!-- 
 		SELECT DISTINCT B.rno, B.receive_no, B.fk_mail_no, B.fk_emp_id, B.receive_status
 			 , m.mail_subject, to_char(m.mail_senddate, 'yyyy-mm-dd hh24:mi:ss') AS mail_senddate, m.mail_important
 			 , e.name, e.mail, (SELECT count(*) FROM tbl_attach_mail WHERE fk_mail_no = B.fk_mail_no) AS attachCnt
@@ -42,7 +43,7 @@
 				 WHERE fk_emp_id = #{fk_emp_id}
 				 	<choose>
 				 		<when test="division != -1">
-				 			AND receive_division = #{division}	
+				 			AND receive_division = to_number(#{division})	
 				 		</when>
 				 		<otherwise></otherwise>
 				 	</choose>
@@ -52,6 +53,35 @@
 			ON B.fk_mail_no = m.mail_no	
 		  JOIN tbl_employee e
 		    ON m.fk_emp_id = e.emp_id
+		-->
+		SELECT B.rno, B.receive_no, B.fk_mail_no, B.fk_emp_id, B.receive_status
+			 , B.mail_subject, to_char(B.mail_senddate, 'yyyy-mm-dd hh24:mi:ss') AS mail_senddate, B.mail_important
+			 , e.name, e.mail, (SELECT count(*) FROM tbl_attach_mail at WHERE at.fk_mail_no = B.fk_mail_no) AS attachCnt
+		  FROM 
+			(
+			SELECT A.rno, A.receive_no, A.fk_mail_no, A.fk_emp_id, A.receive_status
+				 , A.mail_senddate, A.mail_important, A.mail_subject
+			  FROM 
+				(
+				SELECT ROW_NUMBER() OVER(ORDER BY m.mail_senddate DESC) AS rno, mb.receive_no
+					 , mb.fk_mail_no, mb.fk_emp_id, mb.receive_status, m.mail_senddate, m.mail_important
+					 , m.mail_subject
+				  FROM tbl_mailbox mb JOIN tbl_mail m
+				    ON mb.fk_mail_no = m.mail_no
+				 WHERE mb.fk_emp_id = #{fk_emp_id}
+				 	<choose>
+				 		<when test="division == -1">
+				 			AND receive_division NOT IN (2,4,5,9)
+				 		</when>
+				 		<otherwise>
+				 			AND receive_division = to_number(#{division})
+				 		</otherwise>
+				 	</choose>
+				) A
+			 WHERE A.rno BETWEEN #{startRno} AND #{endRno}
+			) B JOIN tbl_employee e
+		    ON B.fk_emp_id = e.emp_id
+		  order by B.rno asc
 	</select>
 	
 	<!-- === 메일의 개수 가져오기 === -->
@@ -61,24 +91,28 @@
 		<result property="total" 			column="total" 			javaType="Integer"/>
 	</resultMap>
 	<select id="getMailCount" parameterType="HashMap" resultMap="getMailCount_Map">
+	<!-- 
 		SELECT receive_status, count(*) AS cnt
 			 , (SELECT count(*) FROM tbl_mailbox WHERE fk_emp_id = #{fk_emp_id}
-			 	<choose>
-			 		<when test="division != '-1'">
-			 			AND receive_division = #{division}	
-			 		</when>
-			 		<otherwise></otherwise>
-			 	</choose>
+			 	<if test="division != -1">
+		 			AND receive_division = #{division}	
+			 	</if>
 			) AS total 
 		  FROM tbl_mailbox
 		 WHERE fk_emp_id = #{fk_emp_id} AND receive_status = 0
-		 	<choose>
-		 		<when test="division != '-1'">
+		 		<if test="division != -1">
 		 			AND receive_division = #{division}	
-		 		</when>
-		 		<otherwise></otherwise>
-		 	</choose>
+			 	</if>
 		 	GROUP BY receive_status
+		 	 -->
+		 SELECT (SELECT count(*) FROM tbl_mailbox WHERE fk_emp_id = #{fk_emp_id} AND receive_status = 0) AS cnt
+		 	<if test="division == -1">
+			  , (SELECT count(*) FROM tbl_mailbox WHERE fk_emp_id = #{fk_emp_id} AND receive_division NOT IN (2,4,5,9)) AS total 
+			</if>
+			<if test="division == 0">
+			  , (SELECT count(*) FROM tbl_mailbox WHERE fk_emp_id = #{fk_emp_id} AND receive_division NOT IN (1,2,4,5,9)) AS total
+			</if>
+		   FROM dual
 	</select>
 	
 	
@@ -120,7 +154,7 @@
 	<!-- === 메일함 입력하기 (to 타인) === -->
 	<insert id="intoMailBox" parameterType="HashMap">
 		INSERT INTO tbl_mailbox (receive_no, fk_mail_no, fk_emp_id, receive_status, receive_division, receivercc)
-		VALUES (receive_seq.nextval, to_number(#{mailNo}), to_number(#{recipient}), 0, to_number(#{receive_division}), to_number(#{receivercc}))
+		VALUES (receive_seq.nextval, to_number(#{mailNo}), to_number(#{recipient}), to_number(#{receive_status}), to_number(#{receive_division}), to_number(#{receivercc}))
 	</insert>
 
 	<!-- === 메일 첨부파일 정보 입력하기 === -->
@@ -131,10 +165,10 @@
 
 	<!-- === 메일 상세조회하기 (수신인정보) === -->
 	<select id="getMailDetail" parameterType="HashMap" resultType="MailVO">
-		SELECT A.fk_mail_no, e.emp_id AS receiver, A.receivercc, e.name AS receiver_name, e.mail AS receiver_mail
+		SELECT A.receive_no, A.fk_mail_no, e.emp_id AS receiver, A.receivercc, e.name AS receiver_name, e.mail AS receiver_mail
 		FROM
 			(
-				SELECT fk_mail_no, fk_emp_id, receivercc
+				SELECT receive_no, fk_mail_no, fk_emp_id, receivercc
 				FROM tbl_mailbox
 				WHERE fk_mail_no = #{fk_mail_no}
 			) A
@@ -146,10 +180,11 @@
 	<select id="getMailAttachFile" parameterType="HashMap" resultType="MailVO">
 		SELECT A.mail_no, A.fk_emp_id AS sender, A.mail_subject, A.mail_content, A.mail_senddate
 			 , e.name AS sender_name, e.mail AS sender_mail, nvl(atm.atmail_no, -1) AS atmail_no, atm.atmail_filename, atm.atmail_orgfilename
-			 , atm.atmail_filesize
+			 , atm.atmail_filesize, A.mail_important
 		FROM
 			(
 				SELECT mail_no, fk_emp_id, mail_subject, mail_content, to_char(mail_senddate, 'yyyy-mm-dd hh24:mi:ss') AS mail_senddate
+					 , mail_important
 				FROM tbl_mail
 				WHERE mail_no = #{fk_mail_no}
 			) A
@@ -171,5 +206,72 @@
 		  FROM tbl_attach_mail
 		 WHERE atmail_no = #{atmailNo}
 	</select>
+	
+	<!-- 메일 삭제하기(휴지통으로 이동) -->
+	<update id="deleteMail" parameterType="String">
+		UPDATE tbl_mailbox SET receive_division = 4
+ 		 WHERE fk_mail_no = to_number(#{mail_no}) AND fk_emp_id = to_number(#{fk_emp_id}) AND receive_division != 9
+	</update>
 
+	<!-- === 메일 작성정보 가져오기 === -->
+	<select id="getMailInfoOne" parameterType="HashMap" resultType="MailVO">
+		SELECT mail_no, fk_emp_id, mail_subject, mail_content
+			 , to_char(mail_senddate, 'yyyy-mm-dd hh24:mi:ss') AS mail_senddate, mail_important
+		  FROM tbl_mail
+		 WHERE mail_no = #{mail_no}
+	</select>
+	
+	<!-- 메일 정보 수정하기 -->
+	<update id="updateMail" parameterType="HashMap">
+		UPDATE tbl_mail SET mail_subject = #{mail_subject}, mail_content = #{mail_content}, mail_senddate = sysdate, mail_important = to_number(#{mail_important})
+ 		 WHERE mail_no = to_number(#{mailNo})
+	</update>
+	
+	<!-- 메일 수신 정보 삭제하기 -->
+	<delete id="deleteMailReciptInfo" parameterType="String">
+		DELETE FROM tbl_mailbox
+		 WHERE fk_mail_no = #{mail_no}
+	</delete>
+	
+	<!-- 휴지통, 스팸메일함 개수 가져오기 -->
+	<resultMap type="HashMap" id="getMailTashCnt_Map">
+		<result property="receive_division" column="receive_division" javaType="Integer"/>
+		<result property="cnt" column="cnt" javaType="Integer"/>
+	</resultMap>
+	<select id="getMailTashCnt" parameterType="String" resultMap="getMailTashCnt_Map">
+		SELECT receive_division, count(*) as cnt
+		  FROM tbl_mailbox
+		 WHERE fk_emp_id = #{fk_emp_id} AND receive_division IN (4,5)
+		GROUP BY receive_division
+	</select>
+	
+	<!-- 휴지통, 스팸메일함 비우기 -->
+	<delete id="emptyMailBox" parameterType="HashMap">
+		DELETE FROM tbl_mailbox
+ 		WHERE fk_emp_id = #{fk_emp_id} AND receive_division = #{receive_division}
+	</delete>
+	
+	<!-- 임시저장 메일 삭제 시 수신정보 지우기 -->
+	<delete id="deleteTempMail" parameterType="String">
+		DELETE FROM tbl_mailbox
+		 WHERE fk_mail_no = #{mail_no} AND receive_division = 9
+	</delete>
+	
+	
+	<!-- 휴지통 비우기 시 메일정보를 삭제하기 위한 메일번호 가져오기 -->
+	<resultMap type="HashMap" id="getDeleteMailNo_Map">
+		<result property="mail_no" column="fk_mail_no" javaType="Integer"/>
+	</resultMap>
+	<select id="getDeleteMailNo" parameterType="HashMap" resultMap="getDeleteMailNo_Map">
+		SELECT fk_mail_no
+		 FROM tbl_mailbox
+		WHERE fk_emp_id = #{fk_emp_id} AND receive_division = #{receive_division}
+	</select>
+	
+	<!-- 메일 영구삭제 -->
+	<delete id="deletePermanentMail" parameterType="Integer">
+		DELETE FROM tbl_mail
+		WHERE mail_no = #{mail_no}
+	</delete>
+	
 </mapper>

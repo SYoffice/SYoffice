@@ -1,13 +1,11 @@
 package com.syoffice.app.mail.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.syoffice.app.mail.domain.MailAttachVO;
 import com.syoffice.app.mail.domain.MailVO;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,12 +111,12 @@ public class MailController {
 			// *** === 페이지 바 만들기 끝 === *** //
 			
 			
-			List<Map<String, String>> mailList	= service.getMailBox(paraMap);		// 메일목록 가져오기
+			List<Map<String, String>> mailList	= service.getMailBox(paraMap);		// 메일함목록 가져오기
 			Map<String, Integer> mailCntMap 	= service.getMailCount(paraMap);	// 안읽은메일, 전체메일 개수 가져오기
-
+			
 //			System.out.println(mailList.toString());
-
-			mav.addObject("mailList", mailList);
+			
+			mav.addObject("mailList", mailList);	
 			mav.addObject("mailCntMap", mailCntMap);
 			mav.addObject("pageBar", pageBar);
 			mav.setViewName("/mail/mailbox_"+division);
@@ -134,7 +132,7 @@ public class MailController {
 	
 	
 	// === 메일쓰기 페이지 === //
-	@GetMapping("write")
+	@GetMapping("new")
 	public String mailWrite() {
 		return "/mail/mailwrite";
 	}// end of public String mailWrite() -------------------- 
@@ -196,4 +194,13 @@ public class MailController {
 		}
 	}// end of public void mailFileDownload(HttpServletRequest request, HttpServletResponse response, @PathVariable String atmail_no) ---------------------------
 
+	
+	// === 임시저장된 메일 클릭 시 새로운 메일 작성 폼으로 이동 === //
+	@GetMapping("/new/{fk_mail_no}")
+	public ModelAndView mailNewWrite(ModelAndView mav, @PathVariable String fk_mail_no) {
+		mav.addObject("fk_mail_no", fk_mail_no);
+		mav.setViewName("mail/mailedit");
+		return mav;
+	}// end of public ModelAndView mailNewWrite(ModelAndView mav, @PathVariable String fk_mail_no) ---------------------- 
+	
 }
