@@ -3,7 +3,6 @@ package com.syoffice.app.mail.service;
 import java.util.List;
 import java.util.Map;
 
-import com.syoffice.app.mail.domain.MailAttachVO;
 import com.syoffice.app.mail.domain.MailVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,5 +34,32 @@ public interface MailService {
 
 	// === 첨부파일 다운로드 === //
 	void downloadMailOneAttachFile(HttpServletRequest request, HttpServletResponse response, String atmailNo);
+	
+	// === 메일 삭제하기(휴지통으로 이동) === //
+	String deleteMail(String mail_no, String fk_emp_id);
+
+	// === 메일 전송하기 (자신) === //
+	String sendMailToMe(MultipartHttpServletRequest mtp_request);
+
+	// === 메일 임시저장 === //
+	String mailStoreTemp(MultipartHttpServletRequest mtp_request);
+
+	// === 메일 수신인 정보 가져오기 === //
+	String getMailRecipientInfo(String mail_no, String fk_emp_id);
+	
+	// === 메일 작성정보 가져오기 === //
+	MailVO getMailInfo(String mail_no, String fk_emp_id);
+
+	// === 메일 임시저장 (수정) === //
+	String mailStoreTemp(HttpServletRequest request, MailVO mailVO);
+
+	// === 휴지통, 스팸메일 개수 알아오기 === //
+	List<Map<String, Integer>> getMailTashCnt(String fk_emp_id);
+	
+	// === 휴지통, 스팸메일함 비우기 === //
+	Map<String, Integer> emptyMailBox(Map<String, String> paraMap);
+
+	// === 임시저장 메일 삭제(휴지통으로 이동) === //
+	String deleteTempMail(String mail_no, String fk_emp_id);
 
 }

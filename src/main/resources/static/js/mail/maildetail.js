@@ -12,33 +12,40 @@ $(document).ready(function() {
 
     // === 삭제 버튼을 클릭 시 휴지통으로 이동하기 === //
     $("span.delete").on("click", () => {
-        const mail_no = $("input#mail_no").val();
+        const mail_no   = $("input#mail_no").val();
+        const fk_emp_id = $("input#fk_emp_id").val();
         //console.log(mail_no);
+        //console.log(fk_emp_id);
+        
         $.ajax({
             url : $("input#path").val()+"/api/mail/"+mail_no,
-            type: "PUT",
-            data: {"mail_no": mail_no},
+            type: "DELETE",
+            data: {"mail_no": mail_no, "fk_emp_id": fk_emp_id},
             dataType: "JSON",
             success: function(json) {
                 console.log(JSON.stringify(json));
                 /*
                     {"result": 1} or {"result": 0}
                 */
+
+                if (json.result == 1) {
+                    Swal.fire({
+                        title: '메일을 삭제했습니다.',        // Alert 제목
+                        icon: 'success',
+                        confirmButtonText: "확인"
+                    })
+                    .then((result) => {
+                        location.href=$("input#path").val()+"/mail/box/0";	// 받은 메일함으로 이동
+                    })
+                }
+                
             },
             error: function(request, status, error){
                 alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
             }
         });
 
-        Swal.fire({
-            title: '캘린더를 삭제했습니다.',        // Alert 제목
-            text: '삭제된 캘린더명 : '+ smcatego_name,
-            icon: 'success',
-            confirmButtonText: "확인"
-        })
-        .then((result) => {
-            location.href="javascript:history.go(0)";	// 페이지 새로고침
-        })
+        
     });// end of $("span.delete").on("click",() => {}) -------------------
 
 });// end of $(document).ready(function() {}) -------------------------

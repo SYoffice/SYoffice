@@ -15,7 +15,7 @@
         <div class="contents_inner_wrapper">
         	
         	<div style="margin: 4% 0 4% 0">
-				<span class="h3">받은 메일함</span>
+				<span class="h3">전체 메일</span>
 				<c:if test="${!empty requestScope.mailCntMap}">
 					<span>${requestScope.mailCntMap.cnt}</span> / <span>${requestScope.mailCntMap.total}</span>
 				</c:if>
@@ -33,7 +33,7 @@
 				<table id="mailbox_table" class="table">
 					<c:if test="${empty requestScope.mailList}">
 						<tr>
-							<th>받은 메일이 없습니다.</th>
+							<th>메일이 없습니다.</th>
 						</tr>
 					</c:if>
 					<c:if test="${!empty requestScope.mailList}">

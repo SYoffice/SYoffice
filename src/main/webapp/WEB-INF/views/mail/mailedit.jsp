@@ -4,10 +4,10 @@
 <jsp:include page="./sidebar.jsp" />
 
 <%-- custom JS --%>
-<script src='<%= request.getContextPath() %>/js/mail/mailwrite.js'></script>
+<script src='<%= request.getContextPath() %>/js/mail/mailedit.js'></script>
 
 <%-- custom CSS --%>
-<link href='<%= request.getContextPath() %>/css/mail/mailwrite.css'rel='stylesheet' />
+<link href='<%= request.getContextPath() %>/css/mail/mailedit.css'rel='stylesheet' />
     
     <div class="contents_wrapper">
         <div class="contents_inner_wrapper">
@@ -46,7 +46,7 @@
 						<tr>
 							<th class="title_area">
 								<span style="margin-right: 15.5%;">제목</span>
-								<input class="title_checkbox" type="checkbox" id="important">
+								<input class="title_checkbox" type="checkbox" id="important" >
 								<label for="important"><i style="color: red;" class="fa-solid fa-exclamation"></i>&nbsp;중요</label>
 							</th>
 							<td><input type="text" id="mail_subject" name="mail_subject" class="form-control"/></td>
@@ -120,3 +120,4 @@
 <input type="hidden" id="fk_dept_id" value="${sessionScope.loginuser.fk_dept_id}" />
 <input type="hidden" id="mail" 		 value="${sessionScope.loginuser.mail}" />
 <input type="hidden" id="emp_id"	 value="${sessionScope.loginuser.emp_id}" />
+<input type="hidden" id="mail_no"	 value="${requestScope.fk_mail_no}" />

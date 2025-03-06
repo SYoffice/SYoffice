@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.spring</groupId>
-	<artifactId>myspring</artifactId>
+	<artifactId>syoffice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>  <!-- 배포시 .war 파일로 만들겠다는 것이다. -->
-	<name>myspring</name>
+	<name>syoffice</name>
 	<description>Myspring project for Spring Boot</description>
 	<url/>
 	<licenses>

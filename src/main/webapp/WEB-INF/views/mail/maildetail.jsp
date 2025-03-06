@@ -16,10 +16,10 @@
             </div>
 
             <div class="toolbar_wrap">
-                <span class="toolbar delete"><i class="fa-regular fa-trash-can"></i>삭제</span>
-                <span class="toolbar reply"><i class="fa-solid fa-reply"></i>답장</span>
-                <span class="toolbar forward"><i class="fa-solid fa-share"></i>전달</span>
-                <span class="toolbar ban"><i class="fa-solid fa-ban"></i>스팸차단</span>
+                <span class="toolbar delete"><i class="fa-regular fa-trash-can"></i> 삭제</span>
+                <span class="toolbar reply"><i class="fa-solid fa-reply"></i> 답장</span>
+                <span class="toolbar forward"><i class="fa-solid fa-share"></i> 전달</span>
+                <span class="toolbar ban"><i class="fa-solid fa-ban"></i> 스팸차단</span>
                 <span class="toolbar unread">안읽음</span>
             </div>
 
@@ -98,3 +98,4 @@
 <input type="hidden" id="path" 	    value="${pageContext.request.contextPath}" />
 <input type="hidden" id="mail_no" 	value="${requestScope.mailVOFileList[0].mail_no}" />
 <input type="hidden" id="sender" 	value="${requestScope.mailVOFileList[0].sender}" />
+<input type="hidden" id="fk_emp_id"	value="${sessionScope.loginuser.emp_id}" />

@@ -45,4 +45,31 @@ public interface MailDAO {
 
 	// === 한개의 첨부파일 정보를 가져오기 === //
 	MailAttachVO getMailOneAttachFile(String atmailNo);
+
+	// === 메일 삭제하기(휴지통으로 이동) === //
+	int deleteMail(String mail_no, String fk_emp_id);
+	
+	// === 메일 작성정보 가져오기 === //
+	MailVO getMailInfoOne(String mail_no);
+	
+	// === 메일 정보 수정하기 === //
+	int updateMail(Map<String, String> paraMap);
+
+	// === 메일 수신 정보 삭제하기 === //
+	void deleteMailReciptInfo(String mail_no);
+
+	// === 휴지통, 스팸메일 개수 알아오기 === //
+	List<Map<String, Integer>> getMailTashCnt(String fk_emp_id);
+
+	// === 휴지통, 스팸메일함 비우기 === //
+	int emptyMailBox(Map<String, String> paraMap);
+
+	// === 임시저장메일 삭제하기
+	void deleteTempMail(String mail_no);
+
+	// === 휴지통 비우기 시 메일정보를 삭제하기 위한 메일번호 가져오기 === // 
+	List<Map<String, Integer>> getDeleteMailNo(Map<String, String> paraMap);
+
+	// === 메일 영구삭제하기 === //
+	int deletePermanentMail(Integer mail_no);
 }

@@ -25,7 +25,7 @@ $(document).ready(function() {
     $("td.subject").on("click", function(){
         const fk_mail_no = $(this).parent().children().find("input").val();
         //alert(fk_mail_no);    3
-        location.href = $("input#path").val()+"/mail/"+fk_mail_no;
+        location.href = $("input#path").val()+"/mail/new/"+fk_mail_no;  // 새로운 메일 작성 폼으로 이동
     });// end of $("td.subject").on("click", function(){}) ------------------------------
 
 	
@@ -82,9 +82,9 @@ function deleteMail() {
                 //console.log("fk_mail_no: "+ $(this).val());
                 //mailNoArr.push($(this).val());
                 const mail_no = $(this).val();
-
+            
                 $.ajax({
-                    url : $("input#path").val()+"/api/mail/"+mail_no,
+                    url : $("input#path").val()+"/api/mail/temp/"+mail_no,
                     type: "DELETE",
                     data: {"mail_no": mail_no, "fk_emp_id": fk_emp_id},
                     dataType: "JSON",

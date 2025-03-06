@@ -15,26 +15,20 @@
         <div class="contents_inner_wrapper">
         	
         	<div style="margin: 4% 0 4% 0">
-				<span class="h3">받은 메일함</span>
-				<c:if test="${!empty requestScope.mailCntMap}">
-					<span>${requestScope.mailCntMap.cnt}</span> / <span>${requestScope.mailCntMap.total}</span>
-				</c:if>
-				
+				<span class="h3">휴지통</span>
 	   		</div>
         	
 			<div class="toolbar_wrap">
 				<input type="checkbox" id="allMailSelect" style="margin: 0 1% 0 0.8%;"/>
 				<span class="toolbar delete"><i class="fa-regular fa-trash-can"></i> 삭제</span>
-                <span class="toolbar read"><i class="fa-solid fa-book-open"></i> 읽음</span>
-                <span class="toolbar ban"><i class="fa-solid fa-ban"></i> 스팸등록</span>
 			</div>
 
 			<div class="mailbox_wrap">
 				<table id="mailbox_table" class="table">
 					<c:if test="${empty requestScope.mailList}">
 						<tr>
-							<th>받은 메일이 없습니다.</th>
-						</tr>
+							<th>휴지통이 비었습니다.</th>
+						</tr>	
 					</c:if>
 					<c:if test="${!empty requestScope.mailList}">
 						<c:forEach var="mail" items="${requestScope.mailList}" varStatus="status">

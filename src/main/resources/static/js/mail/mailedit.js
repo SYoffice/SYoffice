@@ -4,6 +4,9 @@ let file_arr = []; // 첨부된어진 파일 정보를 담아 둘 배열
 
 window.onload = () => {
 
+    getMailInfo();      // 메일 수신인 정보를 가져오는 함수
+    getMailRecipientInfo();  // 메일 정보를 가져오는 함수
+
     // === 수신인 조직도 버튼 클릭 시 === //
     $("button#organization").on("click", function() {
         isRecipient = true;
@@ -129,7 +132,7 @@ window.onload = () => {
             // fileSize 가 1MB 이상이면 소수부는 반올림하여 소수점 1자리까지 나타낸다. 만약에 소수부가 없으면 소수점은 0 으로 표시한다.
             html += 
                 "<div class='fileList'>" +
-                    "<span class='delete'><i class='fa-solid fa-circle-minus'></i></span>" +  // &times; 는 x 로 보여주는 것이다.  
+                    "<span class='delete'><i class='fa-solid fa-circle-minus'></i></span>" +  
                     "<span class='fileName'>"+fileName+"</span>" +
                     "<span class='fileSize'>"+fileSize+" MB</span>" +
                     "<span class='clear'></span>" +  // <span class='clear'></span> 의 용도는 CSS 에서 float:right; 를 clear: both; 하기 위한 용도이다. 
@@ -162,6 +165,7 @@ function getEmployeeInfo(emp_id) {
     if (emp_id.length < 4) {
         return;
     }
+
     //alert("emp_id : "+ emp_id + " isRecipient : "+ isRecipient);
 
     $.ajax({
@@ -221,7 +225,7 @@ function addRecipient(value, fk_emp_id){  // value 가 수신자로 선택한이
         })
         .then((result) => {
             $("button#organization").click();
-        });
+        })
 	}
 	else {
 
@@ -293,6 +297,7 @@ function searchUserList(joinSearchWord) {
                            joinUserArr.push(name+"("+item.branch_name+"-"+item.dept_name+")");
                     }
                 });
+                
                 
                 $("input#recipient").autocomplete({  // 참조 https://jqueryui.com/autocomplete/#default
                     source:joinUserArr,
@@ -406,7 +411,7 @@ function sendMail(sender) {
     }
 
     // 중요메일 여부 확인
-    const isImportant = $("input#important").is(":checked");
+    const isImportant = $("input:checkbox[name='mail_important']").is(":checked");
     if (isImportant) {
         formData.append("mail_important", 1);
     }
@@ -570,10 +575,6 @@ function sendMailToMe(sender) {
 
 // === 메일 임시저장 === //
 function mailStoreTemp(sender) {
-    //alert(sender);    // 발신인 확인
-
-    // 수신인 데이터 전송
-    // 3가지 데이터 배열 필요(수신인, 참조여부, 메일함
 
     Swal.fire({
 		title: "메일 임시저장",
@@ -584,11 +585,11 @@ function mailStoreTemp(sender) {
 		cancelButtonText: "취소",
 	})
     .then((result) => {
+        // 수신인 입력 확인
         if (!result.isConfirmed) {
             return;
         }
 
-        // 수신인 입력 확인
         let $recipient = document.querySelectorAll("div.displayRecipientList > span.plusUser > input.recipient");
         let recipientArr = [];
         const isChecked = $("input:checkbox[name='receive_status']").is(":checked");
@@ -666,10 +667,11 @@ function mailStoreTemp(sender) {
         }
 
         formData.append("sender", sender);  // 발신인 추가
+        formData.append("mail_no", $("input#mail_no").val());  // 메일번호 추가
 
         $.ajax({
             url: $("input#path").val()+"/api/mail/mailStoreTemp",
-            type: "POST",
+            type: "PUT",
             data : formData,
             processData: false,  // 파일 전송시 설정
             contentType: false,  // 파일 전송시 설정
@@ -703,6 +705,92 @@ function mailStoreTemp(sender) {
                 alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
             }
         });
-
     });
 }// end of function mailStoreTemp(sender) ----------------------
+
+
+// === 메일 수신인 정보를 가져오는 함수 === //
+function getMailRecipientInfo() {
+    const mail_no  = $("input#mail_no").val();
+    const fk_emp_id = $("input#emp_id").val();
+    //alert(mail_no);
+
+    $.ajax({
+        url: $("input#path").val()+"/api/mail/"+mail_no,
+        type: "GET",
+        data: {"fk_emp_id": fk_emp_id},
+        dataType: "JSON",
+        success: function(json){
+            // console.log(JSON.stringify(json));
+            /*
+                [{"receive_no":"20","receiver":"2025021","receivercc":"0","receiver_name":"강이훈","receiver_mail":"kang110@syoffice.syo"}
+                ,{"receive_no":"21","receiver":"2025047","receivercc":"0","receiver_name":"이보니","receiver_mail":"boni123@syoffice.syo"}
+                ,{"receive_no":"22","receiver":"2025032","receivercc":"0","receiver_name":"김회계","receiver_mail":"qwer1111@syoffice.syo"}
+                ,{"receive_no":"23","receiver":"2025017","receivercc":"1","receiver_name":"이영학","receiver_mail":"qwer12@syoffice.syo"}
+                ,{"receive_no":"24","receiver":"2025016","receivercc":"1","receiver_name":"박영학","receiver_mail":"qwer1@syoffice.syo"}]
+            */
+            $.each(json, function(index, item) {
+                const recipient = `${item.receiver_name} &lt;${item.receiver_mail}&gt;`;
+                const receiver  = item.receiver;
+
+                if (fk_emp_id == receiver) {
+                    // 내게 쓰기인 경우
+                    const mail = $("input#mail").val();
+                    $("input#recipient").val(mail);         // 수신자에 자신
+                    $("input#recipient").attr("readonly", true);    // 수정못하도록
+                    $("button#organization").hide();        // 조직도 버튼 숨기기
+                    $("div.displayRecipientList").empty();  // 수신자 모음 비우기
+
+                    $("input:checkbox[name='receive_status']").prop("checked", true);   // 체크박스에 체크
+
+                    $("input#mail_cc").val("").attr("readonly", true);      // 참조 입력란 비우고 읽기 전용으로
+                    $("button#mailcc").hide();              // 조직도 버튼 숨기기
+                    $("div.displayCCUserList").empty();     // 참조자 모음 비우기
+                    return;
+                }
+
+                if (item.receivercc == 0) {
+                    // 수신자일 경우
+                    addRecipient(recipient, receiver);
+                }
+                
+                if (item.receivercc == 1) {
+                    addCCUser(recipient, receiver);
+                }
+            });// end of $.each(json, function(index, item) {}}) --------------
+            
+        },
+        error: function(request, status, error){
+            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+        }
+    });
+}// end of function getMailInfo() ---------------------
+
+
+// === 메일 정보를 가져오는 함수 === //
+function getMailInfo() {
+    const mail_no  = $("input#mail_no").val();
+    const fk_emp_id = $("input#emp_id").val();
+
+    $.ajax({
+        url: $("input#path").val()+"/api/mail/file/"+mail_no,
+        type: "GET",
+        data: {"fk_emp_id": fk_emp_id},
+        dataType: "JSON",
+        success: function(json){
+            console.log(JSON.stringify(json));
+
+            /*
+                {"mail_no":"20","fk_emp_id":"2025032","mail_subject":"ㅇ미시저장테스트","mail_content":"ㄴㅇㅁㄹㄴㅇㄹ","mail_senddate":"2025-03-06 14:06:35","mail_important":"0","receiver":null,"receivercc":null,"receiver_name":null,"receiver_mail":null,"sender":null,"sender_mail":null,"sender_name":null,"atmail_no":null,"atmail_filename":null,"atmail_orgfilename":null,"atmail_filesize":null,"receive_no":null}
+            */
+            $("input#mail_subject").val(json.mail_subject)       // 제목입력
+            $("textarea#mail_content").val(json.mail_content)    // 내용입력
+            if (json.mail_important == 1) {
+                $("input#important").prop("checked", true);      // 중요 체크
+            }
+        },
+        error: function(request, status, error){
+            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+        }
+    });
+}// end of function getMailFileInfo() ---------------------
