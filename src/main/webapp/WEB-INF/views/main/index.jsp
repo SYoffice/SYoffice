@@ -12,6 +12,8 @@
     <meta charset="UTF-8">
     <!-- index CSS -->
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/index/index.css" >
+    <!-- 날씨용 JS -->
+    <script src='<%= request.getContextPath() %>/js/index/weather.js'></script>
     <style>
         /* 버튼들이 옆으로 나란히 */
         .button-area {
