@@ -60,7 +60,7 @@ function showWeather(){
                     html += "</tr>";
 
                     html += "<tr>";
-                    html += "<td><img src='/syoffice/images/weather/"+icon+".png' />"+$(local).attr("desc")+"</td><td>"+$(local).attr("ta")+"℃</td>";
+                    html += "<td><img src='/syoffice/images/weather/"+icon+".png' />"+$(local).attr("desc")+"</td><td style='padding-top: 15%;'>"+$(local).attr("ta")+"℃</td>";
                     html += "</tr>";
                 }
                 
