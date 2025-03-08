@@ -203,9 +203,8 @@ function getEmployeeInfo(emp_id) {
 
 // div.displayRecipientList 에 수신자를 넣어주는 함수
 function addRecipient(value, fk_emp_id){  // value 가 수신자로 선택한이름 이다.
-	//var plusUser_es = $("div.displayRecipientList > span.plusUser").text();
-	var plusUser_es = $("div.displayRecipientList > span.plusUser > input").val();
-    //console.log("확인용 plusUser_es => " + plusUser_es);
+	var plusUser_re = $("div.displayRecipientList > span.plusUser > input").val();
+    var plusUser_cc = $("div.displayCCUserList > span.plusUser > input").val();
 
     if (fk_emp_id == $("input#emp_id").val()){
         Swal.fire({
@@ -216,7 +215,7 @@ function addRecipient(value, fk_emp_id){  // value 가 수신자로 선택한이
         return;
     }
 
-	if(plusUser_es == fk_emp_id) {  // plusUser_es 문자열 속에 value 문자열이 들어있다라면 
+	if(plusUser_re == fk_emp_id || plusUser_cc == fk_emp_id) {
 		//alert("이미 추가한 사원입니다.");
         Swal.fire({
             title: '이미 추가한 사원입니다.',        // Alert 제목
@@ -243,7 +242,8 @@ function addRecipient(value, fk_emp_id){  // value 가 수신자로 선택한이
 // div.displayCCUserList 에 참조자를 넣어주는 함수
 function addCCUser(value, fk_emp_id){  // value 가 수신자로 선택한이름 이다.
 	//var plusUser_es = $("div.displayCCUserList > span.plusUser").text();
-    var plusUser_es = $("div.displayRecipientList > span.plusUser > input").val();
+    var plusUser_cc = $("div.displayCCUserList > span.plusUser > input").val();
+    var plusUser_re = $("div.displayRecipientList > span.plusUser > input").val();
  // console.log("확인용 plusUser_es => " + plusUser_es);
 
     if (fk_emp_id == $("input#emp_id").val()){
@@ -255,7 +255,7 @@ function addCCUser(value, fk_emp_id){  // value 가 수신자로 선택한이름
         return;
     }
 
-	if(plusUser_es == fk_emp_id) {  // plusUser_es 문자열 속에 value 문자열이 들어있다라면 
+	if(plusUser_cc == fk_emp_id || plusUser_re == fk_emp_id) {
 		//alert("이미 추가한 사원입니다.");
         Swal.fire({
             title: '이미 추가한 사원입니다.',        // Alert 제목
@@ -263,7 +263,7 @@ function addCCUser(value, fk_emp_id){  // value 가 수신자로 선택한이름
             confirmButtonText: "확인"
         })
         .then((result) => {
-            $("button#organization").click();
+            $("button#mailcc").click();
         })
 	}
 	else {
@@ -721,7 +721,7 @@ function getMailRecipientInfo() {
         data: {"fk_emp_id": fk_emp_id},
         dataType: "JSON",
         success: function(json){
-            // console.log(JSON.stringify(json));
+            console.log(JSON.stringify(json));
             /*
                 [{"receive_no":"20","receiver":"2025021","receivercc":"0","receiver_name":"강이훈","receiver_mail":"kang110@syoffice.syo"}
                 ,{"receive_no":"21","receiver":"2025047","receivercc":"0","receiver_name":"이보니","receiver_mail":"boni123@syoffice.syo"}
@@ -733,7 +733,7 @@ function getMailRecipientInfo() {
                 const recipient = `${item.receiver_name} &lt;${item.receiver_mail}&gt;`;
                 const receiver  = item.receiver;
 
-                if (fk_emp_id == receiver) {
+                if (json.length == 1 && fk_emp_id == receiver) {
                     // 내게 쓰기인 경우
                     const mail = $("input#mail").val();
                     $("input#recipient").val(mail);         // 수신자에 자신
@@ -748,14 +748,17 @@ function getMailRecipientInfo() {
                     $("div.displayCCUserList").empty();     // 참조자 모음 비우기
                     return;
                 }
-
-                if (item.receivercc == 0) {
-                    // 수신자일 경우
-                    addRecipient(recipient, receiver);
-                }
                 
-                if (item.receivercc == 1) {
-                    addCCUser(recipient, receiver);
+                // 본인은 제외 되어야 한다.
+                if(fk_emp_id != receiver){
+                    if (item.receivercc == 0) {
+                        // 수신자일 경우
+                        addRecipient(recipient, receiver);
+                    }
+                    
+                    if (item.receivercc == 1) {
+                        addCCUser(recipient, receiver);
+                    }
                 }
             });// end of $.each(json, function(index, item) {}}) --------------
             

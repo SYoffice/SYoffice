@@ -62,4 +62,12 @@ public interface MailService {
 	// === 임시저장 메일 삭제(휴지통으로 이동) === //
 	String deleteTempMail(String mail_no, String fk_emp_id);
 
+	// === 메일 한 개를 읽음처리 해준다 === //
+	String readMail(Map<String, String> paraMap);
+
+	// === 이전, 다음메일 조회해오기 === //
+	Map<String, String> getPrevNextMail(Map<String, String> paraMap);
+
+	// === 메일 한 개를 스팸메일로 등록 === //
+//	String addSpamMail(Map<String, String> paraMap);
 }

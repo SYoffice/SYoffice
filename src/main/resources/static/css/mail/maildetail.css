@@ -55,3 +55,15 @@ li.file_info:hover {
 div.content_wrap {
     margin: 2% 0 0 0.75%;
 }
+
+/* 이전 메일, 다음 메일 */
+/* 하단 고정 */
+div.footer_wrap {
+    position: absolute;
+    bottom: 0px;
+    width: 77.5%;
+}
+
+div.prev, div.next {
+    margin-left: 0.75%;
+}

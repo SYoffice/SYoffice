@@ -10,10 +10,17 @@
 	<select id="getMailBoxTotalPage" parameterType="HashMap" resultType="Integer">
 		SELECT CEIL(count(*)/10)
 		  FROM tbl_mailbox
-		 WHERE fk_emp_id = #{fk_emp_id} AND receive_division = #{division} 
+		 WHERE fk_emp_id = #{fk_emp_id}
+		   	<if test="division != -1">
+		   		AND receive_division = #{division}
+		   	</if>
+		   	<!-- 전체메일함일경우 -->
+			<if test="division == -1">
+				AND receive_division NOT IN (4,5,9)
+			</if>
 	</select>
-	
-	
+
+
 	<!-- === 메일박스 가져오기 === -->
 	<resultMap type="HashMap" id="getMailBox_Map">
 		<result property="receive_no" 		column="receive_no" 	javaType="String"/>
@@ -64,7 +71,7 @@
 			  FROM 
 				(
 				SELECT ROW_NUMBER() OVER(ORDER BY m.mail_senddate DESC) AS rno, mb.receive_no
-					 , mb.fk_mail_no, mb.fk_emp_id, mb.receive_status, m.mail_senddate, m.mail_important
+					 , mb.fk_mail_no, m.fk_emp_id, mb.receive_status, m.mail_senddate, m.mail_important
 					 , m.mail_subject
 				  FROM tbl_mailbox mb JOIN tbl_mail m
 				    ON mb.fk_mail_no = m.mail_no
@@ -86,11 +93,10 @@
 	
 	<!-- === 메일의 개수 가져오기 === -->
 	<resultMap type="HashMap" id="getMailCount_Map">
-		<result property="receive_status" 	column="receive_status" javaType="Integer"/>
 		<result property="cnt" 				column="cnt" 			javaType="Integer"/>
 		<result property="total" 			column="total" 			javaType="Integer"/>
 	</resultMap>
-	<select id="getMailCount" parameterType="HashMap" resultMap="getMailCount_Map">
+	<select id="getMailCount" parameterType="String" resultMap="getMailCount_Map">
 	<!-- 
 		SELECT receive_status, count(*) AS cnt
 			 , (SELECT count(*) FROM tbl_mailbox WHERE fk_emp_id = #{fk_emp_id}
@@ -110,7 +116,7 @@
 			  , (SELECT count(*) FROM tbl_mailbox WHERE fk_emp_id = #{fk_emp_id} AND receive_division NOT IN (2,4,5,9)) AS total 
 			</if>
 			<if test="division == 0">
-			  , (SELECT count(*) FROM tbl_mailbox WHERE fk_emp_id = #{fk_emp_id} AND receive_division NOT IN (1,2,4,5,9)) AS total
+			  , (SELECT count(*) FROM tbl_mailbox WHERE fk_emp_id = #{fk_emp_id} AND receive_division = #{division}) AS total
 			</if>
 		   FROM dual
 	</select>
@@ -166,9 +172,10 @@
 	<!-- === 메일 상세조회하기 (수신인정보) === -->
 	<select id="getMailDetail" parameterType="HashMap" resultType="MailVO">
 		SELECT A.receive_no, A.fk_mail_no, e.emp_id AS receiver, A.receivercc, e.name AS receiver_name, e.mail AS receiver_mail
+			 , A.receive_division, A.receive_status
 		FROM
 			(
-				SELECT receive_no, fk_mail_no, fk_emp_id, receivercc
+				SELECT receive_no, fk_mail_no, fk_emp_id, receivercc, receive_division, receive_status
 				FROM tbl_mailbox
 				WHERE fk_mail_no = #{fk_mail_no}
 			) A
@@ -273,5 +280,60 @@
 		DELETE FROM tbl_mail
 		WHERE mail_no = #{mail_no}
 	</delete>
-	
+
+
+	<!-- === 메일 한 개를 스팸메일로 등록 === -->
+	<update id="addSpamMail" parameterType="HashMap">
+		UPDATE tbl_mailbox SET receive_division = #{receive_division}
+		 WHERE fk_mail_no = #{fk_mail_no} AND fk_emp_id = #{fk_emp_id}
+	</update>
+
+
+	<!-- === 이전, 다음메일 조회해오기 === -->
+	<resultMap id="getPrevNextMail_Map" type="HashMap">
+		<result property="prev_mail_no" 		column="prev_mail_no" 			javaType="String" />
+		<result property="prev_mail_sender" 	column="prev_mail_sender" 		javaType="String" />
+		<result property="perv_mail_sendername" column="perv_mail_sendername" 	javaType="String" />
+		<result property="prev_mail_sendermail" column="prev_mail_sendermail" 	javaType="String" />
+		<result property="receive_status" 		column="receive_status" 		javaType="String" />
+		<result property="receive_division" 	column="receive_division" 		javaType="String" />
+		<result property="mail_important" 		column="mail_important" 		javaType="String" />
+		<result property="fk_mail_no" 			column="fk_mail_no" 			javaType="String" />
+		<result property="prev_mailsenddate" 	column="prev_mailsenddate" 		javaType="String" />
+		<result property="next_mailsenddate" 	column="next_mailsenddate" 		javaType="String" />
+		<result property="next_mail_no" 		column="next_mail_no" 			javaType="String" />
+		<result property="next_mail_sender" 	column="next_mail_sender" 		javaType="String" />
+		<result property="next_mail_sendername" column="next_mail_sendername" 	javaType="String" />
+		<result property="next_mail_sendermail" column="next_mail_sendermail" 	javaType="String" />
+		<result property="next_mail_subject" 	column="next_mail_subject" 		javaType="String" />
+	</resultMap>
+	<select id="getPrevNextMail" parameterType="HashMap" resultMap="getPrevNextMail_Map">
+		SELECT A.prev_mail_no, A.prev_mail_sender, A.perv_mail_sendername, A.prev_mail_sendermail
+			 , A.receive_status, A.receive_division, A.mail_important, A.fk_mail_no
+			 , (SELECT to_char(mail_senddate, 'yyyy-mm-dd hh24:mi:ss') FROM tbl_mail WHERE mail_no = A.prev_mail_no) AS prev_mailsenddate
+			 , (SELECT to_char(mail_senddate, 'yyyy-mm-dd hh24:mi:ss') FROM tbl_mail WHERE mail_no = A.next_mail_no) AS next_mailsenddate
+			 , A.next_mail_no, A.next_mail_sender, A.next_mail_sendername, A.next_mail_sendermail, A.next_mail_subject
+		FROM
+			(
+				SELECT lag(mb.fk_mail_no) over(order by mb.fk_mail_no desc) AS prev_mail_no
+					 , lag(m.fk_emp_id) over(order by mb.fk_mail_no desc) AS prev_mail_sender
+					 , lag(e.name) over(order by mb.fk_mail_no desc) AS perv_mail_sendername
+					 , lag(e.mail) over(order by mb.fk_mail_no desc) AS prev_mail_sendermail
+					 , lag(m.mail_subject) over(order by mb.fk_mail_no desc) AS prev_mail_subject
+					 , mb.receive_status, mb.receive_division, m.mail_important, mb.fk_mail_no
+								 , lead(mb.fk_mail_no) over(order by mb.fk_mail_no desc) AS next_mail_no
+					 , lead(m.fk_emp_id) over(order by mb.fk_mail_no desc) AS next_mail_sender
+					 , lead(e.name) over(order by mb.fk_mail_no desc) AS next_mail_sendername
+					 , lead(e.mail) over(order by mb.fk_mail_no desc) AS next_mail_sendermail
+					 , lead(m.mail_subject) over(order by mb.fk_mail_no desc) AS next_mail_subject
+				FROM tbl_mailbox mb JOIN tbl_mail m
+										 ON mb.fk_mail_no = m.mail_no
+									JOIN tbl_employee e
+										 ON m.fk_emp_id = e.emp_id
+				WHERE mb.fk_emp_id = #{fk_emp_id} AND mb.receive_division = #{division}
+			) A
+		WHERE A.fk_mail_no = #{fk_mail_no}
+	</select>
+
+
 </mapper>

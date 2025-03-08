@@ -305,10 +305,14 @@
 		    <groupId>commons-codec</groupId>
 		    <artifactId>commons-codec</artifactId>
 		</dependency>
-		
-		
-		<!-- Lombok(롬복)은 Domain(Entity)클래스(VO 클래스, DTO 클래스) 생성시 
-		     반복되는 getter, setter, toString 등의 메소드 작성 코드를 줄여주는 라이브러리 이다. -->	    
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+
+        <!-- Lombok(롬복)은 Domain(Entity)클래스(VO 클래스, DTO 클래스) 생성시
+             반복되는 getter, setter, toString 등의 메소드 작성 코드를 줄여주는 라이브러리 이다. -->
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<!-- 
 		<dependency>

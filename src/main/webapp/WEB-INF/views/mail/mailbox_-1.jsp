@@ -49,7 +49,10 @@
 											<span><i class="fa-solid fa-paperclip"></i></span>
 										</c:if>
 									</td>
-									<td class="sender">${mail.name}</td>
+									<td class="sender">
+										<input type="hidden" class="fk_emp_id" value="${mail.fk_emp_id}" />
+											${mail.name}
+									</td>
 									<td class="subject">
 										<c:if test="${mail.mail_important == 1}">
 											<span class="important"><i class="fa-solid fa-exclamation"></i></span>
@@ -70,7 +73,10 @@
 											<span><i class="fa-solid fa-paperclip"></i></span>
 										</c:if>
 									</td>
-									<td class="sender">${mail.name}</td>
+									<td class="sender">
+										<input type="hidden" class="fk_emp_id" value="${mail.fk_emp_id}" />
+											${mail.name}
+									</td>
 									<td class="subject">
 										<c:if test="${mail.mail_important == 1}">
 											<span class="important"><i class="fa-solid fa-exclamation"></i></span>

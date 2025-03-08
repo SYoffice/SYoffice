@@ -49,7 +49,7 @@ span.empty {
 			type: "GET",
 			data: {"fk_emp_id": ${sessionScope.loginuser.emp_id}},
 			success: function(json) {
-				console.log(JSON.stringify(json));
+				//console.log(JSON.stringify(json));
 				
 				/*
 					[{"receive_division":4,"cnt":19}]
