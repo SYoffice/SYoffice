@@ -72,4 +72,10 @@ public interface MailDAO {
 
 	// === 메일 영구삭제하기 === //
 	int deletePermanentMail(Integer mail_no);
+
+	// === 메일 한 개를 스팸메일로 등록 === //
+	int addSpamMail(Map<String, String> paraMap);
+
+	// === 이전, 다음메일 조회해오기 === //
+	Map<String, String> getPrevNextMail(Map<String, String> paraMap);
 }

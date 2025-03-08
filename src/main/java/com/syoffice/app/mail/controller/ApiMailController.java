@@ -109,5 +109,36 @@ public class ApiMailController {
 	public String deleteTempMail(@RequestParam String mail_no, @RequestParam String fk_emp_id) {
 		return service.deleteTempMail(mail_no, fk_emp_id);
 	}// end of public String deleteMail(@RequestParam String mail_no) ----------------------------- 
-	
+
+
+	// === 메일 한 개를 읽음처리 해준다. === //
+	@PutMapping("{mail_no}")
+	public String readMail(@PathVariable String mail_no, @RequestParam String fk_emp_id) {
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("fk_mail_no", mail_no);
+		paraMap.put("fk_emp_id", fk_emp_id);
+		return service.readMail(paraMap);
+	}// end of public String readMail(@PathVariable String mail_no, @RequestParam String fk_emp_id) ----------------
+
+	// === 한 개 메일을 스팸메일로 등록 === //
+//	@DeleteMapping("/spam/{mail_no}")
+//	public String addSpamMail(@RequestParam String mail_no, @RequestParam String fk_emp_id) {
+//		Map<String, String> paraMap = new HashMap<>();
+//		paraMap.put("fk_mail_no", mail_no);
+//		paraMap.put("fk_emp_id", fk_emp_id);
+//		paraMap.put("receive_division", "5");
+//
+//		return service.addSpamMail(paraMap);
+//	}// end of public String deleteMail(@RequestParam String mail_no) -----------------------------
+
+
+	// === 받은 메일 중 읽은 개수와 전체 메일 개수를 가져온다 === //
+	@GetMapping("count")
+	public Map<String, Integer> getCountMail(@RequestParam String fk_emp_id, @RequestParam String receive_division) {
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("fk_emp_id", fk_emp_id);
+		paraMap.put("division", receive_division);
+
+		return service.getMailCount(paraMap);
+	}// end of public Map<String, Integer> getCountMail(@RequestParam String fk_emp_id) -------------------------
 }	

@@ -66,7 +66,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light w-100 py-3">
-        <a class="navbar-brand" href="<%=ctxPath%>/index">로고</a>
+        <a class="d-block text-center navbar-brand" href="<%=ctxPath%>/index"><img style="width: 50%;" src="<%=ctxPath%>/images/logo_header.png"/></a>
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
                 <li class="nav-item active">

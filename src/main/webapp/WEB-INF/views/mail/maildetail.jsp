@@ -21,6 +21,7 @@
                 <span class="toolbar forward"><i class="fa-solid fa-share"></i> 전달</span>
                 <span class="toolbar ban"><i class="fa-solid fa-ban"></i> 스팸차단</span>
                 <span class="toolbar unread">안읽음</span>
+                <span class="toolbar float-right">목록</span>
             </div>
 
             <div class="mailInfo_wrap">
@@ -28,6 +29,7 @@
                     <%-- 메일 제목 --%>
                     <div class="title">
                         <span class="h3">${requestScope.mailVOFileList[0].mail_subject}</span>
+
                     </div>
 
                     <%-- 메일 수발신 정보 --%>
@@ -40,7 +42,7 @@
                             <th style="width: 8%;">받는사람</th>
                             <td class="text-left">
                                 <c:forEach var="mailVO" items="${requestScope.mailVOList}" varStatus="status">
-                                    <c:if test="${mailVO.receivercc == 0}">
+                                    <c:if test="${mailVO.receivercc == 0 && mailVO.receive_division == 0}">
                                         <span class="user">${mailVO.receiver_name}&lt;${mailVO.receiver_mail}&gt;</span>
                                     </c:if>
                                 </c:forEach>
@@ -50,7 +52,7 @@
                             <th style="width: 8%;">참조</th>
                             <td class="text-left">
                                 <c:forEach var="mailVO" items="${requestScope.mailVOList}" varStatus="status">
-                                    <c:if test="${mailVO.receivercc == 1}">
+                                    <c:if test="${mailVO.receivercc == 1 && mailVO.receive_division == 0}">
                                         <span class="user">${mailVO.receiver_name}&lt;${mailVO.receiver_mail}&gt;</span>
                                     </c:if>
                                 </c:forEach>
@@ -88,6 +90,19 @@
                     ${requestScope.mailVOFileList[0].mail_content}
                 </div>
 
+                <div class="footer_wrap">
+                    <hr>
+                    <div class="prev">
+                        <c:if test="${!empty requestScope.prevNextMailMap.prev_mail_no}">
+                            <a href="${pageContext.request.contextPath}/mail/${requestScope.prevNextMailMap.prev_mail_no}?division=${requestScope.prevNextMailMap.receive_division}" class="prev">
+                                <i class="fa-solid fa-caret-up"></i>
+
+                            </a>
+                        </c:if>
+                    </div>
+                    <hr>
+                    <div class="next">다음글</div>
+                </div>
             </div>
 
         </div>

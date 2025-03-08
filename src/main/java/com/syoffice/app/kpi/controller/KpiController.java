@@ -110,9 +110,9 @@ public class KpiController {
 									@RequestParam(defaultValue="") String searchQuarter,
 									Model model) {	// Model : 저장소 기능만 있는 객체
 	
-		System.out.println("fk_dept_id : "+ fk_dept_id);
-		System.out.println("searchYear : "+ searchYear);
-		System.out.println("searchQuarter	 : "+ searchQuarter);
+//		System.out.println("fk_dept_id : "+ fk_dept_id);
+//		System.out.println("searchYear : "+ searchYear);
+//		System.out.println("searchQuarter	 : "+ searchQuarter);
 		
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("fk_dept_id", fk_dept_id);

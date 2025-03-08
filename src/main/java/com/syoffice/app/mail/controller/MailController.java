@@ -54,7 +54,8 @@ public class MailController {
 			
 			
 			int totalPage = service.getMailBoxTotalPage(paraMap);	// 메일박스의 총 페이지수 가져오기
-			
+
+
 			try {
 				if (Integer.parseInt(page) > totalPage || Integer.parseInt(page) <= 0) {
 					page = "1";
@@ -112,13 +113,14 @@ public class MailController {
 			
 			
 			List<Map<String, String>> mailList	= service.getMailBox(paraMap);		// 메일함목록 가져오기
-			Map<String, Integer> mailCntMap 	= service.getMailCount(paraMap);	// 안읽은메일, 전체메일 개수 가져오기
+//			Map<String, Integer> mailCntMap 	= service.getMailCount(paraMap);	// 안읽은메일, 전체메일 개수 가져오기
 			
 //			System.out.println(mailList.toString());
 			
-			mav.addObject("mailList", mailList);	
-			mav.addObject("mailCntMap", mailCntMap);
+			mav.addObject("mailList", mailList);
+//			mav.addObject("mailCntMap", mailCntMap);
 			mav.addObject("pageBar", pageBar);
+			mav.addObject("division", division);
 			mav.setViewName("/mail/mailbox_"+division);
 			
 		} catch (NumberFormatException e) {
@@ -140,7 +142,7 @@ public class MailController {
 
 	// === 메일 상세보기 === //
 	@GetMapping("{fk_mail_no}")
-	public ModelAndView mailViewDetail(HttpServletRequest request, ModelAndView mav, @PathVariable String fk_mail_no) {
+	public ModelAndView mailViewDetail(HttpServletRequest request, ModelAndView mav, @PathVariable String fk_mail_no, @RequestParam String division) {
 		try {
 			Integer.parseInt(fk_mail_no);
 
@@ -150,9 +152,12 @@ public class MailController {
 			Map<String, String> paraMap = new HashMap<>();
 			paraMap.put("fk_emp_id", empvo.getEmp_id());
 			paraMap.put("fk_mail_no", fk_mail_no);
+			paraMap.put("division", division);
 
-			List<MailVO> mailVOList 	= service.getMailDetail(paraMap);	// update 처리 후 조회 해와야
-			List<MailVO> mailVOFileList = service.getMailAttachFile(paraMap);	// update 처리 후 조회 해와야
+			List<MailVO> mailVOList 	= service.getMailDetail(paraMap);			// 수신인들 정보
+			List<MailVO> mailVOFileList = service.getMailAttachFile(paraMap);		// 발신인, 첨부파일 정보
+			Map<String, String> prevNextMailMap = service.getPrevNextMail(paraMap);	// 이전, 다음메일 조회해오기
+
 
 
 			if (mailVOList == null || mailVOList.size() == 0) {
@@ -162,6 +167,7 @@ public class MailController {
 			else {
 				mav.addObject("mailVOList", mailVOList);
 				mav.addObject("mailVOFileList", mailVOFileList);
+				mav.addObject("prevNextMailMap", prevNextMailMap);
 				mav.setViewName("/mail/maildetail");
 			}
 

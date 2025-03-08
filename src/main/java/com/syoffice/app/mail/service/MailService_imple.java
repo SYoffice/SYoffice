@@ -427,7 +427,9 @@ public class MailService_imple implements MailService {
 				jsonObj.addProperty("receivercc", mailvo.getReceivercc());
 				jsonObj.addProperty("receiver_name", mailvo.getReceiver_name());
 				jsonObj.addProperty("receiver_mail", mailvo.getReceiver_mail());
-				
+				jsonObj.addProperty("receive_division", mailvo.getReceive_division());
+				jsonObj.addProperty("receive_status", mailvo.getReceive_status());
+
 				jsonArr.add(jsonObj);
 			}// end of for() ----------------------
 			
@@ -560,7 +562,30 @@ public class MailService_imple implements MailService {
 		jsonObject.put("result", n);
 		
 		return jsonObject.toString();
-	}// end of public String deleteTempMail(String mail_no, String fk_emp_id) ----------------------- 
+	}// end of public String deleteTempMail(String mail_no, String fk_emp_id) -----------------------
 
-	
+
+	// === 메일 한 개를 읽음처리 해준다 === //
+	@Override
+	public String readMail(Map<String, String> paraMap) {
+		dao.mailRead(paraMap);
+		return "{\"result\": 1}";
+	}// end of public String readMail(Map<String, String> paraMap) ----------------
+
+
+	// === 이전, 다음메일 조회해오기 === //
+	@Override
+	public Map<String, String> getPrevNextMail(Map<String, String> paraMap) {
+		return dao.getPrevNextMail(paraMap);
+	}// end of public Map<String, String> getPrevNextMail(Map<String, String> paraMap) -------------------
+
+
+	// === 메일 한 개를 스팸메일로 등록 === //
+//	@Override
+//	public String addSpamMail(Map<String, String> paraMap) {
+//		int n = dao.addSpamMail(paraMap);
+//		return "";
+//	}// end of public String addSpamMail(Map<String, String> paraMap) -----------------
+
+
 }

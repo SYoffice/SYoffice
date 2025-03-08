@@ -10,16 +10,13 @@
 <link href='<%= request.getContextPath() %>/css/mail/mailbox.css'rel='stylesheet' />
 <%-- custom JS --%>
 <script src='<%= request.getContextPath() %>/js/mail/mailbox.js'></script>
+<script src='<%= request.getContextPath() %>/js/mail/mailreceivebox.js'></script>
 
 	<div class="contents_wrapper">
         <div class="contents_inner_wrapper">
         	
-        	<div style="margin: 4% 0 4% 0">
-				<span class="h3">받은 메일함</span>
-				<c:if test="${!empty requestScope.mailCntMap}">
-					<span>${requestScope.mailCntMap.cnt}</span> / <span>${requestScope.mailCntMap.total}</span>
-				</c:if>
-				
+        	<div id="title_area" style="margin: 4% 0 4% 0">
+
 	   		</div>
         	
 			<div class="toolbar_wrap">
@@ -49,7 +46,10 @@
 											<span><i class="fa-solid fa-paperclip"></i></span>
 										</c:if>
 									</td>
-									<td class="sender">${mail.name}</td>
+									<td class="sender">
+										<input type="hidden" class="fk_emp_id" value="${mail.fk_emp_id}" />
+										${mail.name}
+									</td>
 									<td class="subject">
 										<c:if test="${mail.mail_important == 1}">
 											<span class="important"><i class="fa-solid fa-exclamation"></i></span>
@@ -70,7 +70,10 @@
 											<span><i class="fa-solid fa-paperclip"></i></span>
 										</c:if>
 									</td>
-									<td class="sender">${mail.name}</td>
+									<td class="sender">
+										<input type="hidden" class="fk_emp_id" value="${mail.fk_emp_id}" />
+										${mail.name}
+									</td>
 									<td class="subject">
 										<c:if test="${mail.mail_important == 1}">
 											<span class="important"><i class="fa-solid fa-exclamation"></i></span>
@@ -100,3 +103,4 @@
 <%-- JS 활용 용도 --%>
 <input type="hidden" id="path" 	value="${pageContext.request.contextPath}" />
 <input type="hidden" id="fk_emp_id"	value="${sessionScope.loginuser.emp_id}" />
+<input type="hidden" id="division"	value="${requestScope.division}" />

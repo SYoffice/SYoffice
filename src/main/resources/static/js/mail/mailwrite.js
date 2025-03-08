@@ -200,7 +200,8 @@ function getEmployeeInfo(emp_id) {
 // div.displayRecipientList 에 수신자를 넣어주는 함수
 function addRecipient(value, fk_emp_id){  // value 가 수신자로 선택한이름 이다.
 	//var plusUser_es = $("div.displayRecipientList > span.plusUser").text();
-	var plusUser_es = $("div.displayRecipientList > span.plusUser > input").val();
+	var plusUser_re = $("div.displayRecipientList > span.plusUser > input").val();
+    var plusUser_cc = $("div.displayCCUserList > span.plusUser > input").val();
     //console.log("확인용 plusUser_es => " + plusUser_es);
 
     if (fk_emp_id == $("input#emp_id").val()){
@@ -212,7 +213,7 @@ function addRecipient(value, fk_emp_id){  // value 가 수신자로 선택한이
         return;
     }
 
-	if(plusUser_es == fk_emp_id) {  // plusUser_es 문자열 속에 value 문자열이 들어있다라면 
+	if(plusUser_re == fk_emp_id || plusUser_cc == fk_emp_id) {
 		//alert("이미 추가한 사원입니다.");
         Swal.fire({
             title: '이미 추가한 사원입니다.',        // Alert 제목
@@ -239,7 +240,8 @@ function addRecipient(value, fk_emp_id){  // value 가 수신자로 선택한이
 // div.displayCCUserList 에 참조자를 넣어주는 함수
 function addCCUser(value, fk_emp_id){  // value 가 수신자로 선택한이름 이다.
 	//var plusUser_es = $("div.displayCCUserList > span.plusUser").text();
-    var plusUser_es = $("div.displayRecipientList > span.plusUser > input").val();
+    var plusUser_cc = $("div.displayCCUserList > span.plusUser > input").val();
+    var plusUser_re = $("div.displayRecipientList > span.plusUser > input").val();
  // console.log("확인용 plusUser_es => " + plusUser_es);
 
     if (fk_emp_id == $("input#emp_id").val()){
@@ -251,7 +253,7 @@ function addCCUser(value, fk_emp_id){  // value 가 수신자로 선택한이름
         return;
     }
 
-	if(plusUser_es == fk_emp_id) {  // plusUser_es 문자열 속에 value 문자열이 들어있다라면 
+	if(plusUser_cc == fk_emp_id || plusUser_re == fk_emp_id) { 
 		//alert("이미 추가한 사원입니다.");
         Swal.fire({
             title: '이미 추가한 사원입니다.',        // Alert 제목
@@ -259,7 +261,7 @@ function addCCUser(value, fk_emp_id){  // value 가 수신자로 선택한이름
             confirmButtonText: "확인"
         })
         .then((result) => {
-            $("button#organization").click();
+            $("button#mailcc").click();
         })
 	}
 	else {
