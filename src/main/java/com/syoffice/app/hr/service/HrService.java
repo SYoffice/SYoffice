@@ -36,6 +36,37 @@ public interface HrService {
 	
 	// 사원정보 update
 	int employeeEdit(Map<String, String> paraMap);
+	
+	// 검색만 있는 부서 목록 조회 (부서관리용)
+	List<DepartmentVO> DepartmentList(Map<String, String> paraMap);
+
+	// 부서별 사원리스트
+	List<EmployeeVO> DepartmentEmployeeInfo(String dept_id, String branch_no);
+	
+	// 신규 부서등록하기
+	int RegisterDepartment(String dept_name, String manager_id, String executive_id);
+	
+	// 부서 추가할 때 필요한 부서장 리스트 가져오기
+	List<EmployeeVO> managerList();
+	
+	// 부서 추가할 때 필요한 임원진 리스트 가져오기
+	List<EmployeeVO> executiveList();
+	
+	// 부서명 중복검사
+	boolean checkDeptName(String dept_name);
+
+	// 수정 시 특정 부서의 정보 조회
+	DepartmentVO getDepartmentInfo(Map<String, String> map);
+	// 모든 부서장이 될 수 있는 사원들 조회
+	List<EmployeeVO> getAllManagers();
+	// 모든 담당임원이 될 수 있는 사원들 조회
+	List<EmployeeVO> getAllExecutives();
+	// 부서 정보 수정
+	Integer editDepartment(Map<String, String> paraMap);
+
+	
+	// 부서삭제 여부
+	boolean deleteDepartment(String dept_id);
 
 
 	
