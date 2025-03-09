@@ -231,6 +231,7 @@ window.onload = () => {
 				url: $("input#path").val()+'/schedule/selectSchedule',
 				data:{"fk_emp_id": $("input#fk_emp_id").val(), "name": $("input#name").val()},
 				dataType: "JSON",
+				async: false,
 				success: function(json) {
 					//console.log(JSON.stringify(json));
 					/*

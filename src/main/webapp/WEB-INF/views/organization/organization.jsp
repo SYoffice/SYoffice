@@ -53,6 +53,7 @@ $(document).ready(function() {
         	,{"DEPT_NAME":"마케팅부","EMP_ID":2025003,"MAIL":"test@syoffice.syo","HIRE_DATE":"2025-02-17","GRADE_NAME":"사원","TEL":"01043214321","FK_DEPT_ID":7,"FK_GRADE_NO":8,"BRANCH_NAME":"본사","FK_BRANCH_NO":1,"NAME":"실험용"}
         	,{"DEPT_NAME":"판매부","EMP_ID":20250411,"MAIL":"kimth@syoffice.syo","HIRE_DATE":"2025-02-18","GRADE_NAME":"대리","TEL":"01012341234","FK_DEPT_ID":8,"FK_GRADE_NO":6,"BRANCH_NAME":"강남지점","FK_BRANCH_NO":2,"NAME":"김태희"}]
         	*/
+        	
             let jsonData = convertToJsTreeFormat(json); // 데이터를 jsTree 형식으로 변환
 
             $('#jstree').jstree({
@@ -115,7 +116,7 @@ $(document).ready(function() {
 function formatNumber(Number) {
     return Number.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
 }	
-		
+
 
 // jsTree 형식으로 변환
 function convertToJsTreeFormat(data) {
@@ -145,7 +146,6 @@ function convertToJsTreeFormat(data) {
         }
 
         
-        
      	// 지점 추가
         if (!branch[branchId]) {	  
         	branch[branchId] = {
@@ -159,7 +159,6 @@ function convertToJsTreeFormat(data) {
         }
 
         
-        
      	// 부서 추가
         if (!dept[deptId]) { 
         	dept[deptId] = {
@@ -171,7 +170,6 @@ function convertToJsTreeFormat(data) {
             result.push(dept[deptId]);
         }
 
-     	
      	
         // 사원 추가
         result.push({	 

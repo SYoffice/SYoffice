@@ -28,10 +28,22 @@ public class OrganizationService_imple implements OrganizationService {
 	}
 
 
-	// 부서별로 조직도 차트 
+	// 조직도 차트 
     @Override
     public List<Map<String, Object>> selectOrganizationByDept(String dept_name, String branch_name) {
         return dao.selectOrganizationByDept(dept_name, branch_name);
     }
 
+    // 부서들 조회
+    @Override
+    public List<Map<String, Object>> selectDepartments() {
+        return dao.selectDepartments();
+    }
+
+    // 지점들 조회
+    @Override
+    public List<Map<String, Object>> selectBranches() {
+        return dao.selectBranches();
+    }
+    
 }

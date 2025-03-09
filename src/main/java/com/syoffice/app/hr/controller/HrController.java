@@ -344,4 +344,231 @@ public class HrController {
 		return mav;
 	}// end of public ModelAndView employeeEdit( ) -----
 	
+	
+	////////////////////// 부서관리 //////////////////////
+	@GetMapping("DepartmentManagement")
+	public ModelAndView DepartmentManagement (HttpServletRequest request, ModelAndView mav,
+											  @RequestParam(defaultValue = "") String searchType,
+											  @RequestParam(defaultValue = "") String searchWord) {
+		
+		List<DepartmentVO> departmentList = null;
+		
+		// 검색어 공백제거
+		searchWord = searchWord.trim();
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+		// paraMap에 넘어온 검색타입과 검색어 넣어주기
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);		
+		
+		// 검색만 있는 부서 목록 조회 (부서관리용)
+		departmentList = service.DepartmentList(paraMap);
+		
+		//////////////////////////////////////////////////
+		
+		////////// 등록하기 모달에서 사용 //////////
+		// 부서 추가할 때 필요한 부서장 리스트 가져오기
+		List<EmployeeVO> managerList = service.managerList();
+		// 부서 추가할 때 필요한 임원진 리스트 가져오기
+		List<EmployeeVO> executiveList = service.executiveList();
+		// 부서장 리스트 보내주기
+		mav.addObject("managerList", managerList);
+		// 임원진 리스트 보내주기
+		mav.addObject("executiveList", executiveList);
+		
+		////////// 수정하기 모달에서 사용 ////////// 
+		// 모든 부서장이 될 수 있는 사원들 조회
+        List<EmployeeVO> allManagerList = service.getAllManagers();
+        // 모든 담당임원이 될 수 있는 사원들 조회
+        List<EmployeeVO> allExecutiveList = service.getAllExecutives();
+        // 모든 부서장이 될 수 있는 사원들 보내주기
+        mav.addObject("allManagerList", allManagerList);
+        // 모든 담당임원이 될 수 있는 사원들 보내주기
+        mav.addObject("allExecutiveList", allExecutiveList);
+        
+		// 검색이 포함된 부서목록 보내주기
+		mav.addObject("departmentList", departmentList);
+		mav.addObject("paraMap", paraMap);
+		
+		mav.setViewName("/hr/DepartmentManagement");
+		
+		return mav;
+	}// end of public String DepartmentManagement () -----
+	
+	
+	// 부서별 사원리스트
+	@GetMapping("DepartmentEmployeeInfo")
+	@ResponseBody
+	public List<EmployeeVO> DepartmentEmployeeInfo(@RequestParam String dept_id, @RequestParam String branch_no) {
+		List<EmployeeVO> employeeList = service.DepartmentEmployeeInfo(dept_id, branch_no);
+		return employeeList;
+	}// end of public List<EmployeeVO> DepartmentMemberInfo(@RequestParam String dept_id) -----
+	
+	
+	// 부서명 중복검사
+	@GetMapping("checkDeptName")
+	@ResponseBody
+	public Map<String, String> checkDeptName(@RequestParam String dept_name) {
+	    Map<String, String> paraMap = new HashMap<>();
+
+	    if (dept_name == null || dept_name.trim().isEmpty()) {
+	    	paraMap.put("status", "0");
+	    	paraMap.put("message", "부서명을 입력하세요.");
+	        return paraMap;
+	    }
+	    // 부서명 중복검사
+	    boolean exists = service.checkDeptName(dept_name);
+
+	    if (exists) {
+	    	paraMap.put("status", "1");  // 중복 있음
+	    } else {
+	    	paraMap.put("status", "0");  // 중복 없음
+	    }
+
+	    return paraMap;
+	}// end of public Map<String, String> checkDeptName(@RequestParam String dept_name) ----- 
+
+	
+	// 신규 부서등록하기
+	@PostMapping("RegisterDepartment")
+	@ResponseBody
+	public Map<String, String> RegisterDepartment(@RequestParam Map<String, String> paraMap) {
+		String dept_name = paraMap.get("dept_name");
+	    String manager_id = paraMap.get("manager_id");
+	    String executive_id = paraMap.get("executive_id");
+
+	    Map<String, String> map = new HashMap<>();
+	    
+	    // 부서명을 입력하지 않았을 때
+	    if (dept_name == null || dept_name.trim().isEmpty()) {
+	    	map.put("status", "0");
+	    	map.put("message", "부서명을 입력하세요.");
+	        return map;
+	    }
+	    
+	    // 부서장을 선택하지 않았을 때
+	    if (manager_id == null || manager_id.trim().isEmpty()) {
+	        map.put("status", "0");
+	        map.put("message", "부서장을 선택하세요.");
+	        return map;
+	    }
+	    
+	    try {
+	        int result = service.RegisterDepartment(dept_name, manager_id, executive_id);
+	        
+	        // 부서등록에 성공했을 때
+	        if (result == 1) {
+	        	map.put("status", "1");
+	        	map.put("message", "부서 추가 완료");
+	        }
+	        // 부서등록에 실패했을 때
+	        else {
+	        	map.put("status", "0");
+	        	map.put("message", "부서 추가 실패");
+	        }
+	    } catch (Exception e) {
+	    	map.put("status", "0");
+	        map.put("message", "서버 오류 발생: " + e.getMessage());
+	    }
+
+	    return map;
+	}// end of public Map<String, String> RegisterDepartment(@Reque stParam Map<String, String> paraMap) -----
+	
+	
+	// 특정 부서 정보 가져오기
+	@GetMapping("getDepartmentInfo")
+	@ResponseBody
+	public Map<String, Object> getDepartmentInfo(@RequestParam Map<String, String> paraMap) {
+		String dept_id = paraMap.get("dept_id");
+		String dept_name = paraMap.get("dept_name");
+		String branch_no = paraMap.get("branch_no");
+		
+		Map<String, String> map = new HashMap<>();
+		map.put("dept_id", dept_id);
+		map.put("dept_name", dept_name);
+		map.put("branch_no", branch_no);
+		
+	    Map<String, Object> responseMap = new HashMap<>();
+
+	    try {
+	    	// 1. 해당 부서의 정보 조회
+	        DepartmentVO dept_info = service.getDepartmentInfo(map);
+	        if (dept_info == null) {
+	        	responseMap.put("status", "0");
+	        	responseMap.put("message", "부서 정보를 찾을 수 없습니다.");
+	            return responseMap;
+	        }
+
+	        // 2️. 응답 데이터 설정
+	        responseMap.put("status", "1");
+	        responseMap.put("data", dept_info);
+	    } catch (Exception e) {
+	    	responseMap.put("status", "0");
+	    	responseMap.put("message", "서버 오류 발생: " + e.getMessage());
+	    }
+
+	    return responseMap;
+	}// end of public Map<String, Object> getDepartmentInfo(@RequestParam int dept_id) -----
+	
+	
+	// 부서 정보 수정
+	@PostMapping("editDepartment")
+	@ResponseBody
+	public Map<String, String> editDepartment(@RequestParam Map<String, String> paraMap) {
+		
+		// 결과물을 담을 Map 생성
+		Map<String, String> map = new HashMap<>();
+		
+		try {
+			// 부서 정보 수정
+	        Integer result = service.editDepartment(paraMap);
+	        
+	        // 정보 수정에 실패했을 때
+	        if (result == 0) {
+	        	map.put("status", "0");
+	        	map.put("message", "부서 수정에 실패했습니다");
+	            return map;
+	        }
+	        // 정보 수정에 성공했을 때
+	        else {
+		        map.put("status", "1");
+		        map.put("message", "부서 수정에 성공했습니다");
+	        }
+	        
+	    } catch (Exception e) {
+	    	map.put("status", "0");
+	    	map.put("message", "서버 오류 발생: " + e.getMessage());
+	    }
+
+	    return map;
+
+	}// end of public Map<String, String> editDepartment(@RequestParam Map<String, String> paraMap) -----
+	
+	// 부서 삭제
+	@PostMapping("/deleteDepartment")
+	@ResponseBody
+	public Map<String, String> deleteDepartment(@RequestParam String dept_id) {
+        Map<String, String> paraMap = new HashMap<>();
+
+        try {
+            boolean isDeleted = service.deleteDepartment(dept_id);
+
+            if (isDeleted) {
+            	paraMap.put("status", "1");  // 성공
+            	paraMap.put("message", "부서가 성공적으로 삭제되었습니다.");
+            } else {
+            	paraMap.put("status", "0");  // 실패
+            	paraMap.put("message", "부서에 소속된 직원이 있어 삭제할 수 없습니다.");
+            }
+
+        } catch (Exception e) {
+        	paraMap.put("status", "0");
+        	paraMap.put("message", "서버 오류로 인해 삭제에 실패했습니다.");
+            e.printStackTrace();
+        }
+
+        return paraMap;
+    }// end of public Map<String, String> deleteDepartment(@RequestParam String deptId) -----
+	
 }// end of public class HrController ----- 

@@ -23,6 +23,15 @@ public class IndexController {
         return "/main/login"; // /WEB-INF/views/main/login.jsp
     }
     
+    @GetMapping("logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "redirect:/login"; // 로그아웃 후 로그인 페이지로 이동
+    }
+    
     @GetMapping("index")  // http://localhost:9090/myspring/index
     public String index(HttpServletRequest request) {
         HttpSession session = request.getSession();

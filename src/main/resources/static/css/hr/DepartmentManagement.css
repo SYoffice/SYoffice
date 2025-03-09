@@ -1,0 +1,242 @@
+@charset "UTF-8";
+
+div#header {
+	display: flex;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.table th, .table td {
+    text-align: center;     
+    vertical-align: middle; 
+    word-wrap: break-word;
+}
+
+.table td .btn-container {
+	height: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+button#searchBtn{
+	background-color: #BFD2FA;
+	color: #212129;
+}
+
+button#registerDeptBtn{
+	height: 50px;
+	background-color: #BFD2FA;
+	color: #212129;
+	margin-left: 54.5%;
+	border: none;
+	border-radius: 10px;
+}
+
+nav.text-center {
+	/* border: solid 1px red; */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+tr#main:hover {
+	cursor: pointer;
+}
+
+/* 부서별 사원목록 모달창 */
+#departmentEmployeesModal {
+    display: none;
+    position: fixed;
+    z-index: 1000; /* 모달이 배경 위에 위치 */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 부서별 사원목록 모달 제목 */
+span#modalTitle {
+    display: block;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 25px;
+    text-align: center;
+}
+
+/* 모달 배경 (공통) */
+#modalBackground {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* 신규 부서등록 모달창 */
+#registerDeptModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 450px;
+    height: auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    font-family: Arial, sans-serif;
+}
+
+/* 제목 */
+#registerDeptModal h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#registerDeptForm .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#registerDeptForm label {
+    font-weight: bold;
+    width: 100%;
+    max-width: 90%;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+#registerDeptForm input,
+#registerDeptForm select {
+    width: 100%;
+    max-width: 90%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fafafa;
+    font-size: 14px;
+}
+
+/* 버튼 박스*/
+#registerDeptForm .btn-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+#registerDeptForm .btn {
+    width: 50%;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#registerDeptForm .btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+#registerDeptForm .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+
+
+/* 수정 모달 */
+#editDeptModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 450px;
+    height: auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 수정 모달 제목 */
+#editDeptModal h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* 입력 폼 스타일 */
+#editDeptForm .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#editDeptForm label {
+    font-weight: bold;
+    width: 100%;
+    max-width: 90%;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+#editDeptForm input,
+#editDeptForm select {
+    width: 100%;
+    max-width: 90%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fafafa;
+    font-size: 14px;
+}
+
+#editDeptForm .btn-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+#editDeptForm .btn {
+    width: 50%;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#editDeptForm .btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+#editDeptForm .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+

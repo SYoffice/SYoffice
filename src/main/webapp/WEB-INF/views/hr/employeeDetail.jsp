@@ -12,11 +12,13 @@
 <script src='<%= request.getContextPath() %>/js/hr/employeeDetail.js'></script>
 <script>
 // 사원 정보 수정페이지 요청
-function goEdit(emp_id) {
-	
-	location.href="${pageContext.request.contextPath}/hr/employeeEdit?emp_id="+emp_id;
-	
+function goMain() {
+	location.href="${pageContext.request.contextPath}/hr/hrIndex";	
 }
+
+function goEdit(emp_id) {
+	location.href="${pageContext.request.contextPath}/hr/employeeEdit?emp_id="+emp_id;
+}// end of function goEdit(emp_id) ----- 
 </script>
 			 
 			<c:set var="orgTel" value="${requestScope.employeevo.tel}"/>
@@ -99,7 +101,7 @@ function goEdit(emp_id) {
 			</div>	
 					
 			<div class="btnBox">
-				<button class="goBackBtn" type="button" id="goBack" onclick="history.back()">뒤로가기</button>
+				<button class="goBackBtn" type="button" id="goBack" onclick="goMain()">처음으로</button>
 				<button class="EditBtn" type="button" id="employee_edit_button" onclick="goEdit(${requestScope.employeevo.emp_id})">수정하기</button>
 			</div>
 					

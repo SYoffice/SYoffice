@@ -45,14 +45,25 @@
 
     <!-- 캘린더에 표시할 출/퇴근 이벤트 조회 -->
     <select id="getCalendarEvents" parameterType="string" resultType="com.syoffice.app.attendance.domain.AttendanceVO">
-	    SELECT 
-	        attend_date AS attendDate,
-	        attend_start AS attendStart,
-	        attend_end AS attendEnd,
-	        attend_status AS attendStatus
-	    FROM tbl_attendance
-	    WHERE fk_emp_id = #{empId}
+		<![CDATA[
+		SELECT 
+		    d.dt AS attendDate,
+		    t.attend_start AS attendStart,
+		    t.attend_end   AS attendEnd,
+		    NVL(t.attend_status, 4) AS attendStatus
+		FROM (
+		    -- 이번 달 1일부터 말일까지 날짜 생성
+		    SELECT TRUNC(SYSDATE, 'MONTH') + (LEVEL - 1) AS dt
+		    FROM DUAL
+		    CONNECT BY LEVEL <= (LAST_DAY(TRUNC(SYSDATE, 'MONTH')) - TRUNC(SYSDATE, 'MONTH')) + 1
+		) d
+		LEFT JOIN tbl_attendance t
+		    ON t.attend_date = d.dt
+		    AND t.fk_emp_id  = #{empId}
+		ORDER BY d.dt
+		]]>
 	</select>
+
 
     <!-- 근태 이력 조회 (출퇴근 리스트)
     <select id="getAttendanceHistory" parameterType="string" resultType="com.syoffice.app.attendance.domain.AttendanceVO">
@@ -101,27 +112,79 @@
           AND attend_end IS NOT NULL
     </select>
 
-    <!--  연차 내역 
-    <select id="getLeaveList" parameterType="string" resultType="map">
-	  SELECT 
-	      l.leave_startdate AS leaveDate,
-	      l.leave_subject   AS leaveType,
-	      l.leave_content   AS leaveReason
-	  FROM tbl_leaveform l
-	  JOIN tbl_document d ON l.fk_doc_no = d.doc_no
-	  WHERE d.fk_emp_id = #{empId}
-	  ORDER BY l.leave_startdate DESC
+   
+	<update id="updateAbsenceForEmployees">
+        UPDATE tbl_attendance T
+        SET attend_status = 4
+        WHERE attend_start IS NULL
+        AND attend_date &lt; TRUNC(SYSDATE)
+        AND NOT EXISTS (
+            SELECT 1 FROM tbl_attendance A
+            WHERE A.attend_date = T.attend_date
+            AND A.attend_start IS NOT NULL
+            AND A.attend_start &lt; TO_DATE('18:00:00', 'HH24:MI:SS')
+        )
+    </update>
+	
+	<!-- 조직도 가져오기 -->
+	<select id="selectOrganization" resultType="map">
+	    SELECT 
+		    b.branch_no,       
+		    b.branch_name,    
+		    d.dept_id,         
+		    d.dept_name,       
+		    e.emp_id,          
+		    e.name AS emp_name,
+		    g.grade_no,        
+		    g.grade_name,      
+		    a.attend_date,     
+		    TO_CHAR(a.attend_start, 'HH24:MI') AS attend_start, 
+		    TO_CHAR(a.attend_end, 'HH24:MI') AS attend_end,     
+		    CASE 
+		        WHEN a.attend_status = 1 THEN '출근'
+		        WHEN a.attend_status = 2 THEN '지각'
+		        WHEN a.attend_status = 3 THEN '조퇴'
+		        WHEN a.attend_status = 4 THEN '결근'
+		        ELSE '미체크'
+		    END AS attend_status 
+		FROM tbl_branch b
+		JOIN tbl_department d ON d.dept_id = b.branch_no  
+		LEFT JOIN tbl_employee e ON e.fk_dept_id = d.dept_id  
+		LEFT JOIN tbl_grade g ON e.fk_grade_no = g.grade_no   
+		LEFT JOIN tbl_attendance a ON e.emp_id = a.fk_emp_id  
+		ORDER BY b.branch_no, d.dept_id, g.grade_no, e.emp_id
 	</select>
-    -->
-    
-    
-
-		
 
 
 
     
     
+	 <select id="selectOrganizationByDept" parameterType="map" resultType="map">
+	    SELECT 
+		    a.attend_no, 
+		    a.attend_date, 
+		    a.attend_start, 
+		    a.attend_end, 
+		    a.attend_status,
+		    e.emp_id, 
+		    e.name AS emp_name, 
+		    d.dept_name, 
+		    b.branch_name
+		FROM tbl_attendance a
+		JOIN tbl_employee e ON a.fk_emp_id = e.emp_id
+		JOIN tbl_department d ON e.fk_dept_id = d.dept_id
+		JOIN tbl_branch b ON e.fk_branch_no = b.branch_no 
+		WHERE d.dept_name = #{branch_name}    
+		AND b.branch_name = #{dept_name}   
+		ORDER BY a.attend_date DESC;
+	</select>
+ 
+   
+    
+    
+    
+    
+
     
 
 </mapper>

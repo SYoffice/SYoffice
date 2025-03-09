@@ -1,0 +1,78 @@
+@charset "UTF-8";
+
+/* 메일 옵션 정보 입력 */
+div.mailbox_wrap {
+    margin-top: 2%;
+}
+
+/* 메일 툴바 */
+span.toolbar {
+    display: inline-block;
+    margin-right: 1%;
+    cursor: pointer;
+}
+
+/* 메일목록 행들 */
+table#mailbox_table tr {
+    cursor: pointer;
+}
+
+
+/* 읽은 메일 */
+tr.read {
+    color: #666666
+}
+
+tr.unread {
+    color: black;
+    font-weight: 600;
+}
+
+/* 메일 제목 */
+td.subject {
+    width: 60%;
+}
+
+
+/* 발신인 */
+td.sender {
+    width: 10%;
+}
+
+/* 중요 메일 표시 */
+span.important {
+    /*float: right;*/
+    color: red;
+}
+
+/* 페이징 숫자 처리 시작 */
+div.pageBar { 
+    display: flex;
+    margin-top: 5%;
+}
+
+div.pagination {
+	border:solid 0px red;
+	display: inline-block;
+	margin: 0 auto;
+}
+
+div.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+  border-radius: 5px;
+}
+
+div.pagination a.active {
+  /*background-color: #4CAF50;*/
+  /*background-color: black;*/
+  border: solid 1px black;
+  color: #6d9cff;
+  border-radius: 5px;
+}
+
+div.pagination a:hover:not(.active) {background-color: #ddd;}
+/* 페이징 숫자 처리 끝 */

@@ -31,11 +31,32 @@ public interface AttendanceService {
     // 월간 누적 근무 시간 계산
     String getMonthlyAccumulated(String empId);
     
+    // 연차 내역 리스트 조회 (각 행을 Map<String, Object>로 구성)
+    List<Map<String, Object>> getLeaveList(String empId);
     
     // 총 연차 일수 조회
-     // int getTotalLeave(String empId);
+    // int getTotalLeave(String empId);
     
-    // 사용한 연차 일수 조회
-   //  int getUsedLeave(String empId);
+    // 잔여연차 
+    int getUsedLeave(String empId);
+
+   
+
+	void updateAbsenceForEmployees();
+
+	List<Map<String, Object>> selectOrganization(String date);
+
+	//List<Map<String, Object>> selectOrganizationByDept(String dept_name, String branch_name, String date);
+
+	List<Map<String, Object>> selectOrganizationByDept(Map<String, Object> param);
+  
+	
+	
+
+	// 전체 부서 연차 내역 조회
+	// List<Map<String, Object>> getAllLeaveHistory();
+	
+	
+	
 	
 }
