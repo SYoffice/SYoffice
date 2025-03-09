@@ -6,6 +6,8 @@ public class EmployeeVO {
 	
 	private String fk_dept_id;		/* 부서번호 */
 	
+	private String fk_branch_no;	/* 지점번호 */
+	
 	private String name;			/* 직원명 */
 	
 	private String password;		/* 비밀번호 */
@@ -80,6 +82,15 @@ public class EmployeeVO {
 	}
 	
 
+	public String getFk_branch_no() {
+		return fk_branch_no;
+	}
+
+	public void setFk_branch_no(String fk_branch_no) {
+		this.fk_branch_no = fk_branch_no;
+	}
+
+	
 	public String getName() {
 		return name;
 	}
