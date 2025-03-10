@@ -6,12 +6,11 @@
    //     /syoffice 
 %>      
 <jsp:include page="../approval/sidebar.jsp" />
+<script src="${pageContext.request.contextPath}/js/approval/obtain_approval_box.js"></script>
 <div class="common_title mb-80">결재대기문서함</div>
             <div class="approval_wrapper">
                 <div class="contents">
-                    <div class="content_title">결재예정문서</div>
-                    <div class="content_sub_title">결재예정 문서가 <span style="color: #95b6ff; font-weight: bold;">3</span>건 있습니다.</div>
-                    <div class="searchsortbox">
+                   <div class="searchsortbox">
                         <div class="select_container">
                             <select>
                                 <option value="0">기안자</option>
@@ -37,45 +36,7 @@
                                 <th style="width: 10%;">기안자</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="5">결재예정문서가 없습니다.</td>
-                            </tr>
-                            <tr>
-                                <td>2025-02-11</td>
-                                <td>지출결의서</td>
-                                <td style="text-align: left;" class="flex"><span class="emergency">긴급</span> 안녕하세요.</td>
-                                <td>개발팀</td>
-                                <td>한민정</td>
-                            </tr>
-                            <tr>
-                                <td>2025-02-11</td>
-                                <td>업무품의</td>
-                                <td style="text-align: left;">안녕하세요.</td>
-                                <td>운영팀</td>
-                                <td>이야호</td>
-                            </tr>
-                            <tr>
-                                <td>2025-02-11</td>
-                                <td>업무품의</td>
-                                <td style="text-align: left;">안녕하세요.</td>
-                                <td>운영팀</td>
-                                <td>이야호</td>
-                            </tr>
-                            <tr>
-                                <td>2025-02-11</td>
-                                <td>업무품의</td>
-                                <td style="text-align: left;">안녕하세요.</td>
-                                <td>운영팀</td>
-                                <td>이야호</td>
-                            </tr>
-                            <tr>
-                                <td>2025-02-11</td>
-                                <td>업무품의</td>
-                                <td style="text-align: left;">안녕하세요.</td>
-                                <td>운영팀</td>
-                                <td>이야호</td>
-                            </tr>
+                        <tbody id="obtain_approval_box_list">
                         </tbody>
                     </table>
                 </div>
