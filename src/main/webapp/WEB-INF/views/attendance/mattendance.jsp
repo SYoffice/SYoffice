@@ -1,199 +1,200 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <%
     String ctxPath = request.getContextPath();
 %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>관리자 근태 & 연차</title>
 
-<!-- jQuery & Bootstrap -->
-<script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
-<script type="text/javascript" src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
-<link rel="stylesheet" type="text/css" href="<%=ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css">
+    <!-- jQuery -->
+    <script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Bootstrap -->
+    <script type="text/javascript" src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css">
 
-<!-- 공통 CSS -->
-<link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/common/common.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-<style>
-    body {
-        background-color: #f8f9fa;
-    }
-    .container-fluid {
-        padding: 20px;
-    }
+    <style>
+        body { background-color: #f8f9fa; }
+        .container-fluid { padding: 20px; }
+        .table-container { background: white; padding: 20px; border-radius: 10px; }
+        .summary-box { display: flex; justify-content: space-around; padding: 20px; background: white; border-radius: 10px; margin-top: 20px; }
+        .summary-item { text-align: center; }
+        .table th, .table td { text-align: center; }
+    </style>
+</head>
 
-    /* 날짜 네비게이션 */
-    .date-nav {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
-    .date-nav button {
-        background: none;
-        border: none;
-        font-size: 28px;
-        cursor: pointer;
-        color: #333;
-    }
+<body>
+    <jsp:include page="../main/header.jsp"/>
 
-    /* 근태 요약 박스 */
-    .summary-row {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-    .summary-box {
-        flex: 1;
-        padding: 15px;
-        background: white;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    /* 테이블 스타일 */
-    .table-container {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-    }
-    .table thead {
-        background-color: #f8f9fa;
-        font-weight: bold;
-        border-bottom: 2px solid #ddd;
-    }
-    .table th, .table td {
-        text-align: center;
-        border: none;
-    }
-</style>
-
-<!-- ✅ 헤더 유지 -->
-<jsp:include page="../main/header.jsp"/>
-
-<div class="container-fluid">
-    <div class="row">
-        <!-- ✅ 왼쪽 조직도 유지 -->
-        <div class="col-3">
-            <jsp:include page="../attendance/att_org.jsp"/>
-            
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <label>지점 선택</label>
+                <select id="branchSelect" class="form-control"></select>
+            </div>
+            <div class="col-md-3">
+                <label>부서 선택</label>
+                <select id="deptSelect" class="form-control" disabled></select>
+            </div>
+            <div class="col-md-3">
+                <label>조회 유형</label>
+                <select id="typeSelect" class="form-control" disabled>
+                    <option value="attendance">근태 내역</option>
+                    <option value="leave">연차 내역</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>조회 날짜</label>
+                <input type="date" id="selectedDate" class="form-control">
+            </div>
         </div>
+        <button id="searchBtn" class="btn btn-primary mt-3">조회</button>
+    </div>
 
-        <!-- ✅ 가운데 날짜 선택 -->
-        <div class="col-9">
-            <div class="date-nav">
-                <button onclick="prevDate()">◀</button>
-                <span id="currentDate">${date}</span>
-                <button onclick="nextDate()">▶</button>
-            </div>
-
-            <!-- ✅ 근태 요약 -->
-            <div class="summary-row">
-                <div class="summary-box">출근 미체크 <br> <span id="checkInMiss">-</span></div>
-                <div class="summary-box">퇴근 미체크 <br> <span id="checkOutMiss">-</span></div>
-                <div class="summary-box">결근 <br> <span id="absentCount">-</span></div>
-            </div>
-
-            <!-- ✅ 근태 내역 -->
-            <div class="table-container">
-                <h5>근태 내역</h5>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>부서원</th>
-                            <th>부서명</th>
-                            <th>날짜</th>
-                            <th>출근</th>
-                            <th>퇴근</th>
-                            <th>결근</th>
-                        </tr>
-                    </thead>
-                    <tbody id="attendanceTableBody">
-                        <!-- AJAX로 데이터 로드 -->
-                    </tbody>
-                </table>
-            </div>
+    <!--  근태 및 연차 요약 박스 -->
+    <div class="summary-box">
+        <div class="summary-item">
+            <h5>출근 미체크</h5>
+            <p id="missedCheckIn">0</p>
+        </div>
+        <div class="summary-item">
+            <h5>퇴근 미체크</h5>
+            <p id="missedCheckOut">0</p>
+        </div>
+        <div class="summary-item">
+            <h5 id="statusTitle">결근</h5>
+            <p id="absentOrLeave">0</p>
         </div>
     </div>
-</div>
 
-<script>
-$('#jstree').on("select_node.jstree", function(e, data) {
-    let nodeId = data.node.id;
-    let nodeOriginal = data.node.original;
+    <div class="table-container">
+        <h5 id="tableTitle"></h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>사원명</th>
+                    <th>부서명</th>
+                    <th>날짜</th>
+                    <th id="timeColumn">출근</th>
+                    <th>퇴근</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody id="dataTableBody"></tbody>
+        </table>
+    </div>
 
-    if (nodeId.startsWith("att_")) {
-        let deptName = nodeOriginal.deptName;
-        let branchName = nodeOriginal.branchName;
-        console.log("부서 근태 내역 조회 요청:", { dept_name: deptName, branch_name: branchName });
-        loadDeptAttendance(deptName, branchName);
-    }
-});
+    <script>
+        $(document).ready(function() {
+            let today = new Date().toISOString().slice(0, 10);  // 현재 날짜 가져오기 (YYYY-MM-DD 형식)
+            $("#selectedDate").val(today);
 
+            // 지점 목록 가져오기
+            $.ajax({
+                url: "<%=ctxPath%>/attendance/branches",
+                type: "GET",
+                dataType: "json",
+                success: function(branches) {
+                    let branchSelect = $("#branchSelect").empty().append(`<option value="">지점 선택</option>`);
+                    branches.forEach(branch => branchSelect.append(`<option value="\${branch.BRANCH_NO}">\${branch.BRANCH_NAME}</option>`));
+                }
+            });
 
+            // 부서 목록 가져오기 (지점 선택 후)
+            $("#branchSelect").change(function() {
+                let branchNo = $(this).val();
+                let deptSelect = $("#deptSelect").html('<option value="">부서 선택</option>').prop("disabled", true);
+                $("#typeSelect").prop("disabled", true);
 
+                if (!branchNo) return;
 
-    function loadDeptAttendance(deptName, branchName) {
-        console.log("📢 부서 근태 내역 조회 요청:", { dept_name: deptName, branch_name: branchName });
+                $.ajax({
+                    url: "<%=ctxPath%>/attendance/departments",
+                    type: "GET",
+                    dataType: "json",
+                    data: { branch_no: branchNo },
+                    success: function(departments) {
+                        if (departments.length > 0) {
+                            departments.forEach(dept => deptSelect.append(`<option value="\${dept.DEPT_ID}">\${dept.DEPT_NAME}</option>`));
+                            deptSelect.prop("disabled", false);
+                        }
+                    }
+                });
+            });
 
-        $.ajax({
-            url: "<%=ctxPath%>/attendance/dataByDept",
-            data: {
-                dept_name: deptName,
-                branch_name: branchName,
-                date: $("#currentDate").text()
-            },
-            dataType: "json",
-            success: function (json) {
-                console.log("받은 근태 데이터:", json);
-                /*
-                0:{DEPT_ID: 1, EMP_NAME: '서영학', DEPT_NAME: '임원진', EMP_ID: 2025001, GRADE_NO: 1, …}
-					1: {DEPT_ID: 1, EMP_NAME: '김영학', DEPT_NAME: '임원진', EMP_ID: 2025015, GRADE_NO: 2, …}
-					2:{DEPT_ID: 1, EMP_NAME: '박영학', DEPT_NAME: '임원진', EMP_ID: 2025016, GRADE_NO: 2, …}
-					3:{DEPT_ID: 1, EMP_NAME: '이영학', DEPT_NAME: '임원진', EMP_ID: 2025017, GRADE_NO: 2, …}
-					4:{DEPT_ID: 1, EMP_NAME: '강이훈', DEPT_NAME: '임원진', EMP_ID: 2025021, GRADE_NO: 2, …}
-                
-                */
+            $("#deptSelect").change(function() {
+                $("#typeSelect").prop("disabled", !$(this).val());
+            });
 
-                let tbody = $("#attendanceTableBody");
-                tbody.empty(); // 기존 데이터 삭제
+            //  조회 버튼 클릭 시 데이터 가져오기
+            $("#searchBtn").click(function() {
+                let deptId = $("#deptSelect").val();
+                let type = $("#typeSelect").val();
+                let selectedDate = $("#selectedDate").val();
 
-                if (json.length === 0) {
-                    tbody.append("<tr><td colspan='6'>📢 근태 데이터 없음</td></tr>");
+                if (!deptId || !type) {
+                    alert("부서와 조회 유형을 선택해주세요.");
                     return;
                 }
 
-                json.forEach(att => {
-                    tbody.append(`
-                        <tr>
-                            <td>${att.empName || "-"}</td>
-                            <td>${att.deptName || "-"}</td>
-                            <td>${att.attendDate || "-"}</td>
-                            <td>${att.attendStart ? att.attendStart : "-"}</td>
-                            <td>${att.attendEnd ? att.attendEnd : "-"}</td>
-                            <td>${att.attendStatus == 4 ? "⭕" : "❌"}</td>
-                        </tr>
-                    `);
+                let url = "<%=ctxPath%>/attendance/dataByDept";
+                $("#statusTitle").text(type === "attendance" ? "결근" : "연차 사용");
+
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    dataType: "json",
+                    data: { deptId: deptId, date: selectedDate, type: type },
+                    success: function(data) {
+                        //console.log("📌 받은 데이터 확인:", data);  // 디버깅
+                        renderTable(data, type);
+                        updateSummary(data, type);
+                    }
                 });
-            },
-            error: function (xhr, status, error) {
-                console.error("AJAX 요청 실패:", status, error);
-                alert("근태 데이터 불러오기 실패");
+            });
+
+            //  테이블 렌더링
+            function renderTable(list, type) {
+                let tbody = $("#dataTableBody").empty();
+
+                if (!list || list.length === 0) {
+                    tbody.append("<tr><td colspan='6'>데이터 없음</td></tr>");
+                    return;
+                }
+
+                list.forEach(item => {
+                    let row = `<tr>
+                        <td>\${item.EMPNAME || "-"}</td>
+                        <td>\${item.DEPTNAME || "-"}</td>
+                        <td>\${item.ATTENDDATE || "-"}</td>   
+                        <td>\${item.STARTTIME || "-"}</td>
+                        <td>\${item.ENDTIME || "-"}</td>
+                        <td>\${item.STATUS || "-"}</td>
+                    </tr>`;
+                    tbody.append(row);
+                });
+
+                //console.log(" 테이블 렌더링 완료");
+            }
+
+            //  근태/연차 요약 데이터 업데이트
+            function updateSummary(data, type) {
+                let missedCheckIn = 0, missedCheckOut = 0, absentOrLeave = 0;
+                data.forEach(item => {
+                    if (item.STARTTIME === "-") missedCheckIn++;
+                    if (item.ENDTIME === "-") missedCheckOut++;
+                    if (item.STATUS === "결근" || item.STATUS === "연차") absentOrLeave++;
+                });
+                $("#missedCheckIn").text(missedCheckIn);
+                $("#missedCheckOut").text(missedCheckOut);
+                $("#absentOrLeave").text(absentOrLeave);
             }
         });
-    }
-
-
-   
-</script>
-
- 
+    </script>
+</body>
+</html>
