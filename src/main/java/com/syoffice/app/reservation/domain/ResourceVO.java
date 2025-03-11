@@ -6,7 +6,7 @@ public class ResourceVO {
 	private String fk_category_no;  /* 자원분류번호 */
 	private String resource_name;   /* 자원명(2층 회의실, 123가4566 등..) */
 	private String resource_status; /* 자원상태(0:사용가능, 1:사용중) */
-	
+	private String category_name;  /* 자원분류명(회의실, 차량 등..) */
 	
 	
 	public String getResource_no() {
@@ -40,4 +40,13 @@ public class ResourceVO {
 	public void setResource_status(String resource_status) {
 		this.resource_status = resource_status;
 	}
+
+	public String getCategory_name() {
+		return category_name;
+	}
+
+	public void setCategory_name(String category_name) {
+		this.category_name = category_name;
+	}
+	
 }

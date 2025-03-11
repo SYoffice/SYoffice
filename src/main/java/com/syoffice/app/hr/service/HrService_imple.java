@@ -17,6 +17,7 @@ import com.syoffice.app.department.domain.DepartmentVO;
 import com.syoffice.app.employee.domain.EmployeeVO;
 import com.syoffice.app.grade.domain.GradeVO;
 import com.syoffice.app.hr.model.HrDAO;
+import com.syoffice.app.reservation.domain.ResourceVO;
 
 //서비스(Service) 선언
 @Service
@@ -338,7 +339,7 @@ public class HrService_imple implements HrService {
 				// 새로 임명된 지점장이 본사 소속이 아닐 경우
 				if(!"1".equals(previous_branch_no)) {
 					
-					System.out.println("~~ 새로 임명된 지점장이 본사 소속이 아닐 경우 ~~");
+				//	System.out.println("~~ 새로 임명된 지점장이 본사 소속이 아닐 경우 ~~");
 					
 					if(previous_branch_no.equals(branch_no)) {
 						// 새로 온 지점장의 정보 변경 - 같은 지점의 사원이 지점장이 된 경우
@@ -368,7 +369,7 @@ public class HrService_imple implements HrService {
 				}
 				// 새로 임명된 지점장이 본사 소속이였을 경우
 				else {
-					System.out.println("== 새로 임명된 지점장이 본사 소속이였을 경우 실행됨 == ");
+				//	System.out.println("== 새로 임명된 지점장이 본사 소속이였을 경우 실행됨 == ");
 					
 					if(previous_dept_id != null) {
 						// 새로 임명된 지점장이 - 본사소속 다른 부서의 부서장이였을 경우
@@ -414,9 +415,47 @@ public class HrService_imple implements HrService {
         // 4. 삭제 성공 여부 반환
         return result > 0;
 	}
-	
-	
-	
-	
 
-}
+	// 총 자원 수 알아오기
+	@Override
+	public int getResourceCount(Map<String, String> paraMap) {
+		int totalCount = dao.getResourceCount(paraMap);
+		return totalCount;
+	}// end of public int getResourceCount(Map<String, String> paraMap) ----- 
+	
+	// 페이징과 검색이 포함된 자원목록 가져오기
+	@Override
+	public List<ResourceVO> resourceList(Map<String, String> paraMap) {
+		List<ResourceVO> resourceList = dao.resourceList(paraMap);
+		return resourceList;
+	}// end of public List<ResourceVO> resourceList(Map<String, String> paraMap) 00000
+	
+	// 자원명 중복검사 
+	@Override
+	public boolean checkResourceName(Map<String, String> paraMap) {
+		int count = dao.checkResourceName(paraMap);
+	    return count > 0;
+	}// end of public boolean checkResourceName(String resource_name) -----
+	
+	// 신규 자원등록
+	@Override
+	public int registerResource(Map<String, String> paraMap) {
+		int result = dao.registerResource(paraMap);
+		return result;
+	}// end of public int registerResource(Map<String, String> paraMap) -----
+	
+	// 자원 수정
+	@Override
+	public int updateResource(Map<String, String> paraMap) {
+		int result = dao.updateResource(paraMap);
+		return result;
+	}// end of public int updateResource(Map<String, String> paraMap) -----
+	
+	// 자원 삭제
+	@Override
+	public int deleteResource(String resource_no) {
+		int result = dao.deleteResource(resource_no);
+		return result;
+	}
+	
+}// end of public class HrService_imple implements HrService{} -----

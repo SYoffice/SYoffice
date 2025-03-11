@@ -7,6 +7,7 @@ import com.syoffice.app.branch.domain.BranchVO;
 import com.syoffice.app.department.domain.DepartmentVO;
 import com.syoffice.app.employee.domain.EmployeeVO;
 import com.syoffice.app.grade.domain.GradeVO;
+import com.syoffice.app.reservation.domain.ResourceVO;
 
 public interface HrService {
 	
@@ -64,9 +65,28 @@ public interface HrService {
 	// 부서 정보 수정
 	Integer editDepartment(Map<String, String> paraMap);
 
-	
 	// 부서삭제 여부
 	boolean deleteDepartment(String dept_id);
+
+	// 총 자원 수 알아오기
+	int getResourceCount(Map<String, String> paraMap);
+	
+	// 페이징과 검색이 포함된 자원목록 가져오기
+	List<ResourceVO> resourceList(Map<String, String> paraMap);
+	
+	// 자원명 중복검사
+	boolean checkResourceName(Map<String, String> paraMap);
+	
+	// 신규 자원등록
+	int registerResource(Map<String, String> paraMap);
+	
+	// 자원 수정
+	int updateResource(Map<String, String> paraMap);
+
+	// 자원 삭제
+	int deleteResource(String resource_no);
+
+
 
 
 	

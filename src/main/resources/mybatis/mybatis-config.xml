@@ -20,8 +20,8 @@
 		<typeAlias type="com.syoffice.app.department.domain.DepartmentVO" alias="DepartmentVO"/> <!-- 부서 VO --> 
 		<typeAlias type="com.syoffice.app.reservation.domain.ReservationVO" alias="ReservationVO"/>
 	    <typeAlias type="com.syoffice.app.reservation.domain.ResourceVO" alias="ResourceVO"/>
-	    <typeAlias type="com.syoffice.app.approval.domain.ApprovalLineVO" alias="ApprovalLineVO"/>
-	    <typeAlias type="com.syoffice.app.approval.domain.ApprovalVO" alias="ApprovalVO"/>
+	    <!-- <typeAlias type="com.syoffice.app.approval.domain.ApprovalLineVO" alias="ApprovalLineVO"/> -->
+	    <!-- <typeAlias type="com.syoffice.app.approval.domain.ApprovalVO" alias="ApprovalVO"/> -->
 	</typeAliases>
 
 
