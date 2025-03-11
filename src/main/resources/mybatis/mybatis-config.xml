@@ -5,19 +5,24 @@
 
 
     <!-- domain(VO) package -->
-   <typeAliases>
-      <typeAlias type="com.syoffice.app.employee.domain.EmployeeVO" alias="EmployeeVO"/>
-      <typeAlias type="com.syoffice.app.board.domain.BoardVO" alias="BoardVO"/><!-- 부서게시판VO -->
-      <typeAlias type="com.syoffice.app.board.domain.NoticeBoardVO" alias="NoticeBoardVO"/><!-- 공지사항 게시판 VO -->
-      <typeAlias type="com.syoffice.app.board.domain.CommentVO" alias="CommentVO"/><!-- 댓글VO -->
-      <typeAlias type="com.syoffice.app.kpi.domain.KpiVO" alias="KpiVO"/>
-      <typeAlias type="com.syoffice.app.kpi.domain.ResultVO" alias="ResultVO"/>
-       <typeAlias type="com.syoffice.app.attendance.domain.AttendanceVO" alias="AttendanceVO"/><!-- 근태VO -->
-       <typeAlias type="com.syoffice.app.mail.domain.MailVO" alias="MailVO"/>
-       <typeAlias type="com.syoffice.app.mail.domain.MailAttachVO" alias="MailAttachVO"/>
-        <typeAlias type="com.syoffice.app.dataroom.domain.DataVO" alias="DataVO"/>
+	<typeAliases>
+		<typeAlias type="com.syoffice.app.employee.domain.EmployeeVO" alias="EmployeeVO"/>
+		<typeAlias type="com.syoffice.app.board.domain.BoardVO" alias="BoardVO"/><!-- 부서게시판VO -->
+		<typeAlias type="com.syoffice.app.board.domain.NoticeBoardVO" alias="NoticeBoardVO"/><!-- 공지사항 게시판 VO -->
+		<typeAlias type="com.syoffice.app.board.domain.CommentVO" alias="CommentVO"/><!-- 댓글VO -->
+		<typeAlias type="com.syoffice.app.kpi.domain.KpiVO" alias="KpiVO"/>
+		<typeAlias type="com.syoffice.app.kpi.domain.ResultVO" alias="ResultVO"/>
+		<typeAlias type="com.syoffice.app.attendance.domain.AttendanceVO" alias="AttendanceVO"/><!-- 근태VO -->
+		<typeAlias type="com.syoffice.app.mail.domain.MailVO" alias="MailVO"/>
+		<typeAlias type="com.syoffice.app.mail.domain.MailAttachVO" alias="MailAttachVO"/>
+		<typeAlias type="com.syoffice.app.dataroom.domain.DataVO" alias="DataVO"/>
         <typeAlias type="com.syoffice.app.dataroom.domain.DatacategoryVO" alias="DatacategoryVO"/>
-   </typeAliases>
+		<typeAlias type="com.syoffice.app.department.domain.DepartmentVO" alias="DepartmentVO"/> <!-- 부서 VO --> 
+		<typeAlias type="com.syoffice.app.reservation.domain.ReservationVO" alias="ReservationVO"/>
+	    <typeAlias type="com.syoffice.app.reservation.domain.ResourceVO" alias="ResourceVO"/>
+	    <typeAlias type="com.syoffice.app.approval.domain.ApprovalLineVO" alias="ApprovalLineVO"/>
+	    <typeAlias type="com.syoffice.app.approval.domain.ApprovalVO" alias="ApprovalVO"/>
+	</typeAliases>
 
 
 </configuration>
