@@ -454,8 +454,6 @@
 		WHERE fk_branch_no = #{previous_branch_no}
 	</update>
 	
-	
-	
 	 <!-- 부서에 소속된 직원 수 확인 -->
     <select id="getEmployeeCountByDeptId" resultType="Integer">
         SELECT COUNT(*)
@@ -469,6 +467,73 @@
         WHERE dept_id = #{dept_id}
     </delete>
 		
+	<!-- 검색만 있는 자원 목록 조회 -->
+	<select id="getResourceCount" parameterType="HashMap" resultType="Integer">
+		SELECT COUNT(*)
+		FROM tbl_resource R
+		JOIN tbl_resource_category C ON R.fk_category_no = category_no
+		<where>	
+            <choose>
+                <when test="searchType == 'category_name' and searchWord != ''">
+                    AND lower(C.category_name) LIKE '%'||lower(#{searchWord})||'%'
+                </when>
+                <when test="searchType == 'resource_name' and searchWord != ''">
+                    AND lower(R.resource_name) LIKE '%'||lower(#{searchWord})||'%'
+                </when>
+            </choose>
+        </where>
+	</select>
+	
+	<!-- 페이징과 검색이 포함된 자원목록 가져오기 -->
+	<select id="resourceList" parameterType="HashMap" resultType="ResourceVO">
+	    SELECT R.resource_no, R.fk_category_no, R.resource_name, R.resource_status, R.category_name
+	    FROM (
+	        SELECT ROW_NUMBER() OVER (ORDER BY R.fk_category_no, R.resource_no, R.resource_status) AS RNO,
+	               R.resource_no, R.fk_category_no, R.resource_name, R.resource_status, C.category_name
+	        FROM tbl_resource R
+	        JOIN tbl_resource_category C ON R.fk_category_no = C.category_no
+	        <where>
+	            <choose>
+	                <when test="searchType == 'category_name' and searchWord != ''">
+	                    AND lower(C.category_name) LIKE '%'||lower(#{searchWord})||'%'
+	                </when>
+	                <when test="searchType == 'resource_name' and searchWord != ''">
+	                    AND lower(R.resource_name) LIKE '%'||lower(#{searchWord})||'%'
+	                </when>
+	            </choose>
+	        </where>
+	    ) R
+	    WHERE R.RNO BETWEEN #{startRno} AND #{endRno}
+	</select>
+	
+	<!-- 자원명 중복검사 -->
+	<select id="checkResourceName" parameterType="HashMap" resultType="Integer">
+		SELECT count(*)
+		FROM tbl_resource
+		WHERE LOWER(resource_name) = LOWER(#{resource_name})
+		AND fk_category_no = #{fk_category_no}
+	</select>
+	
+	<!-- 신규 자원등록 -->
+	<insert id="registerResource" parameterType="HashMap">
+		INSERT INTO tbl_resource (resource_no, fk_category_no, resource_name, resource_status)
+    	VALUES (resource_seq.NEXTVAL, #{fk_category_no}, #{resource_name}, 1)
+	</insert>
+	
+	<!-- 자원수정 -->
+	<update id="updateResource" parameterType="HashMap">
+	    UPDATE tbl_resource
+	    SET resource_name = #{resource_name},
+	        resource_status = #{resource_status}
+	    WHERE resource_no = #{resource_no}
+	</update>
+	
+	<!-- 자원삭제 -->
+	<delete id="deleteResource" parameterType="String">
+	    DELETE FROM tbl_resource
+    	WHERE resource_no = to_number(#{resource_no})
+	</delete>
+	
 	
 </mapper>
 

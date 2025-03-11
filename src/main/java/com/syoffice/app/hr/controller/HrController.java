@@ -25,6 +25,7 @@ import com.syoffice.app.department.domain.DepartmentVO;
 import com.syoffice.app.employee.domain.EmployeeVO;
 import com.syoffice.app.grade.domain.GradeVO;
 import com.syoffice.app.hr.service.HrService;
+import com.syoffice.app.reservation.domain.ResourceVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -570,5 +571,176 @@ public class HrController {
 
         return paraMap;
     }// end of public Map<String, String> deleteDepartment(@RequestParam String deptId) -----
+	
+	
+
+	////////////////////// 자원관리 //////////////////////
+	@GetMapping("ResourceManagement")
+	public ModelAndView ResourceManagement (HttpServletRequest request, ModelAndView mav,
+											@RequestParam(defaultValue = "") String searchType,
+											@RequestParam(defaultValue = "") String searchWord) {
+	
+		List<ResourceVO> resourceList = null;
+		
+		// 검색어 공백제거
+		searchWord = searchWord.trim();
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+		// paraMap에 넘어온 검색타입과 검색어 넣어주기
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);	
+	
+		//////////////////////페이징 처리 /////////////////////////
+		int curPage = 1;
+		
+		try {
+		// 존재하지 않는 페이지를 URL을 통해 접근했을 때 예외처리
+		curPage = Integer.parseInt(request.getParameter("curPage"));
+		} catch (NumberFormatException e) {
+		// 1페이지로 보내기
+		curPage = 1;
+		}
+		
+		PagingDTO pagingDTO = new PagingDTO();	// Pagind DTO 초기화
+		pagingDTO.setPageSize(5);	// 보여줄 페이지 수
+		
+		int totalRowCount = service.getResourceCount(paraMap);	// 총 자원 수 알아오기
+	
+		// URL을 통해 비정상적인 접근을 한 경우 1페이지로 보내기
+		if(curPage > totalRowCount || curPage < 1) {
+		curPage = 1;
+		}
+		
+		pagingDTO.setRowSizePerPage(10);	// 한 페이지에 보여줄 행 수 가져오기
+		
+		pagingDTO.setCurPage(curPage);	// 현재 페이지 가져오기
+		pagingDTO.setTotalRowCount(totalRowCount);	// 전체 행 개수 가져오기
+		pagingDTO.pageSetting();	// 페이징 계산 공식
+		
+		// 시작행 번호
+		String startRno = String.valueOf(pagingDTO.getFirstRow());
+		// 마지막 행번호
+		String endRno = String.valueOf(pagingDTO.getLastRow());
+		
+		// paraMap 에 넣어주기
+		paraMap.put("startRno", startRno);
+		paraMap.put("endRno", endRno);
+	
+
+		// 페이징과 검색이 포함된 자원목록 가져오기
+		// 각자 불러오고 싶은 리스트 메소드로 수정하시면 됩니다.
+		resourceList = service.resourceList(paraMap);
+		
+		// 페이징DTO 보내주기
+		mav.addObject("pagingDTO", pagingDTO);
+		// 검색어 및 검색타입이 담긴 파라맵 보내주기
+		// 검색이 있는 경우에만 하시면 됩니다.
+		mav.addObject("paraMap", paraMap);
+		//////////////////////페이징 처리 /////////////////////////
+
+		mav.addObject("resourceList", resourceList);
+		mav.setViewName("/hr/ResourceManagement");
+		
+		return mav;
+	}// end of public String ResourceManagement () -----
+	
+	
+	// 자원명 중복검사
+	@GetMapping("checkResourceName")
+	@ResponseBody
+	public Map<String, String> checkResourceName(@RequestParam Map<String, String> paraMap) {
+	    Map<String, String> map = new HashMap<>();
+	    
+	    boolean is_duplicate = service.checkResourceName(paraMap);
+	    
+	    // 자원명이 중복되었을 때
+	    if (is_duplicate) {
+	    	map.put("status", "1");
+	    	map.put("message", "이미 존재하는 자원명입니다.");
+	    }
+	    // 자원명이 중복되지 않았을 때
+	    else {
+	    	map.put("status", "0");
+	    	map.put("message", "사용 가능한 자원명입니다.");
+	    }
+
+	    return map;
+	}// end of public Map<String, String> checkResourceName(@RequestParam String resource_name)
+	
+	
+	// 신규 자원등록
+	@PostMapping("registerResource")
+	@ResponseBody
+	public Map<String, String> registerResource(@RequestParam Map<String, String> paraMap, @RequestParam(defaultValue = "1") String currentShowPageNo) {
+	    Map<String, String> map = new HashMap<>();
+
+	    try {
+	        int result = service.registerResource(paraMap);
+
+	        if (result == 1) {
+	        	map.put("status", "1");
+	        	map.put("message", "자원이 성공적으로 추가되었습니다.");
+	        } else {
+	        	map.put("status", "0");
+	        	map.put("message", "자원 추가에 실패했습니다.");
+	        }
+	    } catch (Exception e) {
+	    	map.put("status", "0");
+	    	map.put("message", "서버 오류 발생: " + e.getMessage());
+	    }
+
+	    return map;
+	}// end of public Map<String, String> registerResource(@RequestParam Map<String, String> paraMap) ----
+	
+	
+	// 자원 수정
+	@PostMapping("/updateResource")
+	@ResponseBody
+	public Map<String, String> updateResource(@RequestParam Map<String, String> paraMap) {
+		
+		Map<String, String> map = new HashMap<>();
+		
+		String resource_name = paraMap.get("resource_name");
+		
+		if(resource_name == null || resource_name.trim().isEmpty()) {
+			map.put("status", "0");
+			map.put("message", "입력 값이 누락되었습니다.");
+	        return map;
+		}
+		
+	    int result = service.updateResource(paraMap);
+
+	    if (result > 0) {
+	    	map.put("status", "1");
+	    	map.put("message", "자원이 성공적으로 수정되었습니다.");
+	    } 
+	    else {
+	    	map.put("status", "0");
+	    	map.put("message", "자원 수정에 실패했습니다. 다시 시도해주세요.");
+	    }
+	    
+		return map;
+	}// end of public Map<String, String> updateResource(@RequestParam Map<String, String> paraMap) -----
+	
+	// 자원 삭제
+	@PostMapping("/deleteResource")
+	@ResponseBody
+	public Map<String, String> deleteResource(@RequestParam String resource_no) {
+	    Map<String, String> map = new HashMap<>();
+
+	    // 자원 삭제
+	    int result = service.deleteResource(resource_no);
+
+	    if (result > 0) {
+	    	map.put("status", "1");
+	    	map.put("message", "자원이 성공적으로 삭제되었습니다.");
+	    } else {
+	    	map.put("status", "0");
+	    	map.put("message", "자원 삭제에 실패했습니다. 다시 시도해주세요.");
+	    }
+
+	    return map;
+	}// end of public Map<String, String> deleteResource(@RequestParam String resource_no) ------
 	
 }// end of public class HrController ----- 

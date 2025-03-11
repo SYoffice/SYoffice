@@ -9,6 +9,7 @@ import com.syoffice.app.branch.domain.BranchVO;
 import com.syoffice.app.department.domain.DepartmentVO;
 import com.syoffice.app.employee.domain.EmployeeVO;
 import com.syoffice.app.grade.domain.GradeVO;
+import com.syoffice.app.reservation.domain.ResourceVO;
 
 @Mapper
 public interface HrDAO {
@@ -97,14 +98,29 @@ public interface HrDAO {
 	void updatePreviousBranchInfo(Map<String, String> paraMap);
 	// 전 소속 지점의 지점장 자동설정을 위해 다음 직급이 높은 사원 알아오기
 	String getNewLeaderId(Map<String, String> paraMap);
-
 	
 	// 부서에 소속된 직원 수 조회
 	int getEmployeeCountByDeptId(String dept_id);
 	// 부서 삭제
 	int deleteDepartment(String dept_id);
+	
+	// 총 자원 수 알아오기
+	int getResourceCount(Map<String, String> paraMap);
 
+	// 페이징과 검색이 포함된 자원목록 가져오기
+	List<ResourceVO> resourceList(Map<String, String> paraMap);
 	
+	// 자원명 중복검사
+	int checkResourceName(Map<String, String> paraMap);
 	
+	// 신규 자원등록
+	int registerResource(Map<String, String> paraMap);
+	
+	// 자원 수정
+	int updateResource(Map<String, String> paraMap);
+	
+	// 자원삭제
+	int deleteResource(String resource_no);
+
 	
 }

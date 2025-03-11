@@ -1,0 +1,273 @@
+@charset "UTF-8";
+
+div#header {
+	display: flex;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+table#table {
+	width: 60%;
+}
+
+.table th, .table td {
+    text-align: center;     
+    vertical-align: middle; 
+    word-wrap: break-word;
+}
+
+.table td .btn-container {
+	height: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+button#searchBtn{
+	background-color: #BFD2FA;
+	color: #212129;
+}
+
+button#registerResourceBtn{
+	height: 50px;
+	background-color: #BFD2FA;
+	color: #212129;
+	margin-left: 15%;
+	border: none;
+	border-radius: 10px;
+}
+
+nav.text-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+tr#main:hover {
+	cursor: pointer;
+}
+
+
+/* 모달 배경 (공통) */
+#modalBackground {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* 신규 자원등록 모달창 */
+#registerResourceModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 450px;
+    height: auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    font-family: Arial, sans-serif;
+}
+
+/* 제목 */
+#registerResourceModal h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#registerResourceForm .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#registerResourceForm label {
+    font-weight: bold;
+    width: 100%;
+    max-width: 90%;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+#registerResourceForm input,
+#registerResourceForm select {
+    width: 100%;
+    max-width: 90%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fafafa;
+    font-size: 14px;
+}
+
+/* 버튼 박스*/
+#registerResourceForm .btn-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+#registerResourceForm .btn {
+    width: 50%;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#registerResourceForm .btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+#registerResourceForm .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+
+nav.text-center {
+	/* border: solid 1px red; */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 60%;
+	margin-top: 10px;
+}
+
+/* 페이징바의 숫자를 감싸고 있는 박스 */
+/* 가운데 정렬을 위해 사용 */
+div#pageNo_box {
+	width: 250px;
+	display: flex;
+	justify-content: center;
+	margin: 0 2%;	
+}
+
+div#pageNo_box > li {
+	width: 50px;
+	margin: 0 2%;
+}
+
+/* 페이징바의 숫자 요소들 (1 2 3 4 5) */
+a.pageNo {
+	font-size: 22px;
+	font-weight: lighter;	
+	border-bottom: solid 0.7px black;
+	color: gray;
+}
+
+/* 페이징바의 버튼을 감싸고 있는 박스 */
+div.pageBtn_box {
+	display: flex;
+	width: 60	px;
+}
+
+div.pageBtn_box > li {
+	margin: 0 3%;
+}
+
+/* 페이지바의 이동하는 버튼 (< << > >>) */
+img.pageBtn {
+	width: 25px;
+	height: 30px;
+}
+
+a.active {
+	color: black;
+	font-weight: bold;
+}
+
+
+/* 수정 모달 */
+#editResourceModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 450px;
+    height: auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 수정 모달 제목 */
+#editResourceModal h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* 입력 폼 스타일 */
+#editResourceForm .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#editResourceForm label {
+    font-weight: bold;
+    width: 100%;
+    max-width: 90%;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+#editResourceForm input,
+#editResourceForm select {
+    width: 100%;
+    max-width: 90%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fafafa;
+    font-size: 14px;
+}
+
+#editResourceForm .btn-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+#editResourceForm .btn {
+    width: 50%;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#editResourceForm .btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+#editResourceForm .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}

@@ -14,7 +14,7 @@
 			<ul class="side_menu_list">
 				<li><a href="<%= ctxPath%>/hr/hrIndex">홈</a></li>
 				<li><a href="<%= ctxPath%>/hr/DepartmentManagement">부서관리</a></li>
-				<li><a href="#">자원관리</a></li>
+				<li><a href="<%= ctxPath%>/hr/ResourceManagement">자원관리</a></li>
 			</ul>
         </div>
     </div>
