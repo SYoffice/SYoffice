@@ -1,155 +1,75 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-
     pageEncoding="UTF-8"%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
-
-
 <jsp:include page="../main/header.jsp" />
-
-
 
 <%
 
-    // contextPath 설정
-
     String ctxPath = request.getContextPath();
-
 %>
-
-
-
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
     <meta charset="UTF-8">
-
     <title>근태관리</title>
 
-    
-
     <!-- jQuery, Bootstrap -->
-
     <script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
-
     <script src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
-
     <link href="<%=ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" rel="stylesheet" />
-
-
-
-    <!-- FullCalendar CSS & JS -->
-
-    <link href="<%=ctxPath%>/fullcalendar_5.10.1/main.min.css" rel="stylesheet" />
-
-    <script src="<%=ctxPath%>/fullcalendar_5.10.1/main.min.js"></script>
-
-    <script src="<%=ctxPath%>/fullcalendar_5.10.1/ko.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-
-
-
-    <!-- SweetAlert2 (필요 시) -->
-
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.css" rel="stylesheet">
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.all.min.js"></script>
-
     
-
+    <!-- FullCalendar CSS & JS -->
+    <link href="<%=ctxPath%>/fullcalendar_5.10.1/main.min.css" rel="stylesheet" />
+    <script src="<%=ctxPath%>/fullcalendar_5.10.1/main.min.js"></script>
+    <script src="<%=ctxPath%>/fullcalendar_5.10.1/ko.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    
+    <!-- SweetAlert2 (필요 시) -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.all.min.js"></script>
     <!-- Custom CSS (scheduleIndex.css 등) -->
-
     <link href="<%=ctxPath%>/css/schedule/scheduleIndex.css" rel="stylesheet" />
-
-
-
      <style>
-
         body {
-
             background-color: #f8f9fa;
-
         }
-
         .row-flex {
-
             display: flex;
-
         }
-
         .left-col {
-
             margin-top: 20px;
-
             flex: 0 0 15%;
-
             max-width: 15%;
-
             border: 1px solid #ddd;
-
             padding: 20px;
-
             text-align: center;
-
             background-color: #EAF0FF;
-
         }
-
         .time-display {
-
             font-size: 2em;
-
             font-weight: bold;
-
             margin-bottom: 10px;
-
         }
-
         .user-name {
-
             font-size: 1.2em;
-
             margin-bottom: 10px;
-
         }
-
         .time-info {
-
             margin-bottom: 15px;
-
             font-size: 0.95em;
-
             color: #666;
-
         }
-
         .btn-area {
-
             display: flex;
-
             gap: 10px;
-
             justify-content: center;
-
             margin-top: 20px;
-
         }
-
         .btn-area button {
-
             width: 80px;
-
         }
-
         .right-col {
 
             flex: 0 0 85%;
@@ -181,22 +101,6 @@
             justify-content: space-between;
 
             margin-bottom: 15px;
-
-        }
-
-        .summary-box {
-
-            flex: 1;
-
-            margin: 0 5px;
-
-            background-color: #fff;
-
-            border: 1px solid #ddd;
-
-            text-align: center;
-
-            padding: 10px;
 
         }
 
@@ -251,6 +155,30 @@
             border-color: gray;
 
         }
+		/* FullCalendar 기본 날짜(일자) 텍스트 색상 검정색으로 변경 */
+	    .fc-daygrid-day-number {
+	        color: black !important;
+	    }
+	
+	    /* FullCalendar 요일(일, 월, 화, 수, 목, 금, 토) 색상 검정색으로 변경 */
+	    .fc-col-header-cell-cushion  {
+	        color: black !important;
+	        font-weight: bold; 
+	    }
+	    /*  토요일 & 일요일 날짜 빨간색 */
+		.fc-day-sat a, .fc-day-sun a {
+		    color: blue !important;
+		    font-weight: bold;
+		}
+		.fc-day-sun a {
+		    color: red !important;
+		    font-weight: bold;
+		}
+		.fc-event-time /*.fc-event-title*/{
+		    color: black !important;
+	      
+		}
+
 
     </style>
 
@@ -297,47 +225,26 @@
             <!-- 오늘의 출근/퇴근 시간 표시 -->
 
             <div class="time-info">
-
-                출근시간:
-
-                <c:choose>
-
-                    <c:when test="${not empty attendanceVO.attendStart}">
-
-                        <fmt:formatDate value="${attendanceVO.attendStart}" pattern="HH:mm:ss"/>
-
-                        <c:if test="${attendanceVO.attendStatus == 2}">
-
-                            (지각)
-
-                        </c:if>
-
-                    </c:when>
-
-                    <c:otherwise>N/A</c:otherwise>
-
-                </c:choose>
-
-               
-
-                퇴근시간:
-
-                <c:choose>
-
-                    <c:when test="${not empty attendanceVO.attendEnd}">
-
-                        <fmt:formatDate value="${attendanceVO.attendEnd}" pattern="HH:mm:ss"/>
-
-                    </c:when>
-
-                    <c:otherwise>N/A</c:otherwise>
-
-                </c:choose>
-
-            </div>
-
+    출근시간:
+    <c:choose>
+        <c:when test="${not empty attendanceVO.attendStart}">
+            <fmt:formatDate value="${attendanceVO.attendStart}" pattern="HH:mm:ss"/>
+            <c:if test="${attendanceVO.attendStatus == 2}">
+                (지각)
+            </c:if>
+        </c:when>
+        <c:otherwise></c:otherwise>
+    </c:choose>
+    &nbsp;퇴근시간:
+    <c:choose>
+        <c:when test="${not empty attendanceVO.attendEnd}">
+            <fmt:formatDate value="${attendanceVO.attendEnd}" pattern="HH:mm:ss"/>
+        </c:when>
+        <c:otherwise>N/A</c:otherwise>
+    </c:choose>
+</div>
+            
   			<hr>
-
             <!-- 출근/퇴근 버튼 -->
 
             <div class="btn-area">
@@ -451,50 +358,27 @@
 						    <div>추가 근무</div>
 
 						    	<%
-
 						    	// monthlyAccumulated를 가져오기
-
 						        Object monthlyObj = pageContext.getAttribute("monthlyAccumulated");
-
-
-
 						        // Null 체크 및 기본값 설정
-
 						        double monthly = (monthlyObj != null) ? Double.parseDouble(monthlyObj.toString()) : 0.0;
 
-
-
 						        // 209시간을 뺀 값 계산
-
 						        double calculatedHours = monthly - 209;
-
-
-
+					
 						        // 결과 값이 0 미만일 경우 0으로 처리
-
 						        if (calculatedHours < 0) {
-
 						            calculatedHours = 0;
-
 						        }
 
-
-
 						        // 시간 및 분 변환
-
 						        int hours = (int) calculatedHours;
-
 						        int minutes = (int) Math.round((calculatedHours - hours) * 60);
-
 								%>
-
 								<div> <%= hours %>h <%= minutes %>m</div> 
-
 						</div>
-
                     </div>
-
-                    
+      
 
                     <!-- 차트 영역 (캘린더) -->
 
@@ -505,294 +389,176 @@
                     </div>
 
 
-
-                    <h4>근태 차트</h4>
-
-                    <table class="table table-bordered">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>근무일자</th>
-
-                                <th>출근시간</th>
-
-                                <th>퇴근시간</th>
-
-                                <th>근태상태</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <c:forEach var="att" items="${attendanceList}">
-
-                                <tr>
-
-                                    <td><fmt:formatDate value="${att.attendDate}" pattern="yyyy-MM-dd"/></td>
-
-                                    <td>
-
-                                        <c:choose>
-
-                                            <c:when test="${not empty att.attendStart}">
-
-                                                <fmt:formatDate value="${att.attendStart}" pattern="HH:mm:ss"/>
-
-                                                <c:if test="${att.attendStatus == 2}">
-
-                                                     (지각)
-
-                                                </c:if>
-
-                                            </c:when>
-
-                                            <c:otherwise>N/A</c:otherwise>
-
-                                        </c:choose>
-
-                                    </td>
-
-                                    <td>
-
-                                        <c:choose>
-
-                                            <c:when test="${not empty att.attendEnd}">
-
-                                                <fmt:formatDate value="${att.attendEnd}" pattern="HH:mm:ss"/>
-
-                                            </c:when>
-
-                                            <c:otherwise>N/A</c:otherwise>
-
-                                        </c:choose>
-
-                                    </td>
-
-                                    <td>
-
-                                        
-
-                                    </td>
-
-                                </tr>
-
-                            </c:forEach>
-
-                        </tbody>
-
-                    </table>
-
                 </div>
 
+				<!-- 연차 내역 -->
+<div class="tab-pane fade" id="leaveHistory">
+    <h4>연차 내역</h4>
 
+    <!-- ✅ 사용한 연차 & 잔여 연차 정보 추가 -->
+    <div class="summary-row">
+        <div class="summary-box">
+            <div>사용한 연차</div>
+            <div>${usedLeave} 일</div>
+        </div>
+        <div class="summary-box">
+            <div>잔여 연차</div>
+            <div>${remainingLeave} 일</div>
+        </div>
+    </div>
 
-                <!-- 연차 -->
-
-                <div class="tab-pane fade" id="leaveHistory">
-
-                    <div class="summary-row">
-
-                        <div class="summary-box">
-
-                            <div>총 연차</div>
-
-                           <div>${totalLeave}</div>
-
-                        </div>
-
-                        <div class="summary-box">
-
-                            <div>사용 연차</div>
-
-                            <div>${usedLeave}</div>
-
-                        </div>
-
-                        <div class="summary-box">
-
-                            <div>잔여 연차</div>
-
-                          <div>${remainingLeave}</div>
-
-                        </div>
-
-                    </div>
-
-                    <h4>연차 내역</h4>
-
-                    <table class="table table-bordered">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>연차사용기간</th>
-
-                                <th>이름</th>
-
-                                <th>연차 종류</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <c:forEach var="leave" items="${leaveList}">
-
-                                <tr>
-
-                                    <td><fmt:formatDate value="${leave.leaveDate}" pattern="yyyy-MM-dd"/></td>
-
-                                    <td>${leave.leaveType}</td>
-
-                                    <td>${leave.leaveReason}</td>
-
-                                </tr>
-
-                            </c:forEach>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div> <!-- tab-content -->
-
-        </div> <!-- right-col -->
-
-    </div> <!-- row-flex -->
-
-</div> <!-- container-fluid -->
-
+    <!-- 연차 내역 테이블 -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>연차 시작일</th>
+                <th>연차 종료일</th>
+                <th>연차 제목</th>
+                <th>연차 사유</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:forEach var="leave" items="${leaveList}">
+                <tr>
+                    <td><fmt:formatDate value="${leave.leaveStart}" pattern="yyyy-MM-dd"/></td>
+                    <td><fmt:formatDate value="${leave.leaveEnd}" pattern="yyyy-MM-dd"/></td>
+                    <td>${leave.leaveSubject}</td>
+                    <td>${leave.leaveContent}</td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+</div>
+				
+				
+            </div> 
+        </div> 
+    </div> 
+</div>
 
 
 
 
 <script>
-
-    function updateClock() {
-
-        var now = new Date();
-
-        var hours = (now.getHours() < 10 ? "0" : "") + now.getHours();
-
-        var minutes = (now.getMinutes() < 10 ? "0" : "") + now.getMinutes();
-
-        var seconds = (now.getSeconds() < 10 ? "0" : "") + now.getSeconds();
-
-        document.getElementById('clockArea').textContent = hours + ":" + minutes + ":" + seconds;
-
-    }
-
-    updateClock();
-
-    setInterval(updateClock, 1000);
-
-</script>
-
-
-
-
-
-<script>
-
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
+    if (!calendarEl) {
+        console.error("❌ 캘린더 컨테이너를 찾을 수 없습니다.");
+        return;
+    }
+    console.log("✅ 캘린더 컨테이너 확인:", calendarEl);
+
+    var currentYear, currentMonth;
+    
     var calendar = new FullCalendar.Calendar(calendarEl, {
+        googleCalendarApiKey: "AIzaSyASM5hq3PTF2dNRmliR_rXpjqNqC-6aPbQ", // ✅ Google API Key
+        eventSources: [
+            {
+                googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com', // ✅ 한국 공휴일 연동
+                color: 'white',
+                textColor: 'red'
+            }
+        ],
         initialView: 'dayGridMonth',
-        height: 'auto',
         locale: 'ko',
-        events: function(fetchInfo, successCallback, failureCallback) {
-            $.ajax({
-                url: '<%=ctxPath%>/attendance/calendarEvents',
-                dataType: 'json',
-                data: { empId: '<c:out value="${sessionScope.loginuser.emp_id}" />' },
-                success: function(response) {
-                    var events = [];
-                    var now = new Date();        // 현재 시각
-                    var todayStr = now.toDateString(); // "오늘" 판별용
+        datesSet: function(info) {
+            var midTime = (info.start.getTime() + info.end.getTime()) / 2;
+            var midDate = new Date(midTime);
+            currentYear = midDate.getFullYear();
+            currentMonth = midDate.getMonth() + 1;
+            console.log("📅 현재 연/월:", currentYear, currentMonth);
 
-                    response.forEach(function(item) {
-                        var eventDate = new Date(item.attendDate);
-                        var eventDateStr = eventDate.toDateString();
-
-                        // 미래 날짜인 경우 이벤트 생성 X
-                        if (eventDate > now) {
-                            return;
-                        }
-
-                        // 오늘 날짜 여부 확인
-                        var isToday = (todayStr === eventDateStr);
-
-                        // 1) 결근 상태인 경우
-                        if (item.attendStatus == 4) {
-                            // == 오늘 날짜인데 오후 6시 전이면 결근 표시 X
-                            if (isToday && now.getHours() < 18) {
-                                // 6시 전 => 결근 표시 안 함
-                                return;
-                            }
-                            // 그 외 (과거 or 오늘 6시 이후) => 결근 표시
-                            events.push({
-                                title: "결근",
-                                start: item.attendDate,
-                                backgroundColor: "#ff4d4d"
-                            });
-                        }
-                        // 2) 출근 기록이 있는 경우
-                        else if (item.attendStart) {
-                            var titleText = "";
-                            var backgroundColor = "";
-                            if (item.attendStatus == 2) { // 지각
-                                titleText = "지각 ";
-                                backgroundColor = "#ffcc00";
-                            } else { // 정상 출근
-                                titleText = "출근 ";
-                                backgroundColor = "green";
-                            }
-                            events.push({
-                                title: titleText,
-                                start: item.attendStart,
-                                backgroundColor: backgroundColor
-                            });
-                        }
-                        // 3) 퇴근 기록이 있는 경우
-                        if (item.attendEnd) {
-                            events.push({
-                                title: "퇴근 ",
-                                start: item.attendEnd,
-                                backgroundColor: "#007bff"
-                            });
-                        }
-                    });
-
-                    successCallback(events);
-                },
-                error: function(request, status, error) {
-                    alert("code: " + request.status + "\nmessage: " + request.responseText + "\nerror: " + error);
-                }
-            });
+            fetchCalendarEvents(currentYear, currentMonth);
         }
     });
 
+    function fetchCalendarEvents(year, month) {
+        if (!year || !month) {
+            console.error(" [ERROR] 잘못된 날짜 데이터: year=" + year + ", month=" + month);
+            return;
+        }
+        let empId = '<c:out value="${sessionScope.loginuser.emp_id}" />';
+        if (!empId || isNaN(empId)) {
+            console.error("[ERROR] 유효하지 않은 empId:", empId);
+            return;
+        }
+
+        console.log(" [INFO] AJAX 요청 시작: empId=" + empId + ", year=" + year + ", month=" + month);
+
+        $.ajax({
+            url: '<%=ctxPath%>/attendance/calendarEvents',
+            dataType: 'json',
+            data: { 
+                empId: empId,
+                year: year,
+                month: month
+            },
+            success: function(response) {
+                console.log(" [SUCCESS] AJAX 응답:", response);
+                
+                let events = [];
+                let today = new Date();
+
+                response.forEach(function(item) {
+                    let eventDate = new Date(item.attendDate);
+                    
+                    if ((!item.attendStart || item.attendStart.trim() === "") &&
+                        (!item.attendEnd || item.attendEnd.trim() === "") &&
+                        item.attendStatus !== 5 && item.attendStatus !== 4) {
+                        return; // 스킵
+                    }
+
+                    let event = { };
+
+                    // 연차 표시
+                    if (item.attendStatus == 5) {
+                        event.title = "연차";
+                        event.backgroundColor = "#800080";
+                    }
+                    // 과거 데이터만 결근 표시
+                    else if (item.attendStatus == 6 && eventDate < today) {
+                        event.title = "결근";
+                        event.backgroundColor = "#ff4d4d";
+                    }
+                    // 출근 및 지각 처리
+                    else if (item.attendStart) {
+                        let titleText = (item.attendStatus == 2) ? "지각" : "출근";
+                        let backgroundColor = (item.attendStatus == 2) ? "#ffcc00" : "green";
+                        events.push({
+                            title: titleText,
+                            start: item.attendStart,
+                            backgroundColor: backgroundColor
+                        });
+                    }
+                    // 퇴근 이벤트 추가
+                    if (item.attendEnd) {
+                        events.push({
+                            title: "퇴근",
+                            start: item.attendEnd,
+                            backgroundColor: "green"
+                        });
+                    }
+
+                    // 최종 이벤트 추가
+                    events.push(event);
+                });
+
+                // 기존 이벤트 삭제 후 새로운 데이터 추가
+                calendar.removeAllEvents();
+                calendar.addEventSource(events);
+            },
+            error: function(request, status, error) {
+                console.error(" [ERROR] AJAX 요청 실패:", request.responseText);
+            }
+        });
+    }
+
     calendar.render();
 });
-
-
-
-
-
-
-
-
-
-
 </script>
+
+
+
 
 
 

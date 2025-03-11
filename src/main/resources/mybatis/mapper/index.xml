@@ -5,16 +5,72 @@
 
 <mapper namespace="com.syoffice.app.index.model.IndexDAO">
 
-    <select id="getLoginUserMap" parameterType="int" resultType="HashMap">
-        SELECT 
-            e.emp_id      AS empId,
-            e.name        AS name,
-            e.mail        AS mail,
-            g.grade_no    AS gradeNo,
-            g.grade_name  AS gradeName
-        FROM tbl_employee e
-        JOIN tbl_grade g ON e.fk_grade_no = g.grade_no
-        WHERE e.emp_id = #{empId}
+    <!-- 로그인 SQL -->
+    <select id="login" parameterType="map" resultType="com.syoffice.app.employee.domain.EmployeeVO">
+        SELECT emp_id, name, fk_dept_id, mail
+        FROM tbl_employee
+        WHERE emp_id = #{emp_id} 
+        AND password = #{password}
     </select>
+    
+    <!-- 내 일정 가져오기 (오늘 날짜 기준) -->
+    <select id="getMySchedule" parameterType="map" resultType="map">
+        SELECT schedule_no, schedule_startdate, schedule_enddate, schedule_name, schedule_color, schedule_place
+        FROM tbl_schedule
+        WHERE fk_emp_id = #{fk_emp_id}
+        AND TRUNC(schedule_startdate) = TRUNC(SYSDATE)  
+        ORDER BY schedule_startdate
+    </select>
+
+    <!-- 내가 속한 부서 일정 가져오기 -->
+    <select id="getDeptSchedule" parameterType="map" resultType="map">
+        SELECT s.schedule_no, s.schedule_startdate, s.schedule_enddate, s.schedule_name, s.schedule_color, s.schedule_place
+        FROM tbl_schedule s
+        JOIN tbl_employee e ON s.fk_emp_id = e.emp_id
+        WHERE e.fk_dept_id = (SELECT fk_dept_id FROM tbl_employee WHERE emp_id = #{fk_emp_id}) 
+        AND TRUNC(s.schedule_startdate) = TRUNC(SYSDATE)  
+        ORDER BY s.schedule_startdate
+    </select>
+    
+    <!-- 공지사항 조회 쿼리 -->
+    <select id="getNoticeList" resultType="map">
+	     SELECT * FROM (
+        SELECT n.notice_no        AS "notice_no",
+               n.notice_subject   AS "notice_subject",
+               e.name             AS "name",
+               n.notice_regdate   AS "notice_regdate",
+               n.notice_viewcount AS "notice_viewcount"
+          FROM tbl_notice n
+          JOIN tbl_employee e ON n.fk_emp_id = e.emp_id
+         WHERE n.notice_status = 1
+         ORDER BY n.notice_regdate DESC
+    )
+    WHERE ROWNUM &lt;= 6
+	</select>
+	
+	<!-- 이번주 내 실적  -->
+    <select id="getWeeklyPerformance" parameterType="map" resultType="map">
+        SELECT TO_CHAR(RESULT_DATE, 'YYYY-MM-DD') AS result_day,
+               SUM(RESULT_PRICE) AS total_performance
+        FROM tbl_result
+        WHERE FK_EMP_ID = #{fk_emp_id}
+        AND RESULT_DATE >= TRUNC(SYSDATE) - INTERVAL '6' DAY
+        GROUP BY TO_CHAR(RESULT_DATE, 'YYYY-MM-DD')
+        ORDER BY result_day
+    </select>
+
+    <!-- 부서 실적 -->
+    <select id="getDepartmentPerformance" resultType="map">
+        SELECT d.dept_name, 
+               SUM(r.RESULT_PRICE) AS total_performance
+        FROM tbl_result r
+        JOIN tbl_employee e ON r.FK_EMP_ID = e.emp_id
+        JOIN tbl_department d ON e.fk_dept_id = d.dept_id
+        GROUP BY d.dept_name
+        ORDER BY total_performance DESC
+    </select>
+		
+
+
 
 </mapper>

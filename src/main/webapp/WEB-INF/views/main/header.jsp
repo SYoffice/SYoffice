@@ -1,9 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%@ page import="java.net.InetAddress" %>
+
+
 <%
     String ctxPath = request.getContextPath();
+
 %>
+
+<%   
+    // === (#웹채팅관련2) === 
+    // === 서버 IP 주소 알아오기(사용중인 IP주소가 유동IP 이라면 IP주소를 알아와야 한다.) === 
+    
+    InetAddress inet = InetAddress.getLocalHost();
+    String serverIP = inet.getHostAddress();
+     
+ //   System.out.println("serverIP : " + serverIP);
+ // serverIP : 192.168.0.203
+
+ // String serverIP = "192.168.0.219";
+ // String serverIP = "43.203.242.79"; 
+    // 자신의 EC2 퍼블릭 IPv4 주소임. // 아마존(AWS)에 배포를 하기 위한 것임. 
+    // 만약에 사용중인 IP주소가 고정IP 이라면 IP주소를 직접입력해주면 된다. 
+ 
+    // === 서버 포트번호 알아오기 === //
+    int portnumber = request.getServerPort();
+//   System.out.println("portnumber : " + portnumber);
+// portnumber : 9090
+ 
+    String serverName = "http://"+serverIP+":"+portnumber;
+ // System.out.println("serverName : " + serverName);
+ // serverName : http://192.168.0.203:9090
+
+%>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,7 +81,9 @@
                 const link = item.querySelector("a");
 
                 // 현재 페이지 URL과 href가 일치하는지 확인
-                if (window.location.pathname === link.getAttribute("href")) {
+                 if (window.location.pathname + window.location.search === link.getAttribute("href")) {
+
+
                     item.classList.add('active');
                 }
 
@@ -66,7 +100,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light w-100 py-3">
-        <a class="d-block text-center navbar-brand" href="<%=ctxPath%>/index"><img style="width: 50%;" src="<%=ctxPath%>/images/logo_header.png"/></a>
+        <a class="navbar-brand" href="<%=ctxPath%>/index">로고</a>
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
                 <li class="nav-item active">
@@ -85,8 +119,8 @@
                     </c:otherwise>
                 </c:choose>
                 
-                <li class="nav-item active">
-                    <a class="nav-link" href="<%=ctxPath%>/dataroom/drindex/">자료실</a>
+                 <li class="nav-item active">
+                    <a class="nav-link" href="<%=ctxPath%>/dataroom/index">자료실</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="<%=ctxPath%>/mail/box/0">메일함</a>
@@ -101,13 +135,13 @@
                     <a class="nav-link" href="<%=ctxPath%>/organization/chart">조직도</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="<%=ctxPath%>/reservation/meetingRoomReservation">예약</a>
+                    <a class="nav-link" href="<%=ctxPath%>/reservation/reservIndex">예약</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="<%=ctxPath%>/approval/approval_main">전자결재</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">메신저</a>
+                    <a class="nav-link" href="<%=ctxPath%>/chatting/index">메신저</a>
                 </li>            
                 <c:if test="${sessionScope.loginuser.emp_id eq sessionScope.loginuser.manager_id}">
                     <li class="nav-item active">
@@ -125,7 +159,7 @@
                     <a class="nav-link" href="<%=ctxPath%>/employee/mypage">${loginuser.name}</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="<%=ctxPath%>/"><i class="fi fi-bs-sign-out-alt"></i></a>
+                    <a class="nav-link"  href="<%=ctxPath%>/logout"><i class="fi fi-bs-sign-out-alt"></i></a>
                 </li>
             </ul>
         </div>
