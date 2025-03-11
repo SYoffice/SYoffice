@@ -58,10 +58,13 @@ div.content_wrap {
 
 /* 이전 메일, 다음 메일 */
 /* 하단 고정 */
+
 div.footer_wrap {
-    position: absolute;
+/*    position: absolute;
     bottom: 0px;
     width: 77.5%;
+ */
+    margin-top: 10%;
 }
 
 div.prev, div.next {
