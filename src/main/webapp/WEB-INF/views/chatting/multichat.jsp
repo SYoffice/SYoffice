@@ -55,7 +55,7 @@ $(document).ready(function(){
     var roomId = $("#chatRoomId").val(); 
 
     const wsUrl = "ws://" + window.location.host + "/syoffice/chatting/multichatstart?roomId=" + encodeURIComponent(roomId);
-   // console.log("웹소켓 연결 URL:", wsUrl);
+    console.log("웹소켓 연결 URL:", wsUrl);
 
     const websocket = new WebSocket(wsUrl); // WebSocket 연결
    // 즉, const websocket = new WebSocket("ws://"+root+"/multichatstart") 이다.

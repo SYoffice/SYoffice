@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.syoffice.app.weather.model.WeatherDAO">
+	
+	<!-- === 시간별 기온 정보를 DB에 저장한다. === -->
+	<insert id="addWeatherInfo" parameterType="HashMap">
+		INSERT INTO tbl_weather (weather_no, weather_temp, weater_date, weather_city, weather_desc)
+		VALUES (weather_seq.nextval, to_number(#{temp}), to_date(#{date}, 'yyyy-mm-dd hh24:mi:ss'), #{city}, #{desc})
+	</insert>
+	
+	<!-- === 하루 예보 정보를 DB에 저장한다. === -->
+	<insert id="addWeatherInfoToday" parameterType="HashMap">
+		INSERT INTO tbl_weather_forecast(forecast_no, forecast_date, forecast_temp, forecast_reh, forecast_mintemp, forecast_maxtemp, forecast_pop, forecast_vec, forecast_wsd)
+		VALUES (forecast_seq.nextval, to_date(#{dateTime}, 'yyyymmdd hh24:mi:ss'), to_number(#{TMP}), to_number(#{REH}), to_number(#{TMN}), to_number(#{TMX}), to_number(#{POP}), to_number(#{VEC}), to_number(#{WSD}))
+	</insert>
+
+	<!-- === 예보 테이블 데이터 삭제하기 === -->
+	<delete id="deleteWeatherFcst">
+		DELETE FROM tbl_weather_forecast
+	</delete>
+
+	<!-- === 당일 기상예보를 가져온다. === -->
+
+	<select id="getTodayForecast" resultType="WeatherForecastVO">
+		SELECT to_char(forecast_date, 'yyyy-mm-dd hh24:mi') AS forecast_date
+			 , forecast_temp, forecast_reh, forecast_mintemp, forecast_maxtemp
+			 , forecast_pop, forecast_vec, forecast_wsd
+		FROM tbl_weather_forecast
+		WHERE to_char(forecast_date, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd')
+		ORDER BY forecast_date ASC
+	</select>
+</mapper>
