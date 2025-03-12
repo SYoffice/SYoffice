@@ -45,10 +45,10 @@ public class IndexService_imple implements IndexService {
         return indexDAO.getWeeklyPerformance(paramMap);
     }
 
-    // 부서 실적 
     @Override
-    public List<Map<String, Object>> getDepartmentPerformance() {
-        return indexDAO.getDepartmentPerformance();
+    public List<Map<String, Object>> getDepartmentPerformance(String empId) {
+        // 부서 실적과 개인 실적을 비교하는 데이터 반환
+        return indexDAO.getDepartmentPerformance(empId);
     }
 
     

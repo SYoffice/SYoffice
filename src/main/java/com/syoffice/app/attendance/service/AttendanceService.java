@@ -60,6 +60,10 @@ public interface AttendanceService {
 
 	int updateAbsenceForEmployees();
 
+	List<Map<String, Object>> getLeaveInfo(String empId);
+
+	
+
 
 
 }

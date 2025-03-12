@@ -28,4 +28,5 @@ public interface AttendanceDAO {
 	int insertDailyAttendance();
 	int updateLeaveCount();
 	int updateAbsenceForEmployees(Map<String, Object> params);
+	List<Map<String, Object>> selectLeaveInfo(String empId);
 }
