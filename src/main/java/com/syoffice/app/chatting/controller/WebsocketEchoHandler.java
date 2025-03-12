@@ -68,7 +68,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
      // ===> 웹채팅확인용 : a4a51287-2d13-3405-3ff1-c15ef11a1e71 님이 접속했습니다.
      
      
-  //   System.out.println("====> 웹채팅확인용 : " + "연결 IP : " + wsession.getRemoteAddress().getAddress().getHostAddress()); 
+     System.out.println("====> 웹채팅확인용 : " + "연결 IP : " + wsession.getRemoteAddress().getAddress().getHostAddress()); 
      // ====> 웹채팅확인용 : 연결 IP : 192.168.0.210
   
      connectedUsers.add(wsession);
