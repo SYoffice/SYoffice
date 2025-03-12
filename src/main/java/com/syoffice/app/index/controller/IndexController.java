@@ -28,6 +28,15 @@ public class IndexController {
     public String login() {
         return "/main/login"; // /WEB-INF/views/main/login.jsp
     }
+    
+    @GetMapping("logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "redirect:/login"; // 로그아웃 후 로그인 페이지로 이동
+    }
 
     @GetMapping("index")
     public String index(HttpServletRequest request) {
@@ -61,8 +70,9 @@ public class IndexController {
         paramMap.put("fk_emp_id", fk_emp_id);
         List<Map<String, Object>> weeklyPerformance = indexService.getWeeklyPerformance(paramMap);
 
-        // 부서별 실적 가져오기
-        List<Map<String, Object>> departmentPerformance = indexService.getDepartmentPerformance();
+        // 내 실적과 부서 실적을 비교한 데이터 가져오기
+        List<Map<String, Object>> performanceData = indexService.getDepartmentPerformance(loginUser.getEmp_id());
+        
         
         // JSP로 데이터 전달
         request.setAttribute("loginUser", loginUser);
@@ -70,7 +80,7 @@ public class IndexController {
         request.setAttribute("deptSchedule", deptSchedule);
         request.setAttribute("noticeList", noticeList);
         request.setAttribute("weeklyPerformance", weeklyPerformance);
-        request.setAttribute("departmentPerformance", departmentPerformance);
+        request.setAttribute("performanceData", performanceData);
         
 
         return "/main/index"; // /WEB-INF/views/main/index.jsp

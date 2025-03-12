@@ -129,4 +129,43 @@ public class AttendanceServiceImpl implements AttendanceService {
     public int updateLeaveCount() {
         return attendanceDAO.updateLeaveCount();
     }
+/*
+    @Override
+    public Map<String, Object> getLeaveInfo(String empId) {
+        Map<String, Object> leaveInfo = attendanceDAO.selectLeaveInfo(empId);
+
+        // 🔹 MyBatis에서 받은 원본 데이터 확인
+        System.out.println("✅ MyBatis에서 받은 leaveInfo: " + leaveInfo);
+
+        if (leaveInfo == null) {
+            System.out.println("❌ leaveInfo가 NULL 입니다! 기본값을 반환합니다.");
+            leaveInfo = new HashMap<>();
+            leaveInfo.put("usedLeave", 0);
+            leaveInfo.put("leaveCount", 0);
+            return leaveInfo;
+        }
+
+        // 🔹 대소문자 문제 해결: LEAVECOUNT → leaveCount, USEDLEAVE → usedLeave
+        int usedLeave = leaveInfo.containsKey("USEDLEAVE") ? Integer.parseInt(leaveInfo.get("USEDLEAVE").toString()) : 0;
+        int leaveCount = leaveInfo.containsKey("LEAVECOUNT") ? Integer.parseInt(leaveInfo.get("LEAVECOUNT").toString()) : 0;
+
+        // 🔹 변환 후 값 확인
+        System.out.println("🟢 변환 후 사용한 연차: " + usedLeave);
+        System.out.println("🟢 변환 후 잔여 연차: " + leaveCount);
+
+        leaveInfo.put("usedLeave", usedLeave);
+        leaveInfo.put("leaveCount", leaveCount);
+
+        return leaveInfo;
+    }
+*/
+
+    @Override
+    public List<Map<String, Object>> getLeaveInfo(String empId) {
+        // 🔹 DAO 호출: selectLeaveInfo(empId)가 List<Map<String, Object>> 형태로 반환되도록 수정
+        return attendanceDAO.selectLeaveInfo(empId);
+    }
+    
+    
+    
 }

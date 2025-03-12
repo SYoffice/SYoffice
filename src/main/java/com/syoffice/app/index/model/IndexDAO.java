@@ -24,7 +24,10 @@ public interface IndexDAO {
 	// 이번주 내 실적 
 	List<Map<String, Object>> getWeeklyPerformance(Map<String, String> paramMap);
 
-	// 부서 실적 
-	List<Map<String, Object>> getDepartmentPerformance();
+
+	// 내 실적과 부서 실적을 비교한 데이터 가져오기
+	List<Map<String, Object>> getDepartmentPerformance(String empId);
+
+	
 
 }

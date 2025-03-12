@@ -8,15 +8,15 @@
     <!-- 연차 내역 조회 -->
     <select id="selectLeaveHistory" parameterType="string" resultType="map">
         SELECT 
-            leave_startdate AS leaveStart,
-            leave_enddate AS leaveEnd,
-            leave_subject AS leaveSubject,
-            leave_content AS leaveContent
-        FROM tbl_leaveform
-        WHERE fk_doc_no IN (
-            SELECT doc_no FROM tbl_document WHERE fk_emp_id = #{empId}
-        )
-        ORDER BY leave_startdate DESC
+        NVL((SELECT COUNT(*) 
+             FROM tbl_leaveform 
+             WHERE fk_doc_no IN (
+                 SELECT doc_no FROM tbl_document WHERE fk_emp_id = #{empId}
+             )), 0) AS usedLeave,   -- 사용한 연차 개수 (NULL 방지)
+        NVL((SELECT leave_count 
+             FROM tbl_employee 
+             WHERE emp_id = #{empId}), 0) AS leaveCount -- 잔여 연차 (NULL 방지)
+    	FROM DUAL
     </select>
 
     <!-- 사용한 연차 조회 -->
@@ -119,36 +119,23 @@
           AND attend_end IS NOT NULL
     </select>
 
-    <!-- 결근 업데이트 
-    <update id="updateAbsenceForEmployees">
-        UPDATE tbl_attendance T
-        SET attend_status = 6   
-        WHERE attend_start IS NULL  
-          AND attend_date &lt; TRUNC(SYSDATE)  
-          AND NOT EXISTS (
-              SELECT 1 FROM tbl_attendance A
-              WHERE A.attend_date = T.attend_date
-                AND A.attend_start IS NOT NULL
-          )
-          AND NOT EXISTS (
-              SELECT 1 FROM dual
-              WHERE TO_CHAR(T.attend_date, 'D') IN ('1', '7') 
-          )
-          AND NOT EXISTS (
-              SELECT 1 FROM tbl_leaveform L
-              WHERE L.leave_startdate &lt;= T.attend_date
-                AND L.leave_enddate &gt;= T.attend_date
-                AND L.fk_doc_no IN (
-                    SELECT doc_no FROM tbl_document WHERE fk_emp_id = T.fk_emp_id
-                )
-          )
-          AND EXISTS (
-              SELECT 1 FROM tbl_employee E
-              WHERE E.emp_id = T.fk_emp_id
-                AND T.attend_date >= E.hire_date
-          )
-    </update>
-  -->
+    <!-- 연차 -->
+  <!-- 연차 상세 목록 조회 -->
+	<select id="selectLeaveInfo" parameterType="string" resultType="map">
+	    SELECT 
+	        TO_CHAR(leave_startdate,'YYYY-MM-DD') AS leaveStart,
+	        TO_CHAR(leave_enddate,'YYYY-MM-DD')   AS leaveEnd,
+	        leave_subject   AS leaveSubject,
+	        leave_content   AS leaveContent
+	    FROM tbl_leaveform
+	    WHERE fk_doc_no IN (
+	        SELECT doc_no 
+	        FROM tbl_document 
+	        WHERE fk_emp_id = #{empId}
+	    )
+	    ORDER BY leave_startdate DESC
+	</select>
+
   
     <!--  조직도(지점 + 부서)만 가져오도록 수정 -->
     <select id="selectBranchDeptList" resultType="map">
@@ -269,20 +256,26 @@
        
     <!--  모든 직원의 결근 처리 (공휴일 & 주말 제외) -->
 	<update id="updateAbsenceForEmployees">
-	    UPDATE attendance a
-	    JOIN employee e ON a.emp_id = e.emp_id
-	    SET a.attend_status = 6
-	    WHERE a.attend_start IS NULL
-	    AND a.attend_end IS NULL
-	    AND a.attend_status = 4  
-	    AND DATE(a.attend_date) = CURDATE()
-	    AND NOT EXISTS (
-	        SELECT 1 FROM holidays h
-	        WHERE h.holiday_date = CURDATE()
-	    )
-	    AND WEEKDAY(a.attend_date) &lt; 5  
+	   UPDATE tbl_attendance a
+		SET a.attend_status = 6
+		WHERE a.attend_start IS NULL
+		  AND a.attend_end IS NULL
+		  AND a.attend_status = 4
+		  AND a.attend_date = TRUNC(SYSDATE)
+		  AND NOT EXISTS (
+		      SELECT 1 FROM tbl_leaveform l
+		      WHERE l.leave_startdate &lt;= a.attend_date
+		        AND l.leave_enddate >= a.attend_date
+		        AND l.fk_doc_no IN (
+		            SELECT doc_no FROM tbl_document WHERE fk_emp_id = a.fk_emp_id
+		        )
+		  )
+		  AND TO_CHAR(a.attend_date, 'D') NOT IN (1, 7)
 	</update>
 
+
+	
+	
 
     
       

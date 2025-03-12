@@ -59,16 +59,27 @@
         ORDER BY result_day
     </select>
 
-    <!-- 부서 실적 -->
-    <select id="getDepartmentPerformance" resultType="map">
-        SELECT d.dept_name, 
-               SUM(r.RESULT_PRICE) AS total_performance
-        FROM tbl_result r
-        JOIN tbl_employee e ON r.FK_EMP_ID = e.emp_id
-        JOIN tbl_department d ON e.fk_dept_id = d.dept_id
-        GROUP BY d.dept_name
-        ORDER BY total_performance DESC
-    </select>
+
+    
+    <!-- 로그인한 사용자 실적과 부서 실적 비교 (전체 실적) -->
+	<select id="getDepartmentPerformance" parameterType="map" resultType="map">
+	    SELECT
+	        e.name AS emp_name,
+	        SUM(r.RESULT_PRICE) AS employee_performance,
+	        (SELECT SUM(r2.RESULT_PRICE)
+	         FROM tbl_result r2
+	         JOIN tbl_employee e2 ON r2.FK_EMP_ID = e2.emp_id
+	         WHERE e2.fk_dept_id = e.fk_dept_id) AS department_performance
+	    FROM
+	        tbl_result r
+	    JOIN
+	        tbl_employee e ON r.FK_EMP_ID = e.emp_id
+	    WHERE
+	        e.emp_id = #{empId}  
+	    GROUP BY
+	        e.name, e.fk_dept_id
+	</select>
+
 		
 
 

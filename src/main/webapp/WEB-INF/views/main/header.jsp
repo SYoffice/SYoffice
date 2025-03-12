@@ -156,6 +156,9 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
+                    <a class="nav-link" href="#">날씨온도 </a>
+                </li>
+                <li class="nav-item active">
                     <a class="nav-link" href="<%=ctxPath%>/employee/mypage">${loginuser.name}</a>
                 </li>
                 <li class="nav-item active">

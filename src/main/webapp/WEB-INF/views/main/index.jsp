@@ -10,10 +10,6 @@
     String ctxPath = request.getContextPath();
 %>
 
-
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +22,7 @@
 </head>
 <body>
     <div class="common_wrapper">
-        <!-- ✅ 왼쪽 사이드바 -->
+        <!--  왼쪽 사이드바 -->
         <div class="side_menu_wrapper">
             <div class="profile-box">
                 <div id="profile-image">
@@ -48,6 +44,11 @@
 
                 </div>
             </div>
+            
+            <div class="weather-box"> 
+             날씨 박스 
+           
+           </div>
         </div>
 
         <!--  오른쪽 컨텐츠 영역 -->
@@ -134,6 +135,7 @@
 			    </div>
 			    <div class="chart-container">
 			        <h4>부서별 실적 비교</h4>
+			       
 			        <div id="salesTrendChart"></div>
 			    </div>
 			</div>
@@ -293,6 +295,13 @@ h4 {
     font-size: 20px;  
     font-weight: bold;
 }
+.weather-box {
+    width: auto; 
+    height: auto; 
+    border: 1px solid #000; 
+    border-radius: 10px; 
+    margin-top: 40px; 
+}
 </style>
 
 
@@ -326,20 +335,23 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('branchSalesChart').innerHTML = "<p style='color:gray;'>데이터 없음</p>";
     }
 
-    var departmentPerformance = [
+    
+
+    // 부서 내 직원별 실적 지분 데이터 생성
+    var departmentSharePerformance = [
         <c:forEach var="data" items="${departmentPerformance}" varStatus="status">
-            { name: '${data.DEPT_NAME}', y: ${data.TOTAL_PERFORMANCE} }<c:if test="${!status.last}">,</c:if>
+            { name: '${data.EMP_NAME}', y: ${data.PERFORMANCE_SHARE} }<c:if test="${!status.last}">,</c:if>
         </c:forEach>
     ];
 
-    //  부서별 실적 비교 (파이 차트)
-    if (departmentPerformance.length > 0) {
+    // 부서 내 직원별 실적 지분 (파이 차트)
+    if (departmentSharePerformance.length > 0) {
         Highcharts.chart('salesTrendChart', {
             chart: { type: 'pie' },
-            title: { text: '부서별 실적 비교' },
+            title: { text: '부서 내 직원별 실적 비율' },
             series: [{
-                name: '실적',
-                data: departmentPerformance
+                name: '실적 지분 (%)',
+                data: departmentSharePerformance
             }]
         });
     } else {
