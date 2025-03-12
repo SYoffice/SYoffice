@@ -120,15 +120,18 @@ $(document).ready(function(){
     $("input#btnSendMessage").click(function(){
     
        if( $("input#message").val().trim() != "" ) {
-          
+    	   let roomId = $("#chatRoomId").val(); // input에서 채팅방 ID 가져오기
+    	   
          // ==== 자바스크립트에서 replace를 replaceAll 처럼 사용하기 ====
          // 자바스크립트에서 replaceAll 은 없다.
          // 정규식을 이용하여 대상 문자열에서 모든 부분을 수정해 줄 수 있다.
          // 수정할 부분의 앞뒤에 슬래시를 하고 뒤에 gi 를 붙이면 replaceAll 과 같은 결과를 볼 수 있다. 
-         	let roomId = $("#chatRoomId").val(); // input에서 채팅방 ID 가져오기
+         	
              
          	let messageVal = $("input#message").val();
-            messageVal = messageVal.replace(/<script/gi, "&lt;script"); 
+            //messageVal = messageVal.replace(/<script/gi, "&lt;script"); 
+            messageVal = messageVal.replace(/</gi, "&lt;"); 
+            messageVal = messageVal.replace(/>/gi, "&gt;"); 
             // 스크립트 공격을 막으려고 한 것임.
             
             <%-- 
