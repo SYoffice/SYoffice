@@ -255,7 +255,7 @@ public class DataroomController {
 	
 	
 	// 파일 삭제
-	@GetMapping("deleteFile")
+	@PostMapping("deleteFile")
 	public String deleteFile(@RequestParam("data_no") String data_no,
 	                         HttpServletRequest request, HttpSession session) throws Exception {
 

@@ -31,12 +31,12 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
-		<!--
+		<!-- (#웹채팅관련9) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
-		-->
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
@@ -88,12 +88,12 @@
 <!-- ======================= 라이브러리 추가 시작 ======================= -->
 		<!-- mongodb 관련 추가한것 -->						
 		<!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
-		<!--
+		<!-- (#웹채팅관련10) -->
 		<dependency>
 		    <groupId>org.mongodb</groupId>
 		    <artifactId>mongodb-driver-sync</artifactId>
 		</dependency>
-		-->
+		
 		
 		
 		<!-- 스프링 부트는 기본적으로 JSP를 지원하지 않기 때문에 JSP 와 JSTL 를 사용하기 위해서는 라이브러리가 추가되도록 
