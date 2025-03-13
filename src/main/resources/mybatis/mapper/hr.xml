@@ -174,11 +174,11 @@
 		        g.grade_name AS manager_grade
 		    FROM tbl_employee e
 		    JOIN tbl_grade g ON e.fk_grade_no = g.grade_no 
-		    WHERE e.fk_dept_id = 8
+		    WHERE e.fk_dept_id = 8 AND e.status != 3
 		    AND e.emp_id = (
 		        SELECT leader_id
 		        FROM tbl_employee e3 
-		        WHERE e3.fk_branch_no = e.fk_branch_no AND e3.fk_dept_id = 8 
+		        WHERE e3.fk_branch_no = e.fk_branch_no AND e3.fk_dept_id = 8 AND e3.status != 3
 		        AND e3.fk_grade_no = e.fk_grade_no
 		        AND ROWNUM = 1
 		    )
@@ -200,6 +200,7 @@
 		LEFT JOIN tbl_employee m ON d.manager_id = m.emp_id
 		LEFT JOIN tbl_grade g ON m.fk_grade_no = g.grade_no
 		LEFT JOIN sales_department_manager p ON d.dept_id = 8 AND p.fk_branch_no = e.fk_branch_no
+		WHERE e.status != 3
         <where>
             <choose>
                 <when test="searchType == 'dept_name' and searchWord != ''">
@@ -226,7 +227,7 @@
 	    FROM tbl_employee E
 	    JOIN tbl_grade G ON E.fk_grade_no = G.grade_no
 	    JOIN tbl_branch B ON E.fk_branch_no = B.branch_no
-	    WHERE E.fk_dept_id = #{dept_id} AND E.fk_branch_no = #{branch_no}
+	    WHERE E.fk_dept_id = #{dept_id} AND E.fk_branch_no = #{branch_no} AND E.status != 3
 	    ORDER BY G.grade_no ASC
 	</select>
 
@@ -317,8 +318,8 @@
 		FROM tbl_department D
 		JOIN tbl_employee E ON D.dept_id = E.fk_dept_id
 		JOIN tbl_branch B ON E.fk_branch_no = B.branch_no
-		WHERE dept_id = #{dept_id} AND ROWNUM = 1
-	</select>
+		WHERE dept_id = #{dept_id} AND ROWNUM = 1 AND E.status != 3
+	</select> 
 	
 	<!-- 수정모달 사용 시 특정 부서의 정보 조회(판매부만) -->
 	<select id="getDepartmentInfo_sales" parameterType="HashMap" resultType="DepartmentVO">
@@ -328,7 +329,7 @@
 		FROM tbl_department D
 		JOIN tbl_employee E ON D.dept_id = E.fk_dept_id
 		JOIN tbl_branch B ON E.fk_branch_no = B.branch_no
-		WHERE D.dept_id = 8
+		WHERE D.dept_id = 8 AND E.status != 3
 		  AND E.fk_branch_no = TO_NUMBER(#{branch_no})
 		  AND E.emp_id = (
 		      SELECT MIN(E2.emp_id)
