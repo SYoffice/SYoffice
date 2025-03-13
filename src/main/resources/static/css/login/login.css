@@ -32,12 +32,12 @@ div#logoBox {
 div#logoBox > img {
 	width: 80%;
 	height: 300px;
-	margin-left: 65px;
+	margin-left: 80px;
 }
 
 /* 사번(아이디) input 태그를 감싸고 있는 박스 */
 div#empIdBox {
-	width: 70%;
+	width: 50%;
 	height: 40px;
 	margin: 2% auto;
 }
@@ -51,7 +51,7 @@ input#emp_id {
 
 /* 비밀번호 input 태그를 감싸고 있는 박스 */
 div#passwordBox {
-	width: 70%;
+	width: 50%;
 	height: 40px;
 	margin: 2% auto;
 }
@@ -65,7 +65,7 @@ input#password {
 
 /* "로그인" 버튼을 담고있는 박스 */
 div#loginBtnBox {
-	width: 70%;
+	width: 50%;
 	height: 40px;
 	margin: 2% auto;
 }
