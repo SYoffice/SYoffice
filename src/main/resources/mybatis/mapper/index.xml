@@ -50,13 +50,21 @@
 	
 	<!-- 이번주 내 실적  -->
     <select id="getWeeklyPerformance" parameterType="map" resultType="map">
-        SELECT TO_CHAR(RESULT_DATE, 'YYYY-MM-DD') AS result_day,
-               SUM(RESULT_PRICE) AS total_performance
-        FROM tbl_result
-        WHERE FK_EMP_ID = #{fk_emp_id}
-        AND RESULT_DATE >= TRUNC(SYSDATE) - INTERVAL '6' DAY
-        GROUP BY TO_CHAR(RESULT_DATE, 'YYYY-MM-DD')
-        ORDER BY result_day
+        SELECT TO_CHAR(d.result_day, 'YYYY-MM-DD') AS result_day,
+		       NVL(SUM(r.RESULT_PRICE), 0) AS total_performance
+		FROM (
+			SELECT 
+		   	 (SYSDATE - TO_NUMBER(TO_CHAR(SYSDATE, 'D')) + 1) + LEVEL - 1 AS result_day
+			FROM 
+		  	  dual
+			CONNECT BY 
+		   	 LEVEL &lt;= 7
+		) d
+		LEFT JOIN tbl_result r
+		    ON TO_CHAR(r.RESULT_DATE, 'YYYY-MM-DD') = TO_CHAR(d.result_day, 'YYYY-MM-DD')
+		    AND r.FK_EMP_ID = #{fk_emp_id}
+		GROUP BY TO_CHAR(d.result_day, 'YYYY-MM-DD')
+		ORDER BY result_day
     </select>
 
 
@@ -64,20 +72,23 @@
     <!-- 로그인한 사용자 실적과 부서 실적 비교 (전체 실적) -->
 	<select id="getDepartmentPerformance" parameterType="map" resultType="map">
 	    SELECT
-	        e.name AS emp_name,
-	        SUM(r.RESULT_PRICE) AS employee_performance,
-	        (SELECT SUM(r2.RESULT_PRICE)
-	         FROM tbl_result r2
-	         JOIN tbl_employee e2 ON r2.FK_EMP_ID = e2.emp_id
-	         WHERE e2.fk_dept_id = e.fk_dept_id) AS department_performance
-	    FROM
-	        tbl_result r
-	    JOIN
-	        tbl_employee e ON r.FK_EMP_ID = e.emp_id
-	    WHERE
-	        e.emp_id = #{empId}  
-	    GROUP BY
-	        e.name, e.fk_dept_id
+		    e.name AS emp_name,
+		    SUM(r.RESULT_PRICE) AS employee_performance,
+		    d.dept_name,
+		    (SELECT SUM(r2.RESULT_PRICE)
+		     FROM tbl_result r2
+		     JOIN tbl_employee e2 ON r2.FK_EMP_ID = e2.emp_id
+		     WHERE e2.fk_dept_id = e.fk_dept_id) AS department_performance
+		FROM
+		    tbl_result r
+		JOIN
+		    tbl_employee e ON r.FK_EMP_ID = e.emp_id
+		JOIN
+		    tbl_department d ON e.fk_dept_id = d.dept_id
+		WHERE
+		    e.emp_id = #{empId}  
+		GROUP BY
+		    e.name, e.fk_dept_id, d.dept_name
 	</select>
 
 		

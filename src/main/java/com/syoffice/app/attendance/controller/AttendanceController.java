@@ -188,18 +188,13 @@ public class AttendanceController {
         if (loginuser == null) {
             return ResponseEntity.status(401).body(Collections.singletonMap("error", "로그인이 필요합니다."));
         }
-
         String empId = loginuser.getEmp_id();
-        System.out.println("✅ API 요청 - empId: " + empId);
-
         try {
-            // 🔹 MyBatis 쿼리 수정 후, 이제 List<Map<String,Object>> 형태로 반환
+            //  MyBatis 쿼리 수정 후, 이제 List<Map<String,Object>> 형태로 반환
             List<Map<String, Object>> leaveList = attendanceService.getLeaveInfo(empId);
 
-            System.out.println("🟢 Controller에서 받은 leaveList: " + leaveList);
-            // leaveList는 여러 건의 연차 내역을 담은 배열
+            //System.out.println(" Controller에서 받은 leaveList: " + leaveList);
 
-            // 그대로 JSON Array로 응답
             return ResponseEntity.ok(leaveList);
 
         } catch (Exception e) {
