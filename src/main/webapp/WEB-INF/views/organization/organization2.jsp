@@ -55,7 +55,8 @@ $(document).ready(function() {
         	*/
         	
             let jsonData = convertToJsTreeFormat(json); // 데이터를 jsTree 형식으로 변환
-
+			// console.log(jsonData);
+            
             $('#jstree').jstree({
                 'core': {
                     "animation": 0,
@@ -74,7 +75,9 @@ $(document).ready(function() {
             // 사원 클릭 시 참여할 선택된 사원에 추가
             $('#jstree').on("select_node.jstree", function(e, data) {
                 let nodeId = data.node.id;
+                let nodeName = data.node.text;
 				// console.log(nodeId);
+				// console.log(nodeName)
                 
                 if (nodeId) {  // 사원을 선택한다면
                     let empInfo = json.find(emp => + emp.EMP_ID == nodeId);
@@ -85,9 +88,9 @@ $(document).ready(function() {
 
                         let employeeList = parent.$("#selectedEmployees");
 
-                        if (!employeeList.find(`div[data-id='\${nodeId}']`).length) {  // 중복 방지
+                        if (!employeeList.find(`div[data-id='\${nodeName}']`).length) {  // 중복 방지
                         	employeeList.append(`
-                                <div data-id="\${nodeId}">\${empName} 
+                                <div data-id="\${nodeName}">\${empName} 
                                     <button class="remove-emp btn btn-sm ">x</button>
                                 </div>
                             `);

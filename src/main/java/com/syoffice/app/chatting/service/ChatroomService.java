@@ -31,7 +31,7 @@ public class ChatroomService {
         return mongo.save(chatroom);
     }
 
-    // 모든 채팅방 조회 (로그인한 사용자가 속한 방만 반환)
+    // 로그인한 사용자가 있는 방 
     public List<ChatroomVO> getUserChatrooms(String userId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("employees").in(userId));
@@ -58,6 +58,10 @@ public class ChatroomService {
             }
         }
         return false;
+    }
+
+    public ChatroomVO getChatroomById(String roomId) {
+        return mongo.findById(roomId, ChatroomVO.class);
     }
 
 }

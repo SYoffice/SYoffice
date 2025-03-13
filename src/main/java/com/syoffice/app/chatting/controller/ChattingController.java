@@ -37,16 +37,15 @@ public class ChattingController {
     // 채팅방 만들기 
     @PostMapping("/chatroom/create")
     @ResponseBody
-    public ChatroomVO createChatroom(
-            HttpSession session,
-            @RequestParam String roomName,
-            @RequestParam List<String> employees) {
+    public ChatroomVO createChatroom(HttpSession session,
+						             @RequestParam String roomName,
+						             @RequestParam List<String> employees) {
 
         
         EmployeeVO loginUser = (EmployeeVO) session.getAttribute("loginuser");
-
+        
         // 로그인한 사용자를 자동으로 참여자로 추가
-        String creatorId = loginUser.getEmp_id();
+        String creatorId = loginUser.getName()+ " " + loginUser.getGrade_name();
         return chatroomService.createChatroom(roomName, employees, creatorId);
     }
 
@@ -57,7 +56,7 @@ public class ChattingController {
         
         EmployeeVO loginUser = (EmployeeVO) session.getAttribute("loginuser");
 
-        return chatroomService.getUserChatrooms(loginUser.getEmp_id());
+        return chatroomService.getUserChatrooms(loginUser.getName()+ " " + loginUser.getGrade_name());
     }
 
 
@@ -68,7 +67,7 @@ public class ChattingController {
     public ResponseEntity<String> leaveChatroom(@PathVariable String roomId, HttpSession session) {
         EmployeeVO loginUser = (EmployeeVO) session.getAttribute("loginuser");
 
-        boolean isDeleted = chatroomService.removeUserFromRoom(roomId, loginUser.getEmp_id());
+        boolean isDeleted = chatroomService.removeUserFromRoom(roomId, loginUser.getName()+ " " + loginUser.getGrade_name());
         
         if (isDeleted) {
             return ResponseEntity.ok("채팅방에서 나갔습니다. (방이 삭제되었습니다.)");
@@ -78,6 +77,21 @@ public class ChattingController {
         }
     }
     
+    
+    // 채팅방 상세 정보 가져오기
+    @GetMapping("/chatroom/detail/{roomId}")
+    @ResponseBody
+    public ResponseEntity<ChatroomVO> getChatroomDetail(@PathVariable String roomId) {
+        ChatroomVO chatroom = chatroomService.getChatroomById(roomId);
+        
+        
+        if (chatroom != null) {
+            return ResponseEntity.ok(chatroom);
+        } 
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
     
 
 

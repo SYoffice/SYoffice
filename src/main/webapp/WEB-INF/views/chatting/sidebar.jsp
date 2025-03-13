@@ -62,17 +62,16 @@ function getChatrooms() {
                     let chatRow = `
                         <tr>
                             <td>
-                                <a href="javascript:voId(0);" onclick="enterChatroom('\${room.roomId}')" style="color:black;">
-                                    \${room.roomName}
-                                </a>
+                             <a href="javascript:void(0);" onclick="openChatroomDetailModal('\${room.roomId}')" style="color: black;">
+                            	\${room.roomName}
+                       		 </a>
                             </td>
                             <td class="text-center">\${employeeCount}명</td>
                             <td class="text-right">
                             	<button onclick="enterChatroom('\${room.roomId}')" class="btn btn-light; border border-dark;">입장하기</button>
                                 <button onclick="leaveChatroom('\${room.roomId}')" class="btn btn-danger border border-dark">나가기</button>
                             </td>
-                        </tr>
-                    `;
+                        </tr>`;
                     chatroomList.append(chatRow);
 	
                     // sidebar.jsp의 목록에 추가

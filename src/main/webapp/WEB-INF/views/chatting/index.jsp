@@ -15,9 +15,9 @@
     <table style="margin-top: 1%; font-size: 14pt;" class="table">
         <thead >
             <tr>
-                <th style="wIdth: 40%;">채팅방 이름</th>
-                <th style="wIdth: 40%; border-right:none; text-align: center;">참여 인원</th>
-                <th style="wIdth: 20%; border-left:none;"></th>
+                <th style="width: 40%;">채팅방 이름</th>
+                <th style="width: 40%; border-right:none; text-align: center;">참여 인원</th>
+                <th style="width: 20%; border-left:none;"></th>
             </tr>
         </thead>
         <tbody Id="chatroomList">
@@ -53,7 +53,34 @@
     </div>
   </div>
 </div>
-<input type="hidden" Id="loginuserId" value="${sessionScope.loginuser.emp_id}">
+
+<!-- 채팅방 상세 정보 모달 -->
+<div class="modal fade" id="chatroomDetailModal" tabindex="-1" role="dialog" aria-labelledby="chatroomDetailLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="chatroomDetailLabel">채팅방 정보</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><strong>채팅방 이름:</strong> <span id="chatroomDetailName"></span></p>
+        <div style="display: flex;" >
+        <p><strong>참여 인원:&nbsp; </strong></p>
+        <ul id="chatroomDetailMembers"></ul>
+        </div>
+        <p><strong>생성 날짜:</strong> <span id="chatroomDetailCreatedAt"></span></p>
+		      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="hidden" id="loginuserId" value="${sessionScope.loginuser.name}&nbsp;${sessionScope.loginuser.grade_name}">
 <script type="text/javascript">
 $(document).ready(function() {
     // 채팅방 목록 불러오기
@@ -84,7 +111,7 @@ function enterChatroom(roomId, roomName) {
 }
 
 
-function getSelecteEmployeeIds() {
+function getselectedEmployeeIds() {
     let employeeIds = []; // 사원번호 배열로 만들기
 
     // 선택된 사원 목록에서 사원번호 가져오기
@@ -101,12 +128,9 @@ function getSelecteEmployeeIds() {
 // 방만들기
 function createChatroom() {
     let roomName = \$("#chatRoomName").val(); // 채팅방이름 가져옴
-    let employees = getSelecteEmployeeIds(); // 사원번호 가져옴
+    let employees = getselectedEmployeeIds(); // 사원번호 가져옴
 
-    let loginuserId = $("#loginuserId").val(); // 로그인한 사용자 Id 추가
-    if (!employees.includes(loginuserId)) {
-        employees.push(loginuserId);
-    }
+   
 	
     $.ajax({
         type: "POST",
@@ -137,6 +161,33 @@ function leaveChatroom(roomId) {
         success: function(response) {
             alert(response);
             getChatrooms(); // 채팅방 목록 갱신
+        },
+        error: function(request, status, error){
+	        alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	    }
+    });
+}
+
+
+function openChatroomDetailModal(roomId) {
+    $.ajax({
+        type: "GET",
+        url: `<%=request.getContextPath()%>/chatting/chatroom/detail/\${roomId}`,
+        success: function(chatroom) {
+        	console.log(chatroom);
+        	
+            $("#chatroomDetailName").text(chatroom.roomName);
+            $("#chatroomDetailMembers").empty();
+           
+            chatroom.employees.forEach(employees => {
+            	
+                $("#chatroomDetailMembers").append(`<li>\${employees}</li>`);
+            });
+
+            let createdAt = new Date(chatroom.createdAt);
+            $("#chatroomDetailCreatedAt").text(createdAt.toLocaleString());
+
+            $("#chatroomDetailModal").modal("show"); // 모달 띄우기
         },
         error: function(request, status, error){
 	        alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
