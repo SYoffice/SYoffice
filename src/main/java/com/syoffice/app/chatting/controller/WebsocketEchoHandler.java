@@ -122,6 +122,8 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
 	        wsession.close(); // roomId가 없으면 WebSocket 연결 종료
 	        return;
 	    }
+	    
+	    wsession.getAttributes().put("roomId", roomId);
 
 	    // System.out.println("채팅방 ID: " + roomId);
 	
@@ -229,6 +231,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
         EmployeeVO loginuser = (EmployeeVO)map.get("loginuser");
    
         MessageVO messageVO = MessageVO.convertMessage(message.getPayload());
+        String roomId = (String) wsession.getAttributes().get("roomId");  // 🌟 추가: 현재 세션의 roomId 가져오기
       
         Date now = new Date(); // 현재시각 (java.util)
         String currentTime = String.format("%tp %tl:%tM",now,now,now); 
@@ -236,22 +239,19 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
         // %tl              시간을 1~12 으로 출력
         // %tM              분을 00~59 으로 출력
         
-        String roomId = messageVO.getRoomId(); 
-        
-        
         
         for(WebSocketSession webSocketSession : connectedUsers) { // webSocketSession 에 정보가 다 담겨있음, connectedUsers 에는 현재접속자 뿐만 아니라 다른 사람들도 들어있음
-         
+    	 String sessionRoomId = (String) webSocketSession.getAttributes().get("roomId");
     	 String Profile = loginuser.getProfile_img();  
     	 String profileImage = (Profile != null) ? Profile : "기본이미지.png";
     	 // System.out.println(Profile);
     	 // System.out.println(profileImage);
     	 
-         if("all".equals(messageVO.getType())) {
+         if("all".equals(messageVO.getType()) ) {
             // 채팅할 대상이 "전체" 인 공개대화인 경우
             // 메시지를 자기자신을 뺀 나머지 모든 사용자들에게 메시지를 보냄.
             
-            if( !wsession.getId().equals(webSocketSession.getId()) ) { // wsession.getId() : 나를 뺀 다른 사람들한테 보냄, webSocketSession : 나를 뺀 사람들
+            if( !wsession.getId().equals(webSocketSession.getId()) && roomId.equals(sessionRoomId) ) { // wsession.getId() : 나를 뺀 다른 사람들한테 보냄, webSocketSession : 나를 뺀 사람들
                // wsession 은 메시지를 보낸 클라이언트임.
                    // webSocketSession 은 웹소켓서버에 연결된 모든 클라이언트중 하나임.
                    // wsession.getId() 와  webSocketSession.getId() 는 자동증가되는 고유한 값으로 나옴 
