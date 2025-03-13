@@ -84,7 +84,7 @@ function goSearch() {
     	<%-- 파일이 있을떄 --%>
         <c:if test="${not empty fileList}">
             <c:forEach var="file" items="${fileList}">
-                <tr>
+                <tr style="font-size: 14pt;">
                     <td>${file.data_orgfilename}</td>
                     
 	                <td class="file-size">

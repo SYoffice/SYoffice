@@ -8,13 +8,14 @@
 	
 	<!-- 조직도 데이터 조회 -->
     <select id="selectOrganization" resultType="map">
-       SELECT 
-            e.emp_id, e.name, e.fk_dept_id, e.fk_grade_no, e.fk_branch_no, e.mail, e.tel, to_char(hire_date, 'yyyy-mm-dd') AS hire_date
+         SELECT 
+            e.emp_id, e.name, e.fk_dept_id, e.fk_grade_no, e.fk_branch_no, e.mail, e.status ,e.tel, to_char(hire_date, 'yyyy-mm-dd') AS hire_date
             , e.profile_img, d.dept_name, d.manager_id , g.grade_name, b.branch_name
        FROM tbl_employee e
        JOIN tbl_department d ON e.fk_dept_id = d.dept_id
        JOIN tbl_grade g ON e.fk_grade_no = g.grade_no
        JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
+       where e.status in (1,2)
        ORDER BY e.fk_branch_no, d.dept_id, g.grade_no
     </select>
     
@@ -29,7 +30,7 @@
 		JOIN tbl_department d ON e.fk_dept_id = d.dept_id
 		JOIN tbl_grade g ON e.fk_grade_no = g.grade_no
 		JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
-		WHERE d.dept_name = #{dept_name}
+		WHERE d.dept_name = #{dept_name} AND e.status IN (1, 2)
 		<if test="branch_name != null and branch_name != ''">
 		        AND b.branch_name = #{branch_name}
 		    </if>
