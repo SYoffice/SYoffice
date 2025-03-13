@@ -46,9 +46,25 @@
             </div>
             
             <div class="weather-box"> 
-             날씨 박스 
-           
-           </div>
+                <table class="table weather-table text-center">
+                    <tr>
+                        <td style="vertical-align: middle;" colspan="2">2025-03-12(수)</td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: middle; "><span style="color: blue;">2</span>℃ / <span style="color: red;">15</span>℃</td>
+                        <td style="vertical-align: middle;">최저/최고</td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: middle;"><img style="width: 20px;" src="<%= ctxPath%>/images/vec/N.png">&nbsp;북동풍</td>
+                        <td style="vertical-align: middle;">3.4m/s</td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: middle;"><i class="fa-solid fa-umbrella fa-sm"></i> 30%</td>
+                        <td style="vertical-align: middle;"><i class="fa-solid fa-droplet"></i> 60%</td>
+                    </tr>
+                </table>
+
+            </div>
         </div>
 
         <!--  오른쪽 컨텐츠 영역 -->
@@ -62,7 +78,7 @@
                     </c:when>
                     <c:otherwise>
                         <table style="width:100%; border-collapse:collapse; text-align:center;">
-                            <thead style="background-color:#333; color:#fff;">
+                            <thead style="background-color:#e6eeff; color:black;">
                                 <tr>
                                     <th style="padding:8px;">순번</th>
                                     <th style="padding:8px;">제목</th>
@@ -76,7 +92,8 @@
                                     <tr style="border-bottom:1px solid #ccc;">
                                         <td style="padding:8px;">${status.index + 1}</td>
                                         <td style="padding:8px; text-align:left;">
-                                            <a href="${ctxPath}/notice/view?notice_no=${notice.notice_no}">
+                                            <a href="<%= ctxPath%>/board/viewOne">
+                                            
                                                 ${notice.notice_subject}
                                             </a>
                                         </td>
@@ -134,8 +151,7 @@
 			        <div id="branchSalesChart"></div>
 			    </div>
 			    <div class="chart-container">
-			        <h4>부서별 실적 비교</h4>
-			       
+			        <h4>부서별 실적 비교</h4>			       
 			        <div id="salesTrendChart"></div>
 			    </div>
 			</div>
@@ -306,16 +322,37 @@ h4 {
 
 
 
+
+
+
+
+
 <script>
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', function () {
-    //  데이터가 비어 있을 경우를 대비한 예외 처리
+    // 데이터가 비어 있을 경우를 대비한 예외 처리
     var weeklyPerformance = [];
 
-    var departmentPerformance = [];
-    
-    // departmentPerformance 배열 추가 (수정된 부분)
-    departmentPerformance.push({ dept_name: '', total_performance: 0 });
-    
+    // 내 실적과 부서 실적을 위한 데이터
+    var myPerformance = 0;  // 내 실적
+    var departmentPerformance = 0;  // 부서 실적
+
+    // 서버에서 전달받은 데이터로 내 실적과 부서 실적 값을 채우기
+    <c:forEach var="data" items="${performanceData}" varStatus="status">
+        // "내 실적"은 EMPLOYEE_PERFORMANCE
+        myPerformance = ${data.EMPLOYEE_PERFORMANCE};
+        // "내 부서 실적"은 DEPARTMENT_PERFORMANCE
+        departmentPerformance = ${data.DEPARTMENT_PERFORMANCE};
+    </c:forEach>
+
+    // 최근 7일간 실적 (막대 그래프 데이터 추가)
+    <c:forEach var="data" items="${weeklyPerformance}" varStatus="status">
+        weeklyPerformance.push({
+            result_day: '${data.RESULT_DAY}',
+            total_performance: ${data.TOTAL_PERFORMANCE}
+        });
+    </c:forEach>
 
     //  최근 7일간 실적 (막대 그래프)
     if (weeklyPerformance.length > 0) {
@@ -335,23 +372,28 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('branchSalesChart').innerHTML = "<p style='color:gray;'>데이터 없음</p>";
     }
 
-    
-
-    // 부서 내 직원별 실적 지분 데이터 생성
-    var departmentSharePerformance = [
-        <c:forEach var="data" items="${departmentPerformance}" varStatus="status">
-            { name: '${data.EMP_NAME}', y: ${data.PERFORMANCE_SHARE} }<c:if test="${!status.last}">,</c:if>
-        </c:forEach>
+    // 파이 차트 데이터 준비 (내 실적 vs 내 부서 실적)
+    var chartData = [
+        {
+            name: '내 실적',  // 내 실적
+            y: myPerformance  // 내 실적 값
+        },
+        {
+            name: '부서 실적',  // 부서 실적
+            y: departmentPerformance - myPerformance  // 부서 실적에서 내 실적을 제외한 값
+        }
     ];
 
-    // 부서 내 직원별 실적 지분 (파이 차트)
-    if (departmentSharePerformance.length > 0) {
+    console.log("차트 데이터: ", chartData);
+
+    //  부서별 실적 비교 (파이 차트)
+    if (chartData.length > 0) {
         Highcharts.chart('salesTrendChart', {
             chart: { type: 'pie' },
-            title: { text: '부서 내 직원별 실적 비율' },
+            title: { text: '부서실적' },
             series: [{
-                name: '실적 지분 (%)',
-                data: departmentSharePerformance
+                name: '실적',
+                data: chartData
             }]
         });
     } else {
@@ -360,4 +402,162 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function weatherForecast() {
+    $.ajax({
+        url: "<%= ctxPath%>/weather/forecast",
+        type: "GET",
+        dataType: "JSON",
+        success: function(json){
+            // console.log(JSON.stringify(json));
+            /*
+                [{"forecast_no":null,"forecast_date":"2025-03-12 00:00","forecast_temp":"8","forecast_reh":"70","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"20","forecast_vec":"8","forecast_wsd":"1.1"},{"forecast_no":null,"forecast_date":"2025-03-12 01:00","forecast_temp":"8","forecast_reh":"75","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"20","forecast_vec":"8","forecast_wsd":"1.2"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 02:00","forecast_temp":"8","forecast_reh":"75","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"20","forecast_vec":"8","forecast_wsd":"1.1"},{"forecast_no":null,"forecast_date":"2025-03-12 03:00","forecast_temp":"8","forecast_reh":"75","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"20","forecast_vec":"8","forecast_wsd":"1.6"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 04:00","forecast_temp":"8","forecast_reh":"75","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"20","forecast_vec":"8","forecast_wsd":"1"},{"forecast_no":null,"forecast_date":"2025-03-12 05:00","forecast_temp":"7","forecast_reh":"75","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"20","forecast_vec":"8","forecast_wsd":"1.3"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 06:00","forecast_temp":"7","forecast_reh":"75","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"20","forecast_vec":"8","forecast_wsd":"1.3"},{"forecast_no":null,"forecast_date":"2025-03-12 07:00","forecast_temp":"7","forecast_reh":"75","forecast_mintemp":"5","forecast_maxtemp":null,"forecast_pop":"30","forecast_vec":"8","forecast_wsd":"1"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 08:00","forecast_temp":"7","forecast_reh":"75","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"30","forecast_vec":"8","forecast_wsd":"1.4"},{"forecast_no":null,"forecast_date":"2025-03-12 09:00","forecast_temp":"8","forecast_reh":"70","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"30","forecast_vec":"8","forecast_wsd":"1.6"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 10:00","forecast_temp":"9","forecast_reh":"65","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"30","forecast_vec":"10","forecast_wsd":"2"},{"forecast_no":null,"forecast_date":"2025-03-12 11:00","forecast_temp":"10","forecast_reh":"60","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"30","forecast_vec":"10","forecast_wsd":"2"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 12:00","forecast_temp":"10","forecast_reh":"65","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"30","forecast_vec":"10","forecast_wsd":"2.4"},{"forecast_no":null,"forecast_date":"2025-03-12 13:00","forecast_temp":"10","forecast_reh":"70","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"30","forecast_vec":"10","forecast_wsd":"2.9"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 14:00","forecast_temp":"10","forecast_reh":"80","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"30","forecast_vec":"10","forecast_wsd":"2.8"},{"forecast_no":null,"forecast_date":"2025-03-12 15:00","forecast_temp":"10","forecast_reh":"85","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"60","forecast_vec":"10","forecast_wsd":"2.7"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 16:00","forecast_temp":"10","forecast_reh":"85","forecast_mintemp":null,"forecast_maxtemp":"10","forecast_pop":"30","forecast_vec":"12","forecast_wsd":"2.7"},{"forecast_no":null,"forecast_date":"2025-03-12 17:00","forecast_temp":"9","forecast_reh":"85","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"20","forecast_vec":"10","forecast_wsd":"2.3"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 18:00","forecast_temp":"9","forecast_reh":"85","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"0","forecast_vec":"10","forecast_wsd":"1.6"},{"forecast_no":null,"forecast_date":"2025-03-12 19:00","forecast_temp":"8","forecast_reh":"80","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"0","forecast_vec":"10","forecast_wsd":"1.3"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 20:00","forecast_temp":"8","forecast_reh":"85","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"0","forecast_vec":"10","forecast_wsd":"1.1"},{"forecast_no":null,"forecast_date":"2025-03-12 21:00","forecast_temp":"7","forecast_reh":"85","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"0","forecast_vec":"12","forecast_wsd":"1.2"}
+                ,{"forecast_no":null,"forecast_date":"2025-03-12 22:00","forecast_temp":"7","forecast_reh":"80","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"0","forecast_vec":"14","forecast_wsd":"1.4"},{"forecast_no":null,"forecast_date":"2025-03-12 23:00","forecast_temp":"6","forecast_reh":"70","forecast_mintemp":null,"forecast_maxtemp":null,"forecast_pop":"0","forecast_vec":"14","forecast_wsd":"1.4"}]
+            */
+            const now = new Date();             // 현재날짜시각
+
+            let year  	= now.getFullYear();    // 현재연도(2025)
+            let month   = now.getMonth() + 1;   // 월은 0부터 시작하므로 +1
+            let date    = now.getDate();        // 현재일
+            let hour    = now.getHours();
+            let day     = now.getDay();
+
+            switch (day) {
+                case 0: day = "일"; break;
+                case 1: day = "월"; break;
+                case 2: day = "화"; break;
+                case 3: day = "수"; break;
+                case 4: day = "목"; break;
+                case 5: day = "금"; break;
+                case 6: day = "토"; break;
+            }
+
+            // 10 미만에서 앞에 0 붙이기
+            month = String(month).padStart(2, '0')
+            date = String(date).padStart(2, '0')
+            hour = String(hour).padStart(2, '0')
+
+            const times = year +"-"+ month +"-"+ date +" "+ hour+ ":00";
+
+            // console.log(times);
+
+            let today = "";
+            let REH = "";       // 습도
+            let TMN = "";       // 최저기온
+            let TMX = "";       // 최고기온
+            let POP = "";       // 강수확률
+            let VEC = "";       // 풍향
+            let WSD = "";       // 풍속
+            let str_VEC = "";   // 풍향문자열
+
+
+            let tempArr = [];
+            let temptimeArr = [];
+            $.each(json, function(index, item) {
+                if (item.forecast_date == times) {
+                    // console.log(item.forecast_date.substring(0, item.forecast_date.indexOf(' ')));
+                    // 2025-03-12
+                    today = item.forecast_date.substring(0, item.forecast_date.indexOf(' '));
+                    REH = item.forecast_reh;
+                    VEC = item.forecast_vec;
+                    WSD = item.forecast_wsd;
+                    POP = item.forecast_pop;
+                }
+                if (item.forecast_mintemp != null) {
+                    TMN = item.forecast_mintemp;
+                }
+                if (item.forecast_maxtemp != null) {
+                    TMX = item.forecast_maxtemp;
+                }
+
+                if (index % 2 == 0) {
+                    // 짝수 시간대만 차트에 표시
+                    tempArr.push(item.forecast_temp);
+                    temptimeArr.push(item.forecast_date.substring(item.forecast_date.indexOf(' ')));
+                }
+            });// end of $.each(json, function(index, item) ----------------------
+
+            switch (VEC) {
+	            case '0': VEC = "S";    str_VEC = "북풍"; break;
+	            case '2': VEC = "SW";   str_VEC = "북동풍"; break;
+	            case '4': VEC = "W";    str_VEC = "동풍"; break;
+	            case '6': VEC = "NW";   str_VEC = "남동풍"; break;
+	            case '8': VEC = "N";    str_VEC = "남풍"; break;
+	            case '10': VEC = "NE";  str_VEC = "남서풍"; break;
+	            case '12': VEC = "S";   str_VEC = "서풍"; break;
+	            case '14': VEC = "SE";  str_VEC = "북서풍"; break;
+	            case '16': VEC = "S";   str_VEC = "북풍"; break;
+	        }
+
+            let v_html = `
+                <table class="table weather-table text-center">
+                    <tr>
+                        <td style="vertical-align: middle;" colspan="2">\${today} (\${day})</td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: middle; "><span style="color: blue;">\${TMN}</span>℃ / <span style="color: red;">\${TMX}</span>℃</td>
+                        <td style="vertical-align: middle;">최저/최고</td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: middle;"><img style="width: 20px;" src="<%= ctxPath%>/images/vec/\${VEC}.png">&nbsp;\${str_VEC}</td>
+                        <td style="vertical-align: middle;">\${WSD} m/s</td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: middle;"><i class="fa-solid fa-umbrella fa-sm"></i> \${POP}%</td>
+                        <td style="vertical-align: middle;"><i class="fa-solid fa-droplet"></i> \${REH}%</td>
+                    </tr>
+                </table>
+                <div id="forecast">
+                    <canvas id="forecast_chart"></canvas>
+                </div>
+            `;
+
+            $("div.weather-box").html(v_html);
+
+            // === 통계 차트 그리기 시작 === //
+            const ctx = document.getElementById('forecast_chart');
+
+            if (Chart.getChart(ctx)) {
+                Chart.getChart(ctx)?.destroy();
+            }
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: temptimeArr,
+                    datasets: [{
+                        label: '기온(℃)',
+                        data: tempArr,
+                        borderWidth: 1,
+                        borderColor:'rgb(0, 102, 255)'
+                    },
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });// end of new Chart(ctx, {}) ---------------------------
+
+        },
+        error: function(request, status, error){
+            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+        }
+
+    });// end of $.ajax({}) ----
+}// end of function weatherForecast()
 </script>

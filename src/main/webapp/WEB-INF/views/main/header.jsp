@@ -73,6 +73,10 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.all.min.js"></script>
 
+    <%-- chart.js --%>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
     <script type="text/javascript">
         window.onload = function() {
             const sideMenu = document.querySelectorAll("ul#side_menu li");
@@ -95,12 +99,61 @@
                     item.classList.add('active');
                 });
             });
+
+            $.ajax({
+                url:"<%= ctxPath%>/weather/weatherXML",
+                type:"get",
+                dataType:"xml",
+                async: false,
+                success:function(xml){
+                    const rootElement = $(xml).find(":root");	// xml 파일의 최상단 태그
+
+
+                    const localArr = rootElement.find("local");		// root 태그에서 태그네임이 local 인 것을 찾는다. 태그를 배열에 담아준 것.
+                    //	console.log("지역개수 : " + localArr.length);
+                    // 지역개수 : 97
+
+                    let html = "";
+                    for(let i=0; i<localArr.length; i++){
+                        let local = $(localArr).eq(i);
+
+                        let icon = $(local).attr("icon");
+                        if(icon == "") {
+                            icon = "없음";
+                        }
+
+                        if ($(local).attr("stn_id") == '108') {
+                            // console.log( $(local).text() + " stn_id:" + $(local).attr("stn_id") + " icon:" + $(local).attr("icon") + " desc:" + $(local).attr("desc") + " ta:" + $(local).attr("ta") );
+                            // 서울 stn_id:108 icon:18 desc:연무 ta:10.2
+                            html += "<span>"+$(local).text()+"특별시</span>&nbsp;&nbsp;<span><img src='/syoffice/images/weather/"+icon+".png' /></span><span>("+$(local).attr("desc")+")&nbsp;&nbsp;"+$(local).attr("ta")+"℃</span>";
+                        }
+
+                    }// end of for------------------------
+
+                    $("div.weather").html(html);
+
+                },// end of success: function(xml){ }------------------
+
+                error: function(request, status, error){
+                    alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+                }
+            });
+
+            weatherForecast();
         }
     </script>
+    <style>
+        .weather {
+            gap: 2px;
+            align-items: center;
+            display: flex;
+            margin-right: 15px;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light w-100 py-3">
-        <a class="navbar-brand" href="<%=ctxPath%>/index">로고</a>
+        <a class="navbar-brand text-center" href="<%=ctxPath%>/index"><img style="width: 85%;" src="<%=ctxPath%>/images/syoffice_logo.png"/></a>
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
                 <li class="nav-item active">
@@ -154,9 +207,10 @@
                     </li>
                 </c:if>
             </ul>
-            <ul class="navbar-nav ml-auto">
+            <ul class="d-flex navbar-nav ml-auto" style="align-items: center;">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">날씨온도 </a>
+                    <div class="weather">
+                    </div>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="<%=ctxPath%>/employee/mypage">${loginuser.name}</a>

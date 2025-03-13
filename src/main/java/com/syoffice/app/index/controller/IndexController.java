@@ -55,12 +55,16 @@ public class IndexController {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("fk_emp_id", fk_emp_id);
         List<Map<String, String>> mySchedule = indexService.getMySchedule(paramMap);
-
+        //System.out.println(">>> 내 일정   = " + mySchedule);
+        
+        
         // 내가 속한 부서 일정 가져오기
         Map<String, String> deptParamMap = new HashMap<>();
         deptParamMap.put("fk_emp_id", fk_emp_id);
         List<Map<String, String>> deptSchedule = indexService.getDeptSchedule(deptParamMap);
-
+        //System.out.println(">>> 내 부서일정   = " + deptSchedule);
+        
+        
          // 공지사항 목록 조회
         List<Map<String, String>> noticeList = indexService.getNoticeList(); 
         //System.out.println(">>> noticeList.size() = " + noticeList);
@@ -69,10 +73,11 @@ public class IndexController {
         // 내 실적 가져오기 (최근 7일)
         paramMap.put("fk_emp_id", fk_emp_id);
         List<Map<String, Object>> weeklyPerformance = indexService.getWeeklyPerformance(paramMap);
-
+        System.out.println(">>> 내 일주일   = " + weeklyPerformance);
+        
         // 내 실적과 부서 실적을 비교한 데이터 가져오기
         List<Map<String, Object>> performanceData = indexService.getDepartmentPerformance(loginUser.getEmp_id());
-        
+        //System.out.println(">>> 차트  = " + performanceData);
         
         // JSP로 데이터 전달
         request.setAttribute("loginUser", loginUser);

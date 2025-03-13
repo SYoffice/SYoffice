@@ -134,6 +134,45 @@
         .fc-event-time {
             color: black !important;
         }
+        .summary-container {
+		    display: flex;            /* 가로 정렬 */
+		    gap: 200px;                /* 박스 사이 간격 */
+		    justify-content: center;  /* 가운데 정렬 */
+		    align-items: center;      /* 세로 정렬 */
+		    margin-top: 20px;         /* 위쪽 여백 */
+		}
+		
+		.summary-box {
+		    flex: 1;                  /* 동일한 크기로 정렬 */
+		    max-width: 200px;         /* 박스 최대 너비 */
+		    padding: 15px 20px;       /* 내부 여백 */
+		    background: white;      /* 박스 배경색 */
+		    border-radius: 10px;      /* 둥근 모서리 */
+		    text-align: center;       /* 텍스트 가운데 정렬 */
+		    font-weight: bold;        /* 글씨 강조 */
+		    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+		}
+		/* 근태 내역 탭에만 적용 */
+		#attHistory .summary-row {
+		    display: flex;            
+		    gap: 100px;                /* 🔹 박스 사이 간격 줄이기 */
+		    justify-content: center; /* 🔹 왼쪽 정렬 (필요시 center로 변경 가능) */
+		    align-items: center;      
+		    margin-top: 10px;         /* 🔹 위쪽 여백 줄이기 */
+		}
+		
+		/* 근태 내역 박스에만 적용 */
+		#attHistory .summary-box {
+		    width: 140px;             /* 🔹 박스 너비 줄이기 */
+		    padding: 10px 12px;       /* 🔹 내부 여백 줄이기 */
+		    background: white;      
+		    border-radius: 8px;       
+		    text-align: center;       
+		    font-weight: bold;        
+		    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); 
+		}
+		
+		        
     </style>
 </head>
 
@@ -169,7 +208,7 @@
                     <c:when test="${not empty attendanceVO.attendEnd}">
                         <fmt:formatDate value="${attendanceVO.attendEnd}" pattern="HH:mm:ss"/>
                     </c:when>
-                    <c:otherwise>N/A</c:otherwise>
+                    <c:otherwise></c:otherwise>
                 </c:choose>
             </div>
             <hr>
@@ -244,7 +283,20 @@
 
                 <!-- 연차 내역 탭 -->
                 <div class="tab-pane fade" id="leaveHistory">
-                    <h4>연차 내역</h4>
+			    <h4>연차 내역</h4>
+			
+			    <!-- 연차 요약 박스를 감싸는 컨테이너 -->
+			    <div class="summary-container">
+			        <div class="summary-box">
+			            <div>사용한 연차</div>
+			            <div>${weeklyAccumulated}</div>
+			        </div>
+			        <div class="summary-box">
+			            <div>잔여 연차</div>
+			            <div>${monthlyAccumulated}</div>
+			        </div>
+			    </div>
+			    <br>
                     <!-- 연차 내역 테이블 -->
                     <table class="table table-bordered">
                         <thead>
@@ -272,10 +324,10 @@ var calendar;  // 전역 변수로 선언
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     if (!calendarEl) {
-        console.error("❌ 캘린더 컨테이너를 찾을 수 없습니다.");
+        console.error(" 캘린더 컨테이너를 찾을 수 없습니다.");
         return;
     }
-    console.log("✅ 캘린더 컨테이너 확인:", calendarEl);
+    console.log(" 캘린더 컨테이너 확인:", calendarEl);
 
     calendar = new FullCalendar.Calendar(calendarEl, {
         googleCalendarApiKey: "YOUR_GOOGLE_API_KEY", // 구글 캘린더 API 키
@@ -293,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var midDate = new Date(midTime);
             var currentYear = midDate.getFullYear();
             var currentMonth = midDate.getMonth() + 1;
-            console.log("📅 현재 연/월:", currentYear, currentMonth);
+            //console.log("현재 연/월:", currentYear, currentMonth);
             fetchCalendarEvents(currentYear, currentMonth);
         }
     });
@@ -351,40 +403,58 @@ function fetchCalendarEvents(year, month) {
                 }
             });
 
-            // 🔹 **연차 데이터 추가**
+         //  연차 데이터 추가
             $.ajax({
                 url: '<%=ctxPath%>/attendance/leaveInfo',
                 method: 'GET',
                 dataType: 'json',
                 data: { empId: empId },
                 success: function(leaveResponse) {
-                    console.log("🟢 연차 데이터 수신 완료:", leaveResponse);
+                    console.log("연차 데이터 수신 완료:", leaveResponse);
+
+                    // 테이블 내용 초기화
+                    $("#leaveTableBody").empty();
 
                     leaveResponse.forEach(function(leave) {
                         let startDate = moment(leave.LEAVESTART).format("YYYY-MM-DD");
-                        let endDate = moment(leave.LEAVEEND).add(1, 'days').format("YYYY-MM-DD");
+                        let endDate = moment(leave.LEAVEEND).format("YYYY-MM-DD");
+                        let leaveSubject = leave.LEAVESUBJECT || "연차";
+                        let leaveReason = leave.LEAVEREASON || "사유 없음"; // 사유 필드 추가
 
+                        // 테이블에 데이터 추가
+                        let row = `
+                            <tr>
+                                <td>\${startDate}</td>
+                                <td>\${endDate}</td>
+                                <td>\${leaveSubject}</td>
+                                <td>\${leaveReason}</td>
+                            </tr>
+                        `;
+                        $("#leaveTableBody").append(row);
+
+                        // 캘린더 이벤트 추가
                         events.push({
-                            title: leave.LEAVESUBJECT || "연차",
+                            title: leaveSubject,
                             start: startDate,
-                            end: endDate,
+                            end: moment(leave.LEAVEEND).add(1, 'days').format("YYYY-MM-DD"),
                             allDay: true,
-                            backgroundColor: "#800080",
-                            borderColor: "#800080"
+                            backgroundColor: "#BFD2FA",
+                            //borderColor: "black"
                         });
                     });
 
-                    // 🟢 **캘린더에 이벤트 추가**
+                    // **캘린더에 이벤트 추가**
                     calendar.removeAllEvents();
                     calendar.addEventSource(events);
                     calendar.refetchEvents();
                     calendar.render();
-                    console.log("📌 최종 이벤트 리스트:", calendar.getEvents());
+                    console.log(" 최종 이벤트 리스트:", calendar.getEvents());
                 },
                 error: function(error) {
-                    console.error("❌ 연차 데이터 조회 실패:", error);
+                    console.error(" 연차 데이터 조회 실패:", error);
                 }
             });
+
 
         },
         error: function(request, status, error) {
