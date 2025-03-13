@@ -21,7 +21,7 @@
                 <span class="toolbar forward"><i class="fa-solid fa-share"></i> 전달</span>
                 <span class="toolbar ban"><i class="fa-solid fa-ban"></i> 스팸차단</span>
                 <span class="toolbar unread">안읽음</span>
-                <span class="toolbar float-right">목록</span>
+                <span class="toolbar list float-right">목록</span>
             </div>
 
             <div class="mailInfo_wrap">
@@ -94,14 +94,113 @@
                     <hr>
                     <div class="prev">
                         <c:if test="${!empty requestScope.prevNextMailMap.prev_mail_no}">
-                            <a href="${pageContext.request.contextPath}/mail/${requestScope.prevNextMailMap.prev_mail_no}?division=${requestScope.prevNextMailMap.receive_division}" class="prev">
-                                <i class="fa-solid fa-caret-up"></i>
+                            <%-- 메일을 읽지 않은 상태 --%>
+                            <c:if test="${requestScope.prevNextMailMap.prev_receive_status == 0}">
+                                <div class="unread">
+                                    <a href="${pageContext.request.contextPath}/mail/${requestScope.prevNextMailMap.prev_mail_no}?division=${requestScope.prevNextMailMap.receive_division}" class="prev">
+                                        <i class="fa-solid fa-caret-up"></i>
+                                        <i class="ml-3 fa-regular fa-envelope"></i>
+                                        <c:if test="${requestScope.prevNextMailMap.attachCnt > 0}">
+                                            <span><i class="fa-solid fa-paperclip"></i></span>
+                                        </c:if>
+                                        <span class="d-inline-block emp ml-5 unread">${requestScope.prevNextMailMap.perv_mail_sendername}&nbsp;&lt;${requestScope.prevNextMailMap.prev_mail_sendermail}&gt;</span>
 
-                            </a>
+                                        <span class="d-inline-block subject unread">
+                                            <c:choose>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 0}"><span style="color: #00000080">[받은메일함]</span></c:when>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 1}"><span style="color: #00000080">[보낸메일함]</span></c:when>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 3}"><span style="color: #00000080">[내게쓴메일함]</span></c:when>
+                                                <c:otherwise></c:otherwise>
+                                            </c:choose>
+                                            ${requestScope.prevNextMailMap.prev_mail_subject}
+                                        </span>
+                                        <span class="float-right unread">${requestScope.prevNextMailMap.prev_mailsenddate}</span>
+                                    </a>
+                                </div>
+                            </c:if>
+
+                            <%-- 메일을 읽은 상태 --%>
+                            <c:if test="${requestScope.prevNextMailMap.prev_receive_status == 1}">
+                                <div class="read">
+                                    <a href="${pageContext.request.contextPath}/mail/${requestScope.prevNextMailMap.prev_mail_no}?division=${requestScope.prevNextMailMap.receive_division}" class="prev">
+                                        <i class="fa-solid fa-caret-up"></i>
+                                        <i class="ml-3 fa-regular fa-envelope-open read"></i>
+                                        <c:if test="${requestScope.prevNextMailMap.attachCnt > 0}">
+                                            <span><i class="fa-solid fa-paperclip read"></i></span>
+                                        </c:if>
+                                        <span class="d-inline-block emp ml-5 read">${requestScope.prevNextMailMap.perv_mail_sendername}&nbsp;&lt;${requestScope.prevNextMailMap.prev_mail_sendermail}&gt;</span>
+
+                                        <span class="d-inline-block subject read">
+                                            <c:choose>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 0}"><span style="color: #00000080">[받은메일함]</span></c:when>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 1}"><span style="color: #00000080">[보낸메일함]</span></c:when>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 3}"><span style="color: #00000080">[내게쓴메일함]</span></c:when>
+                                                <c:otherwise></c:otherwise>
+                                            </c:choose>
+                                            ${requestScope.prevNextMailMap.prev_mail_subject}
+                                        </span>
+                                        <span class="float-right read">${requestScope.prevNextMailMap.prev_mailsenddate}</span>
+                                    </a>
+                                </div>
+                            </c:if>
                         </c:if>
                     </div>
                     <hr>
-                    <div class="next">다음글</div>
+                    <div class="next">
+                        <c:if test="${!empty requestScope.prevNextMailMap.next_mail_no}">
+                            <%-- 메일을 읽지 않은 상태 --%>
+                            <c:if test="${requestScope.prevNextMailMap.next_receive_status == 0}">
+                                <div class="unread">
+                                    <a href="${pageContext.request.contextPath}/mail/${requestScope.prevNextMailMap.next_mail_no}?division=${requestScope.prevNextMailMap.receive_division}" class="next">
+                                        <i class="fa-solid fa-caret-down"></i>
+                                        <i class="ml-3 fa-regular fa-envelope"></i>
+                                        <c:if test="${requestScope.prevNextMailMap.attachCnt > 0}">
+                                            <span><i class="fa-solid fa-paperclip"></i></span>
+                                        </c:if>
+                                        <span class="d-inline-block emp ml-5 unread">${requestScope.prevNextMailMap.next_mail_sendername}&nbsp;&lt;${requestScope.prevNextMailMap.next_mail_sendermail}&gt;</span>
+
+                                        <span class="d-inline-block subject unread">
+                                            <c:choose>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 0}"><span style="color: #00000080">[받은메일함]</span></c:when>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 1}"><span style="color: #00000080">[보낸메일함]</span></c:when>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 3}"><span style="color: #00000080">[내게쓴메일함]</span></c:when>
+                                                <c:otherwise></c:otherwise>
+                                            </c:choose>
+                                            ${requestScope.prevNextMailMap.next_mail_subject}
+                                        </span>
+                                        <span class="float-right unread">${requestScope.prevNextMailMap.next_mailsenddate}</span>
+                                    </a>
+                                </div>
+                            </c:if>
+
+                            <%-- 메일을 읽은 상태 --%>
+                            <c:if test="${requestScope.prevNextMailMap.next_receive_status == 1}">
+                                <div style="color: #666666" class="read">
+                                    <a href="${pageContext.request.contextPath}/mail/${requestScope.prevNextMailMap.next_mail_no}?division=${requestScope.prevNextMailMap.receive_division}" class="prev">
+                                        <i class="fa-solid fa-caret-down"></i>
+                                        <i class="ml-3 fa-regular fa-envelope-open read"></i>
+                                        <c:if test="${requestScope.prevNextMailMap.attachCnt > 0}">
+                                            <span><i class="fa-solid fa-paperclip read"></i></span>
+                                        </c:if>
+                                        <span class="d-inline-block emp ml-5 read">${requestScope.prevNextMailMap.next_mail_sendername}&nbsp;&lt;${requestScope.prevNextMailMap.next_mail_sendermail}&gt;</span>
+
+                                        <span class="d-inline-block subject read">
+                                            <c:choose>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 0}"><span style="color: #00000080">[받은메일함]</span></c:when>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 1}"><span style="color: #00000080">[보낸메일함]</span></c:when>
+                                                <c:when test="${requestScope.prevNextMailMap.receive_division == 3}"><span style="color: #00000080">[내게쓴메일함]</span></c:when>
+                                                <c:otherwise></c:otherwise>
+                                            </c:choose>
+                                            ${requestScope.prevNextMailMap.next_mail_subject}
+                                        </span>
+                                        <span class="float-right read">${requestScope.prevNextMailMap.next_mailsenddate}</span>
+                                    </a>
+                                </div>
+                            </c:if>
+
+                        </c:if>
+                    </div>
+
                 </div>
             </div>
 

@@ -433,6 +433,7 @@ function showMyCal(){
 		 type:"get",
 		 data:{"fk_emp_id": $("input#fk_emp_id").val()},
 		 dataType:"json",
+		 async: false,
 		 success:function(json){
 			 var html = ``;
 			 if(json.length > 0){				 	 
@@ -462,6 +463,7 @@ function showCompanyCal(){
 		url:$("input#path").val()+"/schedule/showCompanyCalendar",
 		type:"get",
 		dataType:"json",
+		async: false,
 		success:function(json){
 				console.log(JSON.stringify(json));
 				

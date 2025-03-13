@@ -70,3 +70,34 @@ div.footer_wrap {
 div.prev, div.next {
     margin-left: 0.75%;
 }
+
+.unread{
+    color: black;
+    font-weight: 600;
+}
+
+.read {
+    color: #666666;
+}
+
+a.prev:hover {
+    text-decoration-line: none;
+    color: #666666;
+}
+
+a.next:hover {
+    text-decoration-line: none;
+    color: black;
+}
+
+/* 메일제목 */
+span.subject {
+    width: 55%;
+    border: 0px solid red;
+}
+
+/* 유저 */
+span.emp {
+    width: 22%;
+    border: 0px solid blue;
+}

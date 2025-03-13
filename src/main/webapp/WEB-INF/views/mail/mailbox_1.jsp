@@ -103,3 +103,4 @@
 <%-- JS 활용 용도 --%>
 <input type="hidden" id="path" 	value="${pageContext.request.contextPath}" />
 <input type="hidden" id="fk_emp_id"	value="${sessionScope.loginuser.emp_id}" />
+<input type="hidden" id="division"	value="${requestScope.division}" />

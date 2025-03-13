@@ -295,7 +295,8 @@
 		<result property="prev_mail_sender" 	column="prev_mail_sender" 		javaType="String" />
 		<result property="perv_mail_sendername" column="perv_mail_sendername" 	javaType="String" />
 		<result property="prev_mail_sendermail" column="prev_mail_sendermail" 	javaType="String" />
-		<result property="receive_status" 		column="receive_status" 		javaType="String" />
+		<result property="prev_mail_subject" 	column="prev_mail_subject" 		javaType="String" />
+		<result property="prev_receive_status" 	column="prev_receive_status" 	javaType="String" />
 		<result property="receive_division" 	column="receive_division" 		javaType="String" />
 		<result property="mail_important" 		column="mail_important" 		javaType="String" />
 		<result property="fk_mail_no" 			column="fk_mail_no" 			javaType="String" />
@@ -306,15 +307,17 @@
 		<result property="next_mail_sendername" column="next_mail_sendername" 	javaType="String" />
 		<result property="next_mail_sendermail" column="next_mail_sendermail" 	javaType="String" />
 		<result property="next_mail_subject" 	column="next_mail_subject" 		javaType="String" />
+		<result property="next_receive_status" 	column="next_receive_status" 	javaType="String" />
 		<result property="attachCnt" 			column="attachCnt" 				javaType="String" />
 	</resultMap>
 	<select id="getPrevNextMail" parameterType="HashMap" resultMap="getPrevNextMail_Map">
-		SELECT A.prev_mail_no, A.prev_mail_sender, A.perv_mail_sendername, A.prev_mail_sendermail
-			 , A.receive_status, A.receive_division, A.mail_important, A.fk_mail_no
+		SELECT A.prev_mail_no, A.prev_mail_sender, A.perv_mail_sendername, A.prev_mail_sendermail, A.prev_mail_subject
+			 , A.prev_receive_status, A.receive_division, A.mail_important, A.fk_mail_no
 			 , (SELECT to_char(mail_senddate, 'yyyy-mm-dd hh24:mi:ss') FROM tbl_mail WHERE mail_no = A.prev_mail_no) AS prev_mailsenddate
 			 , (SELECT to_char(mail_senddate, 'yyyy-mm-dd hh24:mi:ss') FROM tbl_mail WHERE mail_no = A.next_mail_no) AS next_mailsenddate
 			 , A.next_mail_no, A.next_mail_sender, A.next_mail_sendername, A.next_mail_sendermail, A.next_mail_subject
 			 , (SELECT count(*) FROM tbl_attach_mail at WHERE at.fk_mail_no = A.fk_mail_no) AS attachCnt
+			 , A.next_receive_status
 		FROM
 			(
 				SELECT lag(mb.fk_mail_no) over(order by mb.fk_mail_no desc) AS prev_mail_no
@@ -322,17 +325,22 @@
 					 , lag(e.name) over(order by mb.fk_mail_no desc) AS perv_mail_sendername
 					 , lag(e.mail) over(order by mb.fk_mail_no desc) AS prev_mail_sendermail
 					 , lag(m.mail_subject) over(order by mb.fk_mail_no desc) AS prev_mail_subject
-					 , mb.receive_status, mb.receive_division, m.mail_important, mb.fk_mail_no
+					 , lag(mb.receive_status) over(order by mb.fk_mail_no desc) AS prev_receive_status
+					 , mb.receive_division, m.mail_important, mb.fk_mail_no
 								 , lead(mb.fk_mail_no) over(order by mb.fk_mail_no desc) AS next_mail_no
 					 , lead(m.fk_emp_id) over(order by mb.fk_mail_no desc) AS next_mail_sender
 					 , lead(e.name) over(order by mb.fk_mail_no desc) AS next_mail_sendername
 					 , lead(e.mail) over(order by mb.fk_mail_no desc) AS next_mail_sendermail
 					 , lead(m.mail_subject) over(order by mb.fk_mail_no desc) AS next_mail_subject
+					 , lead(mb.receive_status) over(order by mb.fk_mail_no desc) AS next_receive_status
 				FROM tbl_mailbox mb JOIN tbl_mail m
 										 ON mb.fk_mail_no = m.mail_no
 									JOIN tbl_employee e
 										 ON m.fk_emp_id = e.emp_id
-				WHERE mb.fk_emp_id = #{fk_emp_id} AND mb.receive_division = #{division}
+				WHERE mb.fk_emp_id = #{fk_emp_id}
+					<if test="division != -1">
+						AND mb.receive_division = #{division}
+					</if>
 			) A
 		WHERE A.fk_mail_no = #{fk_mail_no}
 	</select>
