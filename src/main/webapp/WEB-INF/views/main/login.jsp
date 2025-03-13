@@ -24,7 +24,7 @@
 		<div id="main">
 		
 			<div id="logoBox">
-				<img src="<%=ctxPath%>/images/logo_login.png"/>
+				<img  src="<%=ctxPath%>/images/login_logo.png"/>
 			</div>
 			
 			<form name="loginFrm">

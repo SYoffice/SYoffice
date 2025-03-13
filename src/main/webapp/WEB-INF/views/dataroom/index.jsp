@@ -84,20 +84,22 @@ function goSearch() {
     	<%-- 파일이 있을떄 --%>
         <c:if test="${not empty fileList}">
             <c:forEach var="file" items="${fileList}">
-                <tr>
+                <tr style="font-size: 14pt;">
                     <td>${file.data_orgfilename}</td>
                     
 	                <td class="file-size">
-                      <fmt:formatNumber value="${file.data_filesize / 1024.0}" pattern="#.#" />KB
+                      <fmt:formatNumber value="${file.data_filesize / 1024.0}" pattern="#.#"/>KB
 	                </td>
 	                
                     <td>
-                       <a href="${pageContext.request.contextPath}/dataroom/downloadFile?data_no=${file.data_no}" class="btn btn-light border border-dark">
+                       <a href="${pageContext.request.contextPath}/dataroom/downloadFile?data_no=${file.data_no}" class="btn btn-light; border border-dark;">
 		                다운로드</a>
 		                
                         <c:if test="${sessionScope.loginuser.fk_dept_id eq 2}">
-	                    <a href="${pageContext.request.contextPath}/dataroom/deleteFile?data_no=${file.data_no}" class="btn btn-danger border border-dark"  onclick="return confirm('정말 삭제하시겠습니까?');">
-	                    삭제</a>
+	                    <form action="${pageContext.request.contextPath}/dataroom/deleteFile" method="POST" style="display: inline;">
+						    <input type="hidden" name="data_no" value="${file.data_no}">
+						    <button type="submit" class="btn btn-danger border border-dark" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+						</form>
 	                	</c:if>
 		                
                     </td>

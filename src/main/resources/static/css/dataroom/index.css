@@ -112,6 +112,11 @@ a.pageNo {
 	color: gray;
 }
 
+a.active {
+	color: black;
+	font-weight: bold;
+}
+
 /* 페이징바의 버튼을 감싸고 있는 박스 */
 div.pageBtn_box {
 	display: flex;

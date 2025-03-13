@@ -1,9 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%@ page import="java.net.InetAddress" %>
+
+
 <%
     String ctxPath = request.getContextPath();
+
 %>
+
+<%   
+    // === (#웹채팅관련2) === 
+    // === 서버 IP 주소 알아오기(사용중인 IP주소가 유동IP 이라면 IP주소를 알아와야 한다.) === 
+    
+ //   InetAddress inet = InetAddress.getLocalHost();
+ //   String serverIP = inet.getHostAddress();
+     
+ //   System.out.println("serverIP : " + serverIP);
+ // serverIP : 192.168.0.203
+
+ // String serverIP = "192.168.0.219";
+    String serverIP = "146.56.40.110"; 
+    // 자신의 EC2 퍼블릭 IPv4 주소임. // 아마존(AWS)에 배포를 하기 위한 것임. 
+    // 만약에 사용중인 IP주소가 고정IP 이라면 IP주소를 직접입력해주면 된다. 
+ 
+    // === 서버 포트번호 알아오기 === //
+    int portnumber = request.getServerPort();
+ // System.out.println("portnumber : " + portnumber);
+ // portnumber : 9090
+ 
+    String serverName = "http://"+serverIP+":"+portnumber;
+ // System.out.println("serverName : " + serverName);
+ // serverName : http://192.168.0.203:9090
+
+%>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,6 +73,10 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.all.min.js"></script>
 
+    <%-- chart.js --%>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
     <script type="text/javascript">
         window.onload = function() {
             const sideMenu = document.querySelectorAll("ul#side_menu li");
@@ -49,7 +85,9 @@
                 const link = item.querySelector("a");
 
                 // 현재 페이지 URL과 href가 일치하는지 확인
-                if (window.location.pathname === link.getAttribute("href")) {
+                 if (window.location.pathname + window.location.search === link.getAttribute("href")) {
+
+
                     item.classList.add('active');
                 }
 
@@ -61,12 +99,61 @@
                     item.classList.add('active');
                 });
             });
+
+            $.ajax({
+                url:"<%= ctxPath%>/weather/weatherXML",
+                type:"get",
+                dataType:"xml",
+                async: false,
+                success:function(xml){
+                    const rootElement = $(xml).find(":root");	// xml 파일의 최상단 태그
+
+
+                    const localArr = rootElement.find("local");		// root 태그에서 태그네임이 local 인 것을 찾는다. 태그를 배열에 담아준 것.
+                    //	console.log("지역개수 : " + localArr.length);
+                    // 지역개수 : 97
+
+                    let html = "";
+                    for(let i=0; i<localArr.length; i++){
+                        let local = $(localArr).eq(i);
+
+                        let icon = $(local).attr("icon");
+                        if(icon == "") {
+                            icon = "없음";
+                        }
+
+                        if ($(local).attr("stn_id") == '108') {
+                            // console.log( $(local).text() + " stn_id:" + $(local).attr("stn_id") + " icon:" + $(local).attr("icon") + " desc:" + $(local).attr("desc") + " ta:" + $(local).attr("ta") );
+                            // 서울 stn_id:108 icon:18 desc:연무 ta:10.2
+                            html += "<span>"+$(local).text()+"특별시</span>&nbsp;&nbsp;<span><img src='/syoffice/images/weather/"+icon+".png' /></span><span>("+$(local).attr("desc")+")&nbsp;&nbsp;"+$(local).attr("ta")+"℃</span>";
+                        }
+
+                    }// end of for------------------------
+
+                    $("div.weather").html(html);
+
+                },// end of success: function(xml){ }------------------
+
+                error: function(request, status, error){
+                    alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+                }
+            });
+
+            weatherForecast();
         }
     </script>
+    <style>
+        .weather {
+            gap: 2px;
+            align-items: center;
+            display: flex;
+            margin-right: 15px;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light w-100 py-3">
-        <a class="d-block text-center navbar-brand" href="<%=ctxPath%>/index"><img style="width: 50%;" src="<%=ctxPath%>/images/logo_header.png"/></a>
+        <a class="navbar-brand text-center" href="<%=ctxPath%>/index"><img style="width: 85%;" src="<%=ctxPath%>/images/syoffice_logo.png"/></a>
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
                 <li class="nav-item active">
@@ -85,8 +172,8 @@
                     </c:otherwise>
                 </c:choose>
                 
-                <li class="nav-item active">
-                    <a class="nav-link" href="<%=ctxPath%>/dataroom/drindex/">자료실</a>
+                 <li class="nav-item active">
+                    <a class="nav-link" href="<%=ctxPath%>/dataroom/index">자료실</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="<%=ctxPath%>/mail/box/0">메일함</a>
@@ -101,13 +188,13 @@
                     <a class="nav-link" href="<%=ctxPath%>/organization/chart">조직도</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="<%=ctxPath%>/reservation/meetingRoomReservation">예약</a>
+                    <a class="nav-link" href="<%=ctxPath%>/reservation/reservIndex">예약</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="<%=ctxPath%>/approval/approval_main">전자결재</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">메신저</a>
+                    <a class="nav-link" href="<%=ctxPath%>/chatting/index">메신저</a>
                 </li>            
                 <c:if test="${sessionScope.loginuser.emp_id eq sessionScope.loginuser.manager_id}">
                     <li class="nav-item active">
@@ -120,12 +207,16 @@
                     </li>
                 </c:if>
             </ul>
-            <ul class="navbar-nav ml-auto">
+            <ul class="d-flex navbar-nav ml-auto" style="align-items: center;">
+                <li class="nav-item active">
+                    <div class="weather">
+                    </div>
+                </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="<%=ctxPath%>/employee/mypage">${loginuser.name}</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="<%=ctxPath%>/"><i class="fi fi-bs-sign-out-alt"></i></a>
+                    <a class="nav-link"  href="<%=ctxPath%>/logout"><i class="fi fi-bs-sign-out-alt"></i></a>
                 </li>
             </ul>
         </div>

@@ -18,25 +18,26 @@ div#loginBox {
 
 /* 로그인 박스 내부의 요소들 전체 */
 div#main {
-	width: 70%;
+	width: 100%;
 	margin: 8% auto;
 }
 
 /* 로고를 담고 있는 박스 */
 div#logoBox {
-	width: 70%;
+	width: 100%;
 	margin: auto;
 }
 
 /* 실제 로고 img 태그 */
 div#logoBox > img {
-	width: 100%;
+	width: 80%;
 	height: 300px;
+	margin-left: 80px;
 }
 
 /* 사번(아이디) input 태그를 감싸고 있는 박스 */
 div#empIdBox {
-	width: 70%;
+	width: 50%;
 	height: 40px;
 	margin: 2% auto;
 }
@@ -50,7 +51,7 @@ input#emp_id {
 
 /* 비밀번호 input 태그를 감싸고 있는 박스 */
 div#passwordBox {
-	width: 70%;
+	width: 50%;
 	height: 40px;
 	margin: 2% auto;
 }
@@ -64,7 +65,7 @@ input#password {
 
 /* "로그인" 버튼을 담고있는 박스 */
 div#loginBtnBox {
-	width: 70%;
+	width: 50%;
 	height: 40px;
 	margin: 2% auto;
 }

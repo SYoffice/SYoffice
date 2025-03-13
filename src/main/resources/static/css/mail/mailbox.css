@@ -20,7 +20,7 @@ table#mailbox_table tr {
 
 /* 읽은 메일 */
 tr.read {
-    color: #666666
+    color: #666666;
 }
 
 tr.unread {
