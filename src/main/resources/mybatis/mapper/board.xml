@@ -860,7 +860,7 @@
 		JOIN tbl_board B
 		ON B.board_no = L.fk_board_no
 		JOIN tbl_employee E
-		ON E.emp_id = B.fk_emp_id
+		ON E.emp_id = L.fk_emp_id
 		WHERE emp_id = #{emp_id}
 	</select>
 
@@ -898,7 +898,7 @@
 		            E.emp_id
 		        FROM tbl_like L
 		        JOIN tbl_board B ON B.board_no = L.fk_board_no
-		        JOIN tbl_employee E ON E.emp_id = B.fk_emp_id
+		        JOIN tbl_employee E ON E.emp_id = L.fk_emp_id
 		        WHERE E.emp_id = #{emp_id}
 		        ORDER BY B.board_regdate DESC
 		    ) V
