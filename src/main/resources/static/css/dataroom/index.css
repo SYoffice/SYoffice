@@ -1,6 +1,68 @@
 @charset "UTF-8";
 
-@charset "UTF-8";
+div#formContainer{
+	display: flex; 
+	gap: 10px; 
+	margin-top: 5px; 
+	margin-bottom: 40px; 
+	height: 30px;  
+	width: 100%;
+	justify-content: flex-end;
+}
+
+/* 컨테이너 스타일 */
+.search-container {
+  position: relative; 
+  display: inline-block; 
+}
+
+select.form-select {
+	text-align: left; 
+	border-radius: 20px; 
+	border: 1px solid #ccc; 
+	height: 41px; 
+	transition: box-shadow 0.2s; 
+	color: #666; 
+	width: 100px; 
+	padding-left: 0.5%;
+}
+
+/* 검색창 스타일 */
+.search-container input[type="text"] {
+  width: 300px;                /* 검색창 가로 길이 */
+  padding: 10px 45px 10px 15px;/* 상하좌우 패딩 (오른쪽 패딩을 크게 잡아 아이콘 영역 확보) */
+  font-size: 14px;
+  border-radius: 20px;         /* 둥근 모서리 */
+  border: 1px solid #ccc;      /* 테두리 색상 */
+  outline: none;               /* 포커스시 파란색 라인 제거(브라우저 기본) */
+  transition: box-shadow 0.2s; /* 호버/포커스 효과 부드럽게 */
+}
+
+/* 검색창 포커스시 살짝 강조 효과 */
+.search-container input[type="text"]:focus {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 검색 버튼 스타일 */
+.search-container .search-btn {
+  position: absolute;          /* 부모 요소를 기준으로 위치 */
+  right: 10px;                 /* 오른쪽 여백 */
+  top: 70%;                    /* 세로 중앙 정렬 */
+  transform: translateY(-50%); /* 버튼을 중앙에 맞추기 위해 세로 방향 -50% 이동 */
+  background: none;            /* 배경 투명 */
+  border: none;                /* 기본 테두리 제거 */
+  cursor: pointer;             /* 마우스 커서 표시 */
+  outline: none;               /* 포커스시 파란 라인 제거 */
+  color: #666;                 /* 아이콘 색상 */
+  font-size: 16px;             /* 아이콘 크기 */
+  transition: color 0.2s;
+}
+
+/* 버튼 호버 시 아이콘 색상 변화 */
+.search-container .search-btn:hover{
+  color: #333;
+}
+
 
 table {
     width: 100%;
