@@ -17,9 +17,9 @@
 	   		</div>
         	
         	<div class="toolbar_area">
-        		<button type="button" id="sendMail">보내기</button>
-        		<button type="button">예약발송</button>
-        		<button type="button" id="tempStore">임시저장</button>
+        		<button type="button" class="toolbar" id="sendMail">보내기</button>
+        		<button type="button" class="toolbar">예약발송</button>
+        		<button type="button" class="toolbar" id="tempStore">임시저장</button>
         	</div>
         	
         	
@@ -35,7 +35,7 @@
 							</th>
 							<td>
 								<div style="display: flex;">
-									<input type="text" id="recipient" class="form-control"/>
+									<input type="text" id="recipient" class="form-control" readonly/>
 									<button type="button" class="buttonBorder" id="organization">조직도</button>
 								</div>
 								<div class="displayRecipientList"></div>
@@ -55,7 +55,7 @@
 							<th class="title_area">참조</th>
 							<td>
 								<div style="display: flex;"> 						
-									<input type="text" id="mail_cc" name="mail_cc" class="form-control"/>
+									<input type="text" id="mail_cc" name="mail_cc" class="form-control" readonly/>
 									<button type="button" class="buttonBorder" id="mailcc">조직도</button>
 								</div>							
 								<div class="displayCCUserList"></div>

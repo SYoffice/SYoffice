@@ -1,0 +1,64 @@
+@charset "UTF-8";
+
+/* 팝업 박스 */
+.modal-body-wrapper {
+	display: flex;
+}
+
+/* 왼쪽 양식 리스트 */
+.form-list {
+	width: 30%;
+	border-right: 1px solid #ddd;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+.form-option {
+	padding: 12px;
+	background-color: #f0f0f0;
+	border-radius: 5px;
+	margin: 8px 0;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.form-option:hover {
+	background-color: #dcdcdc;
+}
+
+/* 오른쪽 상세 정보 영역 */
+.form-detail {
+	width: 70%;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+.form-header {
+	background-color: #c6d4ee;
+	padding: 15px;
+	font-weight: bold;
+	border-radius: 5px;
+	margin-bottom: 15px;
+}
+
+.form-desc {
+	padding: 15px;
+	font-size: 1rem;
+	line-height: 1.5;
+	color: #333;
+}
+
+/* 버튼 */
+.select-button {
+	right: 0;
+	margin-top: 20px;
+	padding: 12px 25px;
+	background-color: #c6d4ee;
+/* 	color: white; */
+	font-size: 1rem;
+	font-weight: bold;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}

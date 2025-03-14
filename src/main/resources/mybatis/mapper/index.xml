@@ -25,27 +25,25 @@
     <!-- 내가 속한 부서 일정 가져오기 -->
     <select id="getDeptSchedule" parameterType="map" resultType="map">
         SELECT s.schedule_no, s.schedule_startdate, s.schedule_enddate, s.schedule_name, s.schedule_color, s.schedule_place
-        FROM tbl_schedule s
-        JOIN tbl_employee e ON s.fk_emp_id = e.emp_id
-        WHERE e.fk_dept_id = (SELECT fk_dept_id FROM tbl_employee WHERE emp_id = #{fk_emp_id}) 
-        AND TRUNC(s.schedule_startdate) = TRUNC(SYSDATE)  
-        ORDER BY s.schedule_startdate
+		FROM tbl_schedule s
+		WHERE TRUNC(s.schedule_startdate) = TRUNC(SYSDATE)
+		ORDER BY s.schedule_startdate
     </select>
     
     <!-- 공지사항 조회 쿼리 -->
     <select id="getNoticeList" resultType="map">
-	     SELECT * FROM (
-        SELECT n.notice_no        AS "notice_no",
-               n.notice_subject   AS "notice_subject",
-               e.name             AS "name",
-               n.notice_regdate   AS "notice_regdate",
-               n.notice_viewcount AS "notice_viewcount"
-          FROM tbl_notice n
-          JOIN tbl_employee e ON n.fk_emp_id = e.emp_id
-         WHERE n.notice_status = 1
-         ORDER BY n.notice_regdate DESC
-    )
-    WHERE ROWNUM &lt;= 6
+		SELECT * FROM (
+	        SELECT n.notice_no        AS "notice_no",
+	               n.notice_subject   AS "notice_subject",
+	               e.name             AS "name",
+	               n.notice_regdate   AS "notice_regdate",
+	               n.notice_viewcount AS "notice_viewcount"
+	          FROM tbl_notice n
+	          JOIN tbl_employee e ON n.fk_emp_id = e.emp_id
+	         WHERE n.notice_status = 1
+	         ORDER BY n.notice_regdate DESC
+	    )
+	    WHERE ROWNUM &lt;= 6
 	</select>
 	
 	<!-- 이번주 내 실적  -->
@@ -53,18 +51,19 @@
         SELECT TO_CHAR(d.result_day, 'YYYY-MM-DD') AS result_day,
 		       NVL(SUM(r.RESULT_PRICE), 0) AS total_performance
 		FROM (
-			SELECT 
-		   	 (SYSDATE - TO_NUMBER(TO_CHAR(SYSDATE, 'D')) + 1) + LEVEL - 1 AS result_day
-			FROM 
-		  	  dual
-			CONNECT BY 
-		   	 LEVEL &lt;= 7
+		    SELECT 
+		        (SYSDATE - TO_NUMBER(TO_CHAR(SYSDATE, 'D')) + 1) + LEVEL - 1 AS result_day
+		    FROM 
+		        dual
+		    CONNECT BY 
+		        LEVEL &lt;= 7
 		) d
 		LEFT JOIN tbl_result r
 		    ON TO_CHAR(r.RESULT_DATE, 'YYYY-MM-DD') = TO_CHAR(d.result_day, 'YYYY-MM-DD')
 		    AND r.FK_EMP_ID = #{fk_emp_id}
 		GROUP BY TO_CHAR(d.result_day, 'YYYY-MM-DD')
 		ORDER BY result_day
+
     </select>
 
 
@@ -72,23 +71,26 @@
     <!-- 로그인한 사용자 실적과 부서 실적 비교 (전체 실적) -->
 	<select id="getDepartmentPerformance" parameterType="map" resultType="map">
 	    SELECT
-		    e.name AS emp_name,
-		    SUM(r.RESULT_PRICE) AS employee_performance,
-		    d.dept_name,
-		    (SELECT SUM(r2.RESULT_PRICE)
-		     FROM tbl_result r2
-		     JOIN tbl_employee e2 ON r2.FK_EMP_ID = e2.emp_id
-		     WHERE e2.fk_dept_id = e.fk_dept_id) AS department_performance
+		    e.name AS emp_name,  -- 직원 이름
+		    SUM(r.RESULT_PRICE) AS employee_performance,  
+		    d.dept_name,  -- 부서 이름
+		    (
+		        SELECT SUM(r2.RESULT_PRICE)  
+		        FROM tbl_result r2
+		        JOIN tbl_employee e2 ON r2.FK_EMP_ID = e2.emp_id
+		        WHERE e2.fk_dept_id = e.fk_dept_id 
+		    ) AS department_performance  -- 부서 실적
 		FROM
 		    tbl_result r
 		JOIN
-		    tbl_employee e ON r.FK_EMP_ID = e.emp_id
+		    tbl_employee e ON r.FK_EMP_ID = e.emp_id 
 		JOIN
-		    tbl_department d ON e.fk_dept_id = d.dept_id
+		    tbl_department d ON e.fk_dept_id = d.dept_id  
 		WHERE
-		    e.emp_id = #{empId}  
+		    e.emp_id = #{empId} 
 		GROUP BY
-		    e.name, e.fk_dept_id, d.dept_name
+		    e.name, e.fk_dept_id, d.dept_name 
+
 	</select>
 
 		

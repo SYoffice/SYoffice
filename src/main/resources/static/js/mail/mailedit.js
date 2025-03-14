@@ -717,23 +717,20 @@ function getMailRecipientInfo() {
 
     $.ajax({
         url: $("input#path").val()+"/api/mail/"+mail_no,
-        type: "GET",
+    type: "GET",
         data: {"fk_emp_id": fk_emp_id},
         dataType: "JSON",
         success: function(json){
             console.log(JSON.stringify(json));
             /*
-                [{"receive_no":"20","receiver":"2025021","receivercc":"0","receiver_name":"강이훈","receiver_mail":"kang110@syoffice.syo"}
-                ,{"receive_no":"21","receiver":"2025047","receivercc":"0","receiver_name":"이보니","receiver_mail":"boni123@syoffice.syo"}
-                ,{"receive_no":"22","receiver":"2025032","receivercc":"0","receiver_name":"김회계","receiver_mail":"qwer1111@syoffice.syo"}
-                ,{"receive_no":"23","receiver":"2025017","receivercc":"1","receiver_name":"이영학","receiver_mail":"qwer12@syoffice.syo"}
-                ,{"receive_no":"24","receiver":"2025016","receivercc":"1","receiver_name":"박영학","receiver_mail":"qwer1@syoffice.syo"}]
+                [{"receive_no":"114","receiver":"2025032","receivercc":"0","receiver_name":"김회계","receiver_mail":"qwer1111@syoffice.syo","receive_division":"9","receive_status":"1"}
+                ,{"receive_no":"115","receiver":"2025032","receivercc":"0","receiver_name":"김회계","receiver_mail":"qwer1111@syoffice.syo","receive_division":"2","receive_status":"1"}]
             */
             $.each(json, function(index, item) {
                 const recipient = `${item.receiver_name} &lt;${item.receiver_mail}&gt;`;
                 const receiver  = item.receiver;
 
-                if (json.length == 1 && fk_emp_id == receiver) {
+                if (item.receive_division == 9 && fk_emp_id == receiver) {
                     // 내게 쓰기인 경우
                     const mail = $("input#mail").val();
                     $("input#recipient").val(mail);         // 수신자에 자신

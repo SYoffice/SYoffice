@@ -38,7 +38,7 @@
                 <h3>${loginUser.name} ${sessionScope.loginuser.grade_name}</h3>
                 <div class="button-area">
                     <div class="button-area">
-					    <button onclick="location.href='<%=ctxPath%>/mail/box/0">메일함</button>
+					    <button onclick="location.href='<%=ctxPath%>/mail/box/0'">메일함</button>
 					    <button onclick="location.href='<%=ctxPath%>/approval/obtain_approval_box'">전자결재</button>
 					</div>
 
@@ -113,6 +113,7 @@
             <div class="schedule-container">
                 <div class="schedule-box">
                     <h4>내 일정 <c:out value="${fn:length(mySchedule)}" />건</h4>
+                     <br>
                     <c:choose>
                         <c:when test="${empty mySchedule}">
                             <p style="color: #ccc;">등록된 일정이 없습니다.</p>
@@ -129,9 +130,10 @@
                 
                 <div class="schedule-box">
                     <h4>전사 일정 <c:out value="${fn:length(deptSchedule)}" />건</h4>
+                    <br>
                     <c:choose>
                         <c:when test="${empty deptSchedule}">
-                            <p style="color: #ccc;">등록된 부서 일정이 없습니다.</p>
+                            <p style="color: #ccc;">등록된 전사 일정이 없습니다.</p>
                         </c:when>
                         <c:otherwise>
                             <ul>
@@ -151,7 +153,7 @@
 			        <div id="branchSalesChart"></div>
 			    </div>
 			    <div class="chart-container">
-			        <h4>부서별 실적 비교</h4>			       
+			        <h4>부서 내 분기실적 비교</h4>			       
 			        <div id="salesTrendChart"></div>
 			    </div>
 			</div>
@@ -314,7 +316,7 @@ h4 {
 .weather-box {
     width: auto; 
     height: auto; 
-    border: 1px solid #000; 
+
     border-radius: 10px; 
     margin-top: 40px; 
 }
@@ -372,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('branchSalesChart').innerHTML = "<p style='color:gray;'>데이터 없음</p>";
     }
 
-    // 파이 차트 데이터 준비 (내 실적 vs 내 부서 실적)
+ // 파이 차트 데이터 준비 (내 실적 vs 내 부서 실적)
     var chartData = [
         {
             name: '내 실적',  // 내 실적
@@ -384,21 +386,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     ];
 
-    console.log("차트 데이터: ", chartData);
-
-    //  부서별 실적 비교 (파이 차트)
+    // 부서별 실적 비교 (파이 차트)
     if (chartData.length > 0) {
         Highcharts.chart('salesTrendChart', {
-            chart: { type: 'pie' },
-            title: { text: '부서실적' },
+            chart: { 
+                type: 'pie' 
+            },
+            title: { 
+                text: '부서 실적' 
+            },
             series: [{
                 name: '실적',
-                data: chartData
+                data: chartData,
+                // 데이터 라벨을 퍼센트로 표시
+                dataLabels: {
+                    enabled: true, // 데이터 라벨을 표시
+                    format: '{point.name}: {point.percentage:.1f}%', // 라벨 포맷: 이름과 퍼센트
+                    style: {
+                       
+                    }
+                }
             }]
         });
     } else {
         document.getElementById('salesTrendChart').innerHTML = "<p style='color:gray;'>데이터 없음</p>";
     }
+
+    weatherForecast();
 
 });
 

@@ -183,12 +183,13 @@ public class DataroomController {
 
 	    //  현재 선택된 폴더 이름 조회
 	    String data_catename = service.getCategoryName(data_cateno);
-
+	    
 	    // WAS 의 webapp 의 절대경로를 알아와야 한다.
  		HttpSession msession = mrequest.getSession();
  		String root = msession.getServletContext().getRealPath("/");	// 최상위 루트 패키지의 경로를 가져온다.
 	    String uploadPath;
-
+	    String newFileName = "";
+	    
 	    if ("카달로그".equals(data_catename)) {
 	        uploadPath = root + "resources" + File.separator + "library" + File.separator + "catalog" + File.separator;
 	    } 
@@ -196,26 +197,49 @@ public class DataroomController {
 	        uploadPath = root + "resources" + File.separator + "library" + File.separator + "document" + File.separator;
 	    }
 
-	    // 원본 파일명 가져오기
-	    String originalFilename = uploadFile.getOriginalFilename();
+	    byte[] bytes = null;
+		// 첨부파일의 내용물을 담는 것(byte타입으로 받아야함)
+
+		long fileSize = 0;
+		// 첨부파일의 크기
+		
+		try {
+			bytes = uploadFile.getBytes();
+			// 첨부파일의 내용물을 읽어오는 것
+
+			String originalFilename = uploadFile.getOriginalFilename();
+			// attach.getOriginalFilename() 이 첨부파일명의 파일명(예: 강아지.png)이다.
+
+		   // System.out.println("확인용 => originalFilename" +originalFilename);
+
+			// 첨부되어진 파일을 path 에 업로드 하는 것이다.
+			newFileName = fileManager.doFileUpload(bytes, originalFilename, uploadPath);// 업로드해줄 bytes(파일의 내용물), originalFilename(파일의 원본명), path(파일을 업로드해줄 경로)
+		    // System.out.println(newFileName); // 나노시간으로 바뀐 새로운 파일명
+
 
 	    // 서버에 파일 저장
-	    File File = new File(uploadPath + originalFilename);
+	    File File = new File(uploadPath + newFileName);
 	    uploadFile.transferTo(File);
 	    
 	    //파일 정보 설정
 	    DataVO fileData = new DataVO();
 	    fileData.setFk_emp_id(loginUser.getEmp_id()); // 로그인한 사용자의 사원번호
 	    fileData.setFk_data_cateno(data_cateno); // 현재 선택된 폴더 번호
-	    fileData.setData_filename(originalFilename);  //  원본 파일명으로 저장
+	    fileData.setData_filename(newFileName); // 그냥 파일
 	    fileData.setData_orgfilename(uploadFile.getOriginalFilename()); // 원본 파일명
 	    fileData.setData_filesize(String.valueOf(uploadFile.getSize())); // 파일 크기
 
 	    // 파일 정보 저장
 	    service.insertFile(fileData);
 
+	    
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	    // 업로드 후 해당 폴더로 이동
 	    return "redirect:/dataroom/index?data_cateno=" + data_cateno;
+		
 	}
 
 

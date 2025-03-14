@@ -199,8 +199,7 @@
 		LEFT JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
 		LEFT JOIN tbl_employee m ON d.manager_id = m.emp_id
 		LEFT JOIN tbl_grade g ON m.fk_grade_no = g.grade_no
-		LEFT JOIN sales_department_manager p ON d.dept_id = 8 AND p.fk_branch_no = e.fk_branch_no
-		WHERE e.status != 3
+		LEFT JOIN sales_department_manager p ON d.dept_id = 8 AND p.fk_branch_no = e.fk_branch_no AND e.status != 3
         <where>
             <choose>
                 <when test="searchType == 'dept_name' and searchWord != ''">

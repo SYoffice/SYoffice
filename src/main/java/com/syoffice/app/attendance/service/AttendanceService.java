@@ -62,6 +62,10 @@ public interface AttendanceService {
 
 	List<Map<String, Object>> getLeaveInfo(String empId);
 
+	Map<String, Object> getLeaveInfono(String empId);
+	
+	
+
 	
 
 

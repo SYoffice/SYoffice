@@ -16,7 +16,6 @@
 	$(document).ready(function(){
 		
 		$("select[name='fk_bcate_no']").hide();
-		$("tr#board_show").hide();
 		
 		/* 스마트 에디터를 사용할 경우 */
 		<%-- === 스마트 에디터 구현 시작 === --%>
@@ -44,13 +43,6 @@
 			const boardLocation = $(e.target).val();
 			const boardDept = $("option[value='boardDept']");
 			const notice = $("option[value='notice']");
-
-			if(boardLocation == "notice"){
-				$("tr#board_show").hide();
-			}
-			else {
-				$("tr#board_show").show();
-			}
 
 		    if(boardLocation == "boardDept"){
 		    	$("select[name='notice']").hide();
@@ -129,20 +121,6 @@
 	           return;   // 종료
 	        }
 		
-			// 공개설정 유효성 검사 시작 //
-			const security = $("input[name='board_show']:checked").length;
-			
-			if(boardLocation == "boardDept"){
-				if(security == ""){
-					alert("공개설정을 선택해주세요!");
-					$("input[type='radio']").focus();
-					return; // 함수 종료
-				}
-			
-			// 공개설정 유효성 검사 끝 //
-			}
-			
-			
 			// 위치 설정에 따라 각 URL로 폼 데이터 보내주기 //
 			if(boardLocation == "boardDept") {
 				// 폼(form)을 전송(submit)
@@ -222,18 +200,6 @@
 	           return;   // 종료
 	        }
 		
-			// 공개설정 유효성 검사 시작 //
-			const security = $("input[name='board_show']:checked").length;
-			
-			if(boardLocation == "boardDept"){
-				if(security == ""){
-					alert("공개설정을 선택해주세요!");
-					$("input[type='radio']").focus();
-					return; // 함수 종료
-				}
-			// 공개설정 유효성 검사 끝 //
-			}
-			
 			//	alert("임시저장 클릭");
 			// 폼(form)을 전송(submit)
 			const frm = document.BoardFrm;
@@ -261,7 +227,7 @@
            <ul class="side_menu_list">
                 <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice">전체 게시판</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice">공지사항</a></li>
-                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_Board?boardLocation=boardDept">부서 게시판[]</a></li>
+                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_Board?boardLocation=boardDept">부서 게시판[${sessionScope.loginuser.dept_name}]</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="#">신간도서</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="#">오늘의 뉴스</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="#">주간식단표</a></li>
@@ -291,11 +257,10 @@
 					<span class="dropdown">
 					   <select class="form-select" name="boardLocation">
 					       <option value="notice">전체 게시판</option>
-					       <option value="boardDept">부서 게시판[]</option>
 					   </select>
 					</span>
 					
-					<span class="dropdown">
+<!-- 					<span class="dropdown">
 					   <select class="form-select" name="fk_bcate_no">
 					       <option selected disabled>카테고리</option>
 					       <option value="1">신간도서</option>
@@ -303,13 +268,13 @@
 					       <option value="3">주간식단표</option>
 					       <option value="4">무엇이든 물어보세요!</option>
 					   </select>
-				   </span>
+				   </span> -->
 				   <span class="dropdown">
 				   <select class="form-select" name="notice">
 				       <option value="notice">공지사항</option>
 				   </select>
 				   </span>
-				   <button type="button" class="btn btn-outline-secondary" style="float: right; width: 20%;" data-toggle="modal" data-target="#myModal">임시저장글보기</button>
+
 				</td>
 			 </tr> 
 			          	
@@ -322,14 +287,6 @@
 					<input type="text" name="subject" class="form-control" id="subject" value="${requestScope.noticeboardvo.notice_subject}"/>
 				</td>
 			</tr>
-			<tr style="margin-bottom: 5%; border: solid 0px red; height: 60px;">
-				<td style="width: 10%;">
-					<span style="font-size:20px;" class='fas'>파일첨부</span>
-				</td>
-				<td>
-					<input type="file" name="attach" class="form-control-file border" style=" height: 35px; padding-top: 0.8%;" value="${requestScope.noticeboardvo.atnotice_orgfilename}">
-				</td>
-			</tr>
 			
 			<tr style="margin-bottom: 5%; border: solid 0px red; height: 500px;">
 				<td style="width: 10%; vertical-align: top;">
@@ -337,26 +294,6 @@
 				</td>
 				<td>
 					<textarea name="content" class="form-control-file border" style="width: 100%; height: 500px;" id="content">${requestScope.noticeboardvo.notice_content}</textarea>
-				</td>
-			</tr>
-			
-			<tr id = "board_show" style=" border: solid 0px red; height: 80px;">
-				<td style="width: 8%;">
-					<span style="font-size:20px; padding-top: 33%; vertical-align: middle;" class='fas'>공개설정</span>
-				</td>
-				<td style="width: 100%; padding-left: 2%;">
-			        <div style="position: relative;">
-			            <div style="position: absolute; display: flex; width: 100%; vertical-align: bottom;">
-			                <div style="display: flex; align-items: center; width: 25%; margin-left:5%; ">
-			                    <input type="radio" class="form-check-input" name="board_show" value="1" />
-			                    <span>공개</span>
-			                </div>
-			                <div style="display: flex; align-items: center; width: 50%;">
-			                    <input type="radio" class="form-check-input" name="board_show" value="0"/>
-			                    <span>비공개</span>
-			                </div>
-			            </div>
-			        </div>
 				</td>
 			</tr>
 
@@ -368,45 +305,9 @@
 			   
 <div style="text-align: center; margin-bottom: 3%;">
 	<button style="margin-right: 4%; width: 8%;" type="button" class="btn btn-info" id="edit">수정</button>
-	<button style="margin-right: 4%; width: 10%;" type="button" class="btn btn-success" id="temporaryBoard">임시저장</button>
-	<button style="width: 8%;" type="button" class="btn btn-secondary" onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice'">취소</button>
+	<button style="width: 8%;" type="button" class="btn btn-secondary"onclick="history.back();">취소</button>
 </div>			
 			
-
-<!-- ========================== 임시저장글 클릭시 모달창 만들기 시작 ==========================================-->
-<!-- 모달창으로 임시저장글을 클릭하면 등록,취소 버튼이 => 등록(insert),삭제(status 변경) 버튼으로 바뀌어야한다. -->
-<div class="container">
-  <!-- The Modal -->
-  <div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-      
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">임시저장글 보기</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        
-        
-<c:if test="${not empty requestScope.tmapList}">
-    <c:forEach var="tmapList" items="${requestScope.tmapList}" varStatus="status">
-        <div class="modal-body">
-            <span style="border: solid 1px gray;">제목</span>
-            <span style="border: solid 1px red;">작성일자</span>
-        </div>
-    </c:forEach>
-</c:if>
-        
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-dismiss="modal">확인</button>
-        </div>
-        
-      </div>
-    </div>
-  </div>
-</div>
-<!-- ========================== 임시저장글 클릭시 모달창 만들기 끝 ==========================================-->
 
   </div>
 </div>

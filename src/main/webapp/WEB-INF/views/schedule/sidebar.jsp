@@ -52,6 +52,7 @@
                 	<%-- 전사 캘린더를 보여주는 곳 --%>
                  	<ul id="comCal"></ul>
                 </li>
+				<!--
                 <li>
                 	<%-- 부서 캘린더를 보여주는 곳 --%>
                 	<input style="cursor: pointer;" type="checkbox" id="allDeptCal" class="calendar_checkbox" checked/>&nbsp;&nbsp;<label style="cursor: pointer;" for="allDeptCal">부서명</label>
@@ -59,7 +60,8 @@
                  	<span class="btn btn_edit" onclick='inputSmallCategoInfo("부서번호")' style="float: right;" ><i class="fa-solid fa-plus"></i></span>
                  	<%-- 부서 캘린더는 같은 부서원이 등록한 일정을 보이도록 한다. --%>
                  	<ul id="deptCal"></ul>
-				</li>			
+				</li>
+				-->
                 <li>
                 	<input style="cursor: pointer;" type="checkbox" id="allMyCal" class="calendar_checkbox" checked/>&nbsp;&nbsp;<label style="cursor: pointer;" for="allMyCal">내 일정</label>
                  	<span class="btn btn_edit showMyCal"><i class="fa-solid fa-caret-up"></i></span>

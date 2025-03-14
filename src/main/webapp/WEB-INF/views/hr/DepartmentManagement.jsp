@@ -306,25 +306,28 @@ function deleteDept(dept_id) {
 
 	<span class="h2"><i class="bi bi-building"></i> 부서관리</span>
 	
-	<div id="header">
-		<form name="searchFrm">
-			<select name="searchType" style="height: 26px;">
+	<form name="searchFrm">
+		<div id="formContainer">
+			<select name="searchType" class="form-select">
 				<option value="branch_name">소속지점</option>
 				<option value="dept_name">부서명</option>
 				<option value="manager_name">부서장</option>
 			</select>
 			
-			<input type="text" name="searchWord" size="50" autocomplete="off" /> 
-			<input type="text" style="display: none;"/>  
-			<button type="button" class="btn btn-secondary btn-sm" onclick="goSearch()" id="searchBtn">검색</button>
-		</form>
-		
-		<button type="button" id="registerDeptBtn" onclick="registerDept()">신규 부서등록</button>
-	</div>
+			<div class="search-container">
+				<input type="text" name="searchWord" size="50" autocomplete="off" placeholder="Search..." /> 
+				<button type="button" class="btn btn-secondary btn-sm search-btn" onclick="goSearch()"><i class="fas fa-search"></i></button>
+			</div>
+			
+			<button type="button" id="registerDeptBtn" onclick="registerDept()">신규 부서등록</button>
+		</div>			
+	</form>
+	
+	
 	
 	<table class="table table-bordered table-hover">
-		<thead class="thead-light">
-			<tr>
+		<thead>
+			<tr style="background-color: #e6eeff;">
 	 			<th style="width: 12%;">소속지점</th>
 	            <th style="width: 15%;">부서명</th>
 	            <th style="width: 10%;">직원 수</th>
@@ -336,7 +339,7 @@ function deleteDept(dept_id) {
 		
 		<tbody>
 			<c:forEach items="${requestScope.departmentList}" var="dept">
-				<tr id="main">
+				<tr id="main" >
 					<td onclick="DepartmentEmployeeInfo('${dept.dept_id}', '${dept.dept_name}', '${dept.branch_no}', '${dept.branch_name}')">${dept.branch_name}</td>
 					<td onclick="DepartmentEmployeeInfo('${dept.dept_id}', '${dept.dept_name}', '${dept.branch_no}', '${dept.branch_name}')">${dept.dept_name}</td>
 					<td onclick="DepartmentEmployeeInfo('${dept.dept_id}', '${dept.dept_name}', '${dept.branch_no}', '${dept.branch_name}')">${dept.employee_count} 명</td>

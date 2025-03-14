@@ -5,7 +5,7 @@ String ctxPath = request.getContextPath();
 //     /syoffice
 %>
 <jsp:include page="../main/header.jsp" />
-<%--<jsp:include page="./select_form_modal.jsp" /> --%>
+<jsp:include page="./select_form_modal.jsp" /> 
 
 <link rel="stylesheet" href="<%=ctxPath%>/css/approval/approval_main.css">
 <%-- <script src="${pageContext.request.contextPath}/js/approval/common.js"></script> --%>
@@ -24,7 +24,7 @@ String ctxPath = request.getContextPath();
          <ul class="side_menu_list" id="side_menu">
             <li><a href="<%=ctxPath%>/approval/approval_main">홈</a></li>
             <li><a href="<%=ctxPath%>/approval/obtain_approval_box">결재대기문서함</a></li>
-            <li><a href="#">참조문서함</a></li>
+            <!-- <li><a href="#">참조문서함</a></li> -->
             <!-- <li><a href="#">임시저장함</a></li> -->
             <li><a href="<%=ctxPath%>/approval/my_approval_box">기안문서함</a></li>
             <li><a href="<%=ctxPath%>/approval/team_approval_box">팀문서함</a></li>

@@ -51,10 +51,14 @@ public class MailController {
 			Map<String, String> paraMap = new HashMap<>();
 			paraMap.put("division", division);
 			paraMap.put("fk_emp_id", empvo.getEmp_id());
-			
-			
-			int totalPage = service.getMailBoxTotalPage(paraMap);	// 메일박스의 총 페이지수 가져오기
 
+
+
+			int sizePerPage = 10;	// 페이지당 보일 개수
+
+			paraMap.put("sizePerPage", String.valueOf(sizePerPage));
+
+			int totalPage = service.getMailBoxTotalPage(paraMap);	// 메일박스의 총 페이지수 가져오기
 
 			try {
 				if (Integer.parseInt(page) > totalPage || Integer.parseInt(page) <= 0) {
@@ -65,8 +69,7 @@ public class MailController {
 			}
 			int showPageNo = Integer.parseInt(page);	// 현재 보는 페이지번호
 			
-			int sizePerPage = 10;	// 페이지당 보일 개수
-			
+
 			int startRno = (showPageNo * sizePerPage) - (sizePerPage - 1);		// 페이지 시작번호
 			int endRno 	 = (showPageNo * sizePerPage);							// 페이지 끝번호
 			
@@ -86,7 +89,7 @@ public class MailController {
 			
 			// *** [처음]&[이전] 만들기 *** //
 			pageBar += "<a href='"+path+"/mail/box/"+division+"?page=1'>&laquo;</a>";
-			if (totalPage > 5) {
+			if (totalPage > blockSize) {
 				pageBar += "<a href='"+path+"/mail/box/"+division+"?page="+(pageNo-1)+"'>&lsaquo;</a>"; 
 			}
 			
@@ -104,7 +107,7 @@ public class MailController {
 			
 			// *** [다음]&[마지막] 만들기 *** //
 			
-			if (totalPage > 5) {
+			if (totalPage > blockSize) {
 				pageBar += "<a href='"+path+"/mail/box/"+division+"?page="+pageNo+"'>&rsaquo;</a>"; 
 			}
 			pageBar += "<a href='"+path+"/mail/box/"+division+"?page="+totalPage+"'>&raquo;</a>";
