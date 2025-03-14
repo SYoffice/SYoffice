@@ -139,7 +139,6 @@
                 }
             });
 
-            weatherForecast();
         }
     </script>
     <style>
@@ -166,7 +165,7 @@
                         </li>
                     </c:when>
                     <c:otherwise>
-                        <li class="nav-item">
+                         <li class="nav-item active">
                             <a class="nav-link" href="<%=ctxPath%>/attendance">근태관리</a> 
                         </li>
                     </c:otherwise>
