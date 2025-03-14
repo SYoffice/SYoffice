@@ -331,10 +331,10 @@ function goCmtPaging(currentShowPageNo) {  // $(document).ready(function(){}) �
 					const sunbun = item.totalCount - (currentShowPageNo -1) * item.sizePerPage - index;
 	
 	    				v_html += `<table id="cmt">
-	    				    <tr>
+	    				    <tr style="height: 70px;">
 	    				      <!-- 프로필 영역 -->
 	    				     <td class="profile">
-	    				       <i style=' font-size:30px; margin-top: 27%; background-color: white;' class='far'>&#xf2bd;</i>
+	    				       <img src='<%= ctxPath %>/resources/profile/\${item.commentList.profile_img}' style=' font-size:30px; margin-top: 27%; background-color: white;' />
 	    				     </td>
 	    				     
 	    				     <!-- 댓글 내용 영역 -->
@@ -346,31 +346,31 @@ function goCmtPaging(currentShowPageNo) {  // $(document).ready(function(){}) �
 	    				       </div>
 	    				       
 	    				       <!-- 실제 댓글 내용 -->
-	    				       <div id="cmtEdit\${item.commentList.comment_no}" style="margin-top: 10px; width:100%;">
-	    				       		\${item.commentList.cmt_content}
-	    				       </div>
+	    				       <div style=" width:100%; display: flex; ">
+	    				       <span id="cmtEdit\${item.commentList.comment_no}" style="padding-top: 1%;">
+	    				       	\${item.commentList.cmt_content}
+	    				       </span>
 	    				       <!-- 수정 클릭시 기존 댓글 display:none;으로 설정 후 input태그 보이기 -->
-	    				       <input name="cmtEdit\${item.commentList.comment_no}" style="margin-top: 10px; width:100%; display:none;" value="\${item.commentList.cmt_content}"/>
+	    				       <input name="cmtEdit\${item.commentList.comment_no}" style="margin-top: 10px; width:100%; margin-right:5%; display:none;" value="\${item.commentList.cmt_content}"/>`;
 	    				       
-	    				      <!--<div>\${item.commentList.comment_no}</div>--!>
 	    				       
-	    				     </td>
 	    				     
 	    				     <!-- 수정/삭제 버튼 영역 -->
-	    				     <td class="actions">`;
+	    				    
 	    				     if(emp_id == item.commentList.fk_emp_id){
-		    				        v_html += `<div id="cmtEdit\${item.commentList.comment_no}">
-			    				        		   <button type="button" class="btn btn-secondary" onclick="cmtEdit(\${item.commentList.comment_no})">수정</button>
-						    				       <button type="button" id="cmtDel" class="btn btn-danger" onclick="cmtDel(\${item.commentList.comment_no})">삭제</button>
+		    				        v_html += `<div id="cmtEdit\${item.commentList.comment_no}" style="margin-left:auto;">
+			    				        		   <button type="button" class="btn btn-sm btn-secondary" style="font-size: 15px;" onclick="cmtEdit(\${item.commentList.comment_no})">수정</button>
+						    				       <button type="button" id="cmtDel" class="btn btn-sm btn-danger" style="font-size: 15px;" onclick="cmtDel(\${item.commentList.comment_no})">삭제</button>
 					    				       </div>
 					    				       
-		    				        		   <div id="cmtSave\${item.commentList.comment_no}" style="display:none;">
-			    				        		   <button type="button" class="btn btn-secondary" onclick="cmtSave(\${item.commentList.comment_no})">저장</button>
-					    				       	   <button type="button" class="btn btn-danger" onclick="cmtCancle(\${item.commentList.comment_no})">취소</button>
+		    				        		   <div id="cmtSave\${item.commentList.comment_no}" style="display:none; width:13%;  margin-left:auto;">
+			    				        		   <button type="button" class="btn btn-sm btn-secondary" style="font-size: 15px; margin-right: 5%;" onclick="cmtSave(\${item.commentList.comment_no})">저장</button>
+					    				       	   <button type="button" class="btn btn-sm btn-danger"  style="font-size: 15px;" onclick="cmtCancle(\${item.commentList.comment_no})">취소</button>
 				    				       	   </div>`;
 	    				     }
 	    				     
-		    	  v_html += `</td>
+		    	  v_html += `</div>
+		    	  			</td>
 	    				   </tr>
     				 </table>`;
 						
@@ -443,10 +443,11 @@ function makeCommentPageBar(currentShowPageNo, totalPage) {
 
 // 수정하기
 function cmtEdit(comment_no){
-		$("input[name='cmtEdit"+ comment_no+"']").show();
-		$("div#cmtEdit"+ comment_no).hide();
-		$("div#cmtSave"+ comment_no).css("display","block");
-		$("div#cmtEdit"+ comment_no).hide();
+	// alert("수정 클릭!")
+	$("input[name='cmtEdit"+comment_no+"']").show();
+	$("span#cmtEdit"+ comment_no).hide();
+	$("div#cmtEdit"+ comment_no).hide();
+	$("div#cmtSave"+ comment_no).css("display","flex");
 	
 }
 
@@ -454,8 +455,8 @@ function cmtEdit(comment_no){
 function cmtCancle(comment_no) {
 	$("input[name='cmtEdit"+ comment_no+"']").hide();
 	$("div#cmtEdit"+ comment_no).show();
+	$("span#cmtEdit"+ comment_no).show();
 	$("div#cmtSave"+ comment_no).css("display","none");
-	$("div#cmtEdit"+ comment_no).show();
 }
 
 // 댓글 삭제하기
@@ -621,10 +622,12 @@ function goDel() {
 			</tr>
 		
 			<tr>
-				<th style="width: 5%; padding-left: 0.5%;">
-					<i style='font-size:40px;' class='far'>&#xf2bd;</i>
+				<th style="width: 5%;">
+				<div style="width: 60%;">
+					<img src="<%= ctxPath%>/resources/profile/${boardvo.profile_img}" style='font-size:25px; width: 80%; border-radius: 50%;'/>
+				</div>
 				</th>
-				<td>
+				<td style="vertical-align: middle;">
 					<span style="margin-right: 0.5%;">${boardvo.name}</span>
 					<span style="font-size: 10pt;">${boardvo.board_regdate}</span>
 					<input type="hidden" name="fk_emp_id" value=""/>
@@ -648,7 +651,7 @@ function goDel() {
 	
 		<div style="border: solid 0px red;">
 			<div style="display:inline-block; width: 100%; margin: 2% 0 1% 0%;">
-				<div style="height: 616px; width: 100%; border: solid 0px gray; word-break: break-all; overflow: scroll;" class="content-div">${boardvo.content}</div>
+				<div style="height: 616px; width: 100%; border: solid 0px gray; word-break: break-all; overflow: auto;" class="content-div">${boardvo.content}</div>
 				<c:if test="${not empty requestScope.boardvo.atboard_orgfilename}">
 					<div style="font-size: 15px; margin-top: 1%;">
 						<button id="downloadButton" type="button" onclick="javascript:location.href='<%= ctxPath%>/board/Bdownload?board_no=${requestScope.boardvo.board_no}'" class="css-button-arrow--sand" style="margin-right: 1%;">다운로드</button>
@@ -661,13 +664,13 @@ function goDel() {
 <c:if test="${empty requestScope.paraMap.redirect_like}">	
 <form name ="cmtFrm">
 	<div id="review" class="msg_wrap" style="width: 100%; border-radius: 4px; border: 1px solid #ddd; height: 82px; padding-top: 1%; padding-right: 1%; padding-left: 0.5%; margin-bottom: 2%;">
-		<i style=' font-size:24px; margin-right: 1%; vertical-align: top; background-color: white;' class='far'>&#xf2bd;</i>
+		<i style=' font-size:24px; margin-right: 1%; margin-left: 1%; background-color: white;' class='far'>&#xf2bd;</i>
 		<span>
 			<input type="text" name="cmt_content" style="width: 92%; height: 50px; border: 1px solid #ddd;" placeholder="댓글을 남겨보세요" />
 			<input name="fk_emp_id" type="hidden" value="${sessionScope.loginuser.emp_id}"/>
 			<input name="fk_board_no" type="hidden" value="${requestScope.boardvo.board_no}"/>
-			<button type="button" onclick="addCmt()" class="btn btn-secondary" style="font-size:12px; float:right; margin-top: 1%; ">등록</button>
 		</span>
+		<button type="button" onclick="addCmt()" class="btn btn-secondary" style="font-size:12px; float:right; margin-top: 1%; ">등록</button>
 	</div>
 </form>
 <div >

@@ -162,12 +162,14 @@ function goDel() {
 			</tr>
 		
 			<tr>
-				<th style="width: 5%; padding-left: 0.5%;">
-					<i style='font-size:40px;' class='far'>&#xf2bd;</i>
+				<th style="width: 5%;">
+					<div style="width: 60%;">
+						<img src="<%= ctxPath%>/resources/profile/${noticeboardvo.profile_img}" style='font-size:25px; width: 80%; border-radius: 50%;'/>
+					</div>
 				</th>
-				<td>
-					<span style="margin-right: 0.5%;">${noticeboardvo.name}</span>
-					<span style="font-size: 10pt;">${noticeboardvo.notice_regdate}</span>
+				<td style="vertical-align: middle;">
+					<span style="margin-right: 0.5%; font-size: 16px;">${noticeboardvo.name}</span>
+					<span style="font-size: 12px;">${noticeboardvo.notice_regdate}</span>
 					<input type="hidden" name="fk_emp_id" value=""/>
 				</td>
 			</tr>
@@ -188,7 +190,7 @@ function goDel() {
 	
 		<div style="border: solid 0px red;">
 			<div style="display:inline-block; width: 100%; margin: 2% 0 1% 0%;">
-				<div style="height: 616px; width: 100%; border: solid 0px gray; word-break: break-all; overflow: scroll;" class="content-div">${noticeboardvo.notice_content}</div>
+				<div style="height: 616px; width: 100%; border: solid 0px gray; word-break: break-all; overflow: auto;" class="content-div">${noticeboardvo.notice_content}</div>
 				<c:if test="${not empty requestScope.noticeboardvo.atnotice_orgfilename}">
 					<div style="font-size: 15px; margin-top: 1%;">
 						<button id="downloadButton" type="button" onclick="javascript:location.href='<%= ctxPath%>/board/download?notice_no=${requestScope.noticeboardvo.notice_no}'" class="css-button-arrow--sand" style="margin-right: 1%;">다운로드</button>

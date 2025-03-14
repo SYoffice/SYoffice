@@ -29,6 +29,7 @@ public class NoticeBoardVO {
    private String nextsubject;      // 다음글제목
    private String fk_dept_id;		// 부서번호
    private String dept_name;		// 부서이름
+   private String profile_img;		// 사원이미지 
    ///////////////////////////////////////////////////////////////////
    
    private MultipartFile attach;    // jsp 파일의 파일선택 name 과 같게 써야한다.

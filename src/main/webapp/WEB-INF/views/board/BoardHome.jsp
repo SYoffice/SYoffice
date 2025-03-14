@@ -166,7 +166,7 @@ a {text-decoration: none !important;} /* 페이지바의 a 태그에 밑줄 없�
       </tbody>
   </table>
   <div style="width: 95%; margin: 0 auto; text-align: right;">
-  	<button class="btn" style="font-size:18px; margin-top: 2%; height: 40px; background-color: #b3d7ff; color: white; font-weight: bold; border-radius: 5%;" onclick="goLike('${sessionScope.loginuser.emp_id}')">좋아요 누른 글보기<i class="fa fa-heart"></i></button>
+  	<button class="btn" style="font-size:18px; margin-top: 2%; height: 40px; background-color: #b3d7ff; color: white; font-weight: bold; border-radius: 5%;" onclick="goLike('${sessionScope.loginuser.emp_id}')">좋아요 누른 글보기</button>
   </div>
     <%-- === 페이지바 보여주기 === --%>
   <div align="center" style="border: solid 0px gray; width: 80%; margin: 30px auto;">

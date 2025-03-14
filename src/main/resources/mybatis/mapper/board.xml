@@ -183,7 +183,7 @@
 			       notice_viewcount, 
 			       notice_regdate, 
 			       nextseq, 
-			
+				   nvl(profile_img,'기본이미지.png') as profile_img,
 			       COALESCE(CAST(
 			           CASE 
 			               WHEN LENGTH(nextsubject) &lt; 30 THEN nextsubject 
@@ -207,6 +207,7 @@
 			        N.notice_content, 
 			        N.notice_viewcount, 
 			        N.notice_regdate,
+			        E.profile_img,
 			        LEAD(N.notice_no) OVER(ORDER BY N.notice_no DESC) AS nextseq,
 			        LEAD(N.notice_subject) OVER(ORDER BY N.notice_no DESC) AS nextsubject,
 			
@@ -237,7 +238,7 @@
 			          <otherwise></otherwise>
 			       </choose> 
 				    GROUP BY N.notice_no, N.fk_emp_id, E.name, N.notice_subject, 
-				             N.notice_content, N.notice_viewcount, N.notice_regdate
+				             N.notice_content, N.notice_viewcount, N.notice_regdate, E.profile_img
 				) V
 				WHERE V.notice_no = #{notice_no}
 	</select>  
@@ -572,6 +573,7 @@
 			       nextseq, 
 				   fk_dept_id,
 				   fk_bcate_no,
+				   nvl(profile_img,'기본이미지.png') as profile_img ,
 			       COALESCE(CAST(
 			           CASE 
 			               WHEN LENGTH(nextsubject) &lt; 30 THEN nextsubject 
@@ -597,6 +599,7 @@
 			        N.board_regdate,
 			        N.fk_dept_id,
 			        N.fk_bcate_no,
+			        E.profile_img,
 			        LEAD(N.board_no) OVER(ORDER BY N.board_no DESC) AS nextseq,
 			        LEAD(N.subject) OVER(ORDER BY N.board_no DESC) AS nextsubject,
 			
@@ -627,7 +630,7 @@
 			          <otherwise></otherwise>
 			       </choose> 
 				    GROUP BY N.board_no, N.fk_emp_id, E.name, N.subject, 
-                              N.content, N.view_count, N.board_regdate, N.fk_dept_id, N.fk_bcate_no
+                              N.content, N.view_count, N.board_regdate, N.fk_dept_id, N.fk_bcate_no, E.profile_img
 				) V
 				WHERE V.board_no = #{board_no}
 	</select>  
@@ -776,9 +779,10 @@
 		<result property="cmt_regdate"  column="cmt_regdate" javaType="String"/>
 		<result property="name" 		column="name" 		 javaType="String"/>
 		<result property="fk_emp_id" 	column="fk_emp_id" 	 javaType="String"/>
+		<result property="profile_img" 	column="profile_img" javaType="String"/>
 	</resultMap>
 	<select id="CommentList_withPaging" resultMap="CommentList_Map">
-		SELECT comment_no, fk_board_no, name, cmt_content, cmt_regdate, fk_emp_id
+		SELECT comment_no, fk_board_no, name, cmt_content, cmt_regdate, fk_emp_id, nvl(profile_img,'기본이미지.png') as profile_img
 		FROM
 		(
 				SELECT row_number() over(order by cmt_regdate desc) AS rno
@@ -788,6 +792,7 @@
 				     , TO_CHAR(cmt_regdate, 'yyyy-mm-dd hh24:mi:ss') AS cmt_regdate
 				     , E.name
 		             , C.fk_emp_id
+		             , E.profile_img
 				  FROM tbl_comment C
 				  JOIN tbl_employee E
 				    ON C.fk_emp_id = E.emp_id

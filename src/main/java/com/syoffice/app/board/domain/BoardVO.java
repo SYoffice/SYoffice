@@ -29,7 +29,8 @@ public class BoardVO {
    private String previoussubject;  // 이전글제목
    private String nextseq;          // 다음글번호(int)
    private String nextsubject;      // 다음글제목
-    
+   private String profile_img;		// 사원이미지 
+   
    // === 댓글형 게시판을 위한 commentCount 필드 추가하기 === //
    private String commentCount;    // 댓글의 개수
    private String likeCount;       // 좋아요 개수

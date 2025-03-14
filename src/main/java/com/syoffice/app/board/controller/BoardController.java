@@ -185,27 +185,13 @@ public class BoardController {
 											, @RequestParam(defaultValue = "") String searchType
 											, @RequestParam(defaultValue = "") String searchWord) {
 
-//	System.out.println("boardLocation==>" +boardLocation);
-//	System.out.println("currentShowPageNo==>" +currentShowPageNo);
-//	System.out.println("searchType==>" +searchType);
-//	System.out.println("searchWord==>" +searchWord);
-
 // === 페이징 처리를 안한 검색어가 없는 공지사항 게시판 전체 글목록 보여주기(일단 공지사항 게시판 전체 데이터를 추출) === // 
 		List<Map<String, String>> noticeBoardList = null;
 
 		// List<Map<String, String>> noticeBoardList =
 		// service.noticeBoardListNoSearch();
 		// 공지사항 게시판 목록에 뿌려줄때 필요한 정보 => (순번,제목,작성자,작성일자,조회수,페이징바에 필요한 데이터들)
-		/*
-		 * System.out.println("확인용 noticeBoardList : " +
-		 * noticeBoardList.get(0).get("name"));
-		 * System.out.println("확인용 noticeBoardList : " +
-		 * noticeBoardList.get(0).get("notice_subject"));
-		 * System.out.println("확인용 noticeBoardList : " +
-		 * noticeBoardList.get(0).get("notice_content"));
-		 * System.out.println("확인용 noticeBoardList : " +
-		 * noticeBoardList.get(0).get("notice_regdate"));
-		 */
+
 
 		/////////////////////////////////////////////////////////////////////////
 		// 글조회수(readCount)증가 (DML문 update)는
@@ -215,10 +201,8 @@ public class BoardController {
 		HttpSession session = request.getSession();
 		session.setAttribute("readCountPermission", "yes");
 		/*
-		 * session 에 "readCountPermission" 키값으로 저장된 value값은 "yes" 이다. session 에
-		 * "readCountPermission" 키값에 해당하는 value값 "yes"를 얻으려면 반드시 웹브라우저에서 주소창에
-		 * "/board/GroupWare_noticeBoard" 이라고 입력해야만 얻어올 수 있다.
-		 */
+		  session 에 "readCountPermission" 키값으로 저장된 value값은 "yes" 이다. session 에 "readCountPermission" 키값에 해당하는 value값 "yes"를 얻으려면 반드시 웹브라우저에서 주소창에 "/board/GroupWare_noticeBoard" 이라고 입력해야만 얻어올 수 있다.
+		*/
 		////////////////////////////////////////////////////////////////////////
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -237,14 +221,12 @@ public class BoardController {
 
 		// 공지사항 게시판의 총 게시물 건수 (totalCount를 구해야 페이징처리 가능)
 		totalCount = service.getNoticeTotalCount(paraMap);
-//	System.out.println("~~~ 확인용 공지사항 totalCount :" + totalCount);
 
 		totalPage = (int) Math.ceil((double) totalCount / sizePerPage);
 		// 한 페이지당 10개씩 보여준다. 총 개시물이 30개라면 3페이지가 필요하므로 10/30 해주고, Math.ceil를 사용하여 소수점 이하가 조금이라도 있으면 무조건 “올림(ceil)” 처리하여 더 큰 정수를 반환한다.
 
 		try {
 			n_currentShowPageNo = Integer.parseInt(currentShowPageNo); // 현재 페이지는 디폴트 1로 설정
-//		System.out.println("확인용 currentShowPageNo => "+currentShowPageNo);
 			if (n_currentShowPageNo < 1 || n_currentShowPageNo > totalPage) { // 현재페이지가 1보다 작거나 총 페이지보다 큰 경우 1페이지로 이동한다.
 				// get 방식이므로 사용자가 currentShowPageNo 에 입력한 값이 0 또는 음수를 입력하여 장난친 경우
 				// get 방식이므로 사용자가 currentShowPageNo 에 입력한 값이 실제 데이터베이스에 존재하는 페이지수 보다 더 큰값을 입력하여 장난친 경우
@@ -259,10 +241,7 @@ public class BoardController {
 		// db 에서 row_number() => 각 행에 1부터 순차적인 번호를 부여하는 함수로 페이지마다 보여줄 게시글의 행번호 설정
 		int startRno = ((n_currentShowPageNo - 1) * sizePerPage) + 1; // 시작 행번호
 		int endRno = startRno + sizePerPage - 1; // 끝 행번호
-
-//	System.out.println("startRno" +startRno );
-//	System.out.println("endRno" +endRno );
-
+		
 		paraMap.put("startRno", String.valueOf(startRno)); // Oracle 11g 와 호환되는 것으로 사용
 		paraMap.put("endRno", String.valueOf(endRno)); // Oracle 11g 와 호환되는 것으로 사용
 
@@ -270,9 +249,6 @@ public class BoardController {
 
 		noticeBoardList = service.noticeBoardListSearch_withPaging(paraMap);
 		// 공지사항 글목록 가져오기(페이징 처리 했으며, 검색어가 있는것 또는 검색어가 없는 것 모두 다 포함한 것이다.)
-
-//	System.out.println("확인용 noticeBoardList =>" + noticeBoardList.get(0).get("notice_subject"));
-//	System.out.println("확인용 noticeBoardList =>" + noticeBoardList.get(0).get("notice_content"));
 
 		mav.addObject("noticeBoardList", noticeBoardList);
 
@@ -376,11 +352,6 @@ public class BoardController {
 			// "키" 값을 주어서 redirect 되어서 넘어온 데이터를 꺼내어 온다.
 			// "키" 값을 주어서 redirect 되어서 넘어온 데이터의 값은 Map<String, String> 이므로 Map<String, String> 으로 casting 해준다.
 
-// 			System.out.println("~~ 확인용 seq : " + redirect_map.get("seq"));
-			// ~~ 확인용 seq : 70
-			// 또는(맨처음글일 경우에 이전글이 없을 경우)
-			// ~~ 확인용 seq :
-
 			notice_no = redirect_map.get("notice_no");
 			searchType = redirect_map.get("searchType");
 
@@ -481,21 +452,15 @@ public class BoardController {
 			searchWord = URLEncoder.encode(searchWord, "UTF-8");
 			goBackURL = URLEncoder.encode(goBackURL, "UTF-8");
 
-			// System.out.println("~~~ noticeViewList 의 searchWord : " + searchWord);
-			// ~~~ noticeViewList 의 searchWord : %EC%9D%B4%EC%97%B0%EC%A7%84
+			// System.out.println("~~~ noticeViewList 의 searchWord : " + searchWord); ~~~ noticeViewList 의 searchWord : %EC%9D%B4%EC%97%B0%EC%A7%84
 
-			// System.out.println("~~~ noticeViewList 의 searchWord : " +
-			// URLDecoder.decode(searchWord,"UTF-8")); // URL인코딩 되어진 한글을 원래 한글모양으로 되돌려주는 것임.
-			// ~~~ noticeViewList 의 searchWord : 이연진 로 다시 돌아온다.
+			// System.out.println("~~~ noticeViewList 의 searchWord : " + URLDecoder.decode(searchWord,"UTF-8")); // URL인코딩 되어진 한글을 원래 한글모양으로 되돌려주는 것임. ~~~ noticeViewList 의 searchWord : 이연진 로 다시 돌아온다.
 
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 
-		// System.out.println("~~~ noticeViewList 의 searchWord : " + searchWord);
-		// ~~~ noticeViewList 의 searchWord : 이연진 <= 이렇게 나오면 안되고
-		// http://localhost:9090/myspring/board/list?searchType=name&searchWord=%EC%9D%B4%EC%97%B0%EC%A7%84
-		// 이렇게 나와야하기 떄문에 위의 과정( URLEncoder.encode(searchWord, "UTF-8");)을 해준다.
+		// System.out.println("~~~ noticeViewList 의 searchWord : " + searchWord); ~~~ noticeViewList 의 searchWord : 이연진 <= 이렇게 나오면 안되고 http://localhost:9090/myspring/board/list?searchType=name&searchWord=%EC%9D%B4%EC%97%B0%EC%A7%84 이렇게 나와야하기 떄문에 위의 과정( URLEncoder.encode(searchWord, "UTF-8");)을 해준다.
 
 		HttpSession session = request.getSession();
 		session.setAttribute("readCountPermission", "yes");
@@ -509,8 +474,7 @@ public class BoardController {
 		redirect_map.put("searchWord", searchWord);
 
 		redirectArr.addFlashAttribute("redirect_map", redirect_map); // POST 방식처럼 데이터를 넘기는 방법.
-		// redirectAttr.addFlashAttribute("키", 밸류값); 으로 사용하는데 오로지 1개의 데이터만 담을 수 있으므로
-		// 여러개의 데이터를 담으려면 Map 을 사용해야 한다.
+		// redirectAttr.addFlashAttribute("키", 밸류값); 으로 사용하는데 오로지 1개의 데이터만 담을 수 있으므로 여러개의 데이터를 담으려면 Map 을 사용해야 한다.
 
 		mav.setViewName("redirect:/board/viewOne"); // 원래는 ("redirect:/board/viewOne?notice_no=&goBackURL=&searchType=&searchWord=")인것임.
 		// 실제로 redirect:/board/viewOne 은 POST 방식이 아닌 GET 방식이다.
@@ -2497,7 +2461,7 @@ public class BoardController {
 	     cmtvo.setFk_emp_id(fk_emp_id);
 	     cmtvo.setComment_no(comment_no);
 	     cmtvo.setCmt_content(cmt_content);
-	     System.out.println("확인필요 : " +  fk_board_no);
+//	     System.out.println("확인필요 : " +  fk_board_no);
 	     int n = service.cmtSave(cmtvo); // 웹에서 수정한 댓글 저장
 
 
@@ -2583,40 +2547,11 @@ public class BoardController {
 	}
 // =========================== 부서 게시판 좋아요 누르기 끝 ================================= //	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	// 내가 좋아요 누른 게시글 보기
 	@PostMapping("goLike")
 	public ModelAndView goLike(ModelAndView mav, String emp_id, String board_no , @RequestParam(defaultValue = "1") String currentShowPageNo) {
 		
-		System.out.println("확인용 emp_id : " + emp_id);
+//		System.out.println("확인용 emp_id : " + emp_id);
 		
 // ===  페이징 처리를 한 검색어가 있는 전체 글목록 보여주기 === //
 		// 먼저, 총 게시물 건수(totalCount) 를 구해와야 한다.
@@ -2629,7 +2564,7 @@ public class BoardController {
 
 		// 내가 좋아요 누른 총 게시물 건수
 		totalCount = service.getLikeTotalCount(emp_id);
-		System.out.println("~~~ 확인용 totalCount :" + totalCount);
+//		System.out.println("~~~ 확인용 totalCount :" + totalCount);
 
 		totalPage = (int) Math.ceil((double) totalCount / sizePerPage);
 
@@ -2649,8 +2584,8 @@ public class BoardController {
 		int startRno = ((n_currentShowPageNo - 1) * sizePerPage) + 1; // 시작 행번호
 		int endRno = startRno + sizePerPage - 1;					  // 끝 행번호
 
-		System.out.println("startRno" +startRno );
-		System.out.println("endRno" +endRno );
+//		System.out.println("startRno" +startRno );
+//		System.out.println("endRno" +endRno );
 
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("startRno", String.valueOf(startRno)); 
