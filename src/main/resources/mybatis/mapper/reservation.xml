@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="com.syoffice.app.reservation.model.ReservationDAO">
+   
+   <!-- 예약 내역 개수 조회(모든, 본인) -->
+   <select id="getReservationCount" parameterType="HashMap" resultType="int">
+      select count(*)
+      from tbl_reservation R JOIN TBL_EMPLOYEE E
+      ON R.fk_emp_id = E.emp_id
+      JOIN tbl_resource RS
+      ON R.fk_resource_no = RS.resource_no
+      WHERE 1=1 
+		<if test="category_no != null">
+			AND fk_category_no = #{category_no}
+		</if>
+		<if test="fk_emp_id != null">
+			AND fk_emp_id = #{fk_emp_id}
+		</if>
+   </select>
+   
+   <!-- 예약 내역 조회(모든, 본인) -->
+   <select id="getReservationList" parameterType="HashMap" resultType="ReservationVO">
+      SELECT * FROM (
+         select reserv_no, E.NAME as empl_name, TO_char(RESERV_START, 'YYYY-MM-DD HH24:MI:SS') AS reserv_start, TO_char(reserv_end, 'YYYY-MM-DD HH24:MI:SS') AS reserv_end, 
+         resource_name, fk_resource_no, fk_emp_id,
+         ROW_NUMBER() OVER (ORDER BY reserv_no DESC) AS rno
+         from tbl_reservation R JOIN TBL_EMPLOYEE E
+         ON R.fk_emp_id = E.emp_id
+         JOIN tbl_resource RS
+         ON R.fk_resource_no = RS.resource_no
+	     WHERE 1=1 
+			<if test="category_no != null">
+				AND fk_category_no = #{category_no}
+			</if>
+			<if test="fk_emp_id != null">
+				AND fk_emp_id = #{fk_emp_id}
+			</if>
+          ORDER BY reserv_no desc
+      )
+      <if test="startRno != null">
+         WHERE rno BETWEEN #{startRno} AND #{endRno}
+      </if>
+   </select>
+   
+   <!-- 자원내역조회 -->
+   <select id="getResourceList" parameterType="String" resultType="ResourceVO">
+      select resource_no, resource_name
+      from tbl_resource
+      where fk_category_no = #{category_no} and resource_status = 1
+      order by resource_no  
+   </select>
+   
+   <!-- 예약 하기 -->
+   <insert id="insertReservation" parameterType="HashMap">
+      INSERT INTO tbl_reservation (reserv_no, reserv_start, reserv_end, reserv_return, fk_resource_no, fk_emp_id)
+      VALUES (reserv_seq.NEXTVAL, TO_DATE(#{reserv_start}, 'YYYY-MM-DD HH24:MI:SS'), TO_DATE(#{reserv_end}, 'YYYY-MM-DD HH24:MI:SS'), null, #{fk_resource_no}, #{emp_id})
+   </insert>
+   
+   <!-- 예약 내역 수정 -->
+   <update id="updateReservation" parameterType="HashMap">
+       UPDATE tbl_reservation
+       SET 
+           reserv_start = TO_DATE(#{reserv_start}, 'YYYY-MM-DD HH24:MI:SS'),
+           reserv_end = TO_DATE(#{reserv_end}, 'YYYY-MM-DD HH24:MI:SS'),
+           fk_resource_no = #{fk_resource_no}
+       WHERE reserv_no = #{reserv_no}
+   </update>
+
+   <!-- 예약 내역 삭제 -->
+   <delete id="deleteReservation" parameterType="String">
+      DELETE FROM tbl_reservation WHERE reserv_no = #{reserv_no}
+   </delete>
+</mapper>
+
+
+
