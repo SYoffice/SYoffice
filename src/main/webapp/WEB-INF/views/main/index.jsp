@@ -71,14 +71,16 @@
         <div class="contents_wrapper">     
         <!-- 공지사항 -->
             <div class="notice-box">
+            <br>
                 <h4>공지사항</h4>
+                <br>
                 <c:choose>
                     <c:when test="${empty noticeList}">
                         <p style="color: #ccc;">등록된 공지사항이 없습니다.</p>
                     </c:when>
                     <c:otherwise>
                         <table style="width:100%; border-collapse:collapse; text-align:center;">
-                            <thead style="background-color:#e6eeff; color:black;">
+                            <thead style="background-color:#e6eeff; color:black; " >
                                 <tr>
                                     <th style="padding:8px;">순번</th>
                                     <th style="padding:8px;">제목</th>
@@ -89,9 +91,9 @@
                             </thead>
                             <tbody>
                                 <c:forEach var="notice" items="${noticeList}" varStatus="status">
-                                    <tr style="border-bottom:1px solid #ccc;">
+                                    <tr style="border-bottom:1px solid #ccc; text-align:center;">
                                         <td style="padding:8px;">${status.index + 1}</td>
-                                        <td style="padding:8px; text-align:left;">
+                                        <td style="padding:8px; ">
                                             <a href="<%= ctxPath%>/board/viewOne">
                                             
                                                 ${notice.notice_subject}
@@ -110,10 +112,10 @@
         
         <br><br>
          
-            <div class="schedule-container">
+         <div class="schedule-container">
                 <div class="schedule-box">
                     <h4>내 일정 <c:out value="${fn:length(mySchedule)}" />건</h4>
-                     <br>
+                    <br>
                     <c:choose>
                         <c:when test="${empty mySchedule}">
                             <p style="color: #ccc;">등록된 일정이 없습니다.</p>
@@ -121,7 +123,7 @@
                         <c:otherwise>
                             <ul>
                                 <c:forEach var="schedule" items="${mySchedule}">
-                                    <li><strong>${schedule.schedule_name}</strong></li>
+                                    <li>${schedule.SCHEDULE_NAME}</li>
                                 </c:forEach>
                             </ul>
                         </c:otherwise>
@@ -133,18 +135,19 @@
                     <br>
                     <c:choose>
                         <c:when test="${empty deptSchedule}">
-                            <p style="color: #ccc;">등록된 전사 일정이 없습니다.</p>
+                            <p style="color: #ccc;">등록된 부서 일정이 없습니다.</p>
                         </c:when>
                         <c:otherwise>
                             <ul>
                                 <c:forEach var="schedule" items="${deptSchedule}">
-                                    <li><strong>${schedule.schedule_name}</strong></li>
+                                    <li>${schedule.SCHEDULE_NAME}</li>
                                 </c:forEach>
                             </ul>
                         </c:otherwise>
                     </c:choose>
                 </div>              
             </div>
+            
             <br> <br>
              <!--  차트 영역 (가로 배치) -->
 			<div class="chart-wrapper">
