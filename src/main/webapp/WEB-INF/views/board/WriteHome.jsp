@@ -46,7 +46,6 @@
 /* 모달 내용 스타일링 */
 #temporaryList {
     max-height: 400px;
-    overflow-y: auto;
 }
 
 .modal-body {

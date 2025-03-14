@@ -274,7 +274,7 @@ function goLike(emp_id) {
 	// console.log(emp_id);
 	const frm = document.goViewFrm;
 	frm.emp_id.value = emp_id;
-	frm.method = "post";
+	frm.method = "get";
 	frm.action = "<%= ctxPath%>/board/goLike";
 	frm.submit();
 }	

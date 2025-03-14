@@ -2548,7 +2548,7 @@ public class BoardController {
 // =========================== 부서 게시판 좋아요 누르기 끝 ================================= //	
 	
 	// 내가 좋아요 누른 게시글 보기
-	@PostMapping("goLike")
+	@GetMapping("goLike")
 	public ModelAndView goLike(ModelAndView mav, String emp_id, String board_no , @RequestParam(defaultValue = "1") String currentShowPageNo) {
 		
 //		System.out.println("확인용 emp_id : " + emp_id);
@@ -2609,10 +2609,10 @@ public class BoardController {
 		String url = "goLike";
 
 		// === [맨처음][이전] 만들기 === //
-		pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='" + url + "?currentShowPageNo=1'>[맨처음]</a></li>";
+		pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='" + url + "?emp_id="+emp_id+"&currentShowPageNo=1'>[맨처음]</a></li>";
 
 		if (Integer.parseInt(currentShowPageNo) > 1) {
-			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='" + url + "?currentShowPageNo="
+			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='" + url + "?emp_id="+emp_id+"&currentShowPageNo="
 					+ (Integer.parseInt(currentShowPageNo) - 1) + "'>[이전]</a></li>";
 		}
 
@@ -2623,7 +2623,7 @@ public class BoardController {
 						+ pageNo + "</li>";
 			} else {
 				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='" + url
-						+ "?currentShowPageNo=" + pageNo
+						+ "?emp_id="+emp_id+"&currentShowPageNo=" + pageNo
 						+ "'>" + pageNo + "</a></li>";
 			}
 
@@ -2634,11 +2634,11 @@ public class BoardController {
 		// === [다음][마지막] 만들기 === //
 
 		if (Integer.parseInt(currentShowPageNo) < totalPage) {
-			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='" + url + "?currentShowPageNo="
+			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='" + url + "?emp_id="+emp_id+"&currentShowPageNo="
 					+ (Integer.parseInt(currentShowPageNo) + 1) + "'>[다음]</a></li>";
 		}
 
-		pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='" + url + "?currentShowPageNo=" + totalPage + "'>[마지막]</a></li>";
+		pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='" + url + "?emp_id="+emp_id+"&currentShowPageNo=" + totalPage + "'>[마지막]</a></li>";
 
 		pageBar += "</ul>";
 
