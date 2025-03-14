@@ -10,11 +10,14 @@
   gap: 20px;
 }
 .approval_wrapper .contents .gridbox_wrapper .gridbox {
+  display: flex;
+  flex-direction: column;
   border: 1px solid #E8EFF4;
   border-radius: 5px;
 }
 .approval_wrapper .contents .gridbox_wrapper .gridbox .grid_text {
-  padding: 10%;
+  padding: 10%;    
+  flex-grow: 1;
 }
 .approval_wrapper .contents .gridbox_wrapper .gridbox .grid_text .content_title {
   margin-bottom: 24px;
@@ -33,3 +36,10 @@
   border-radius: 0 0 5px 5px;
   cursor: pointer;
 }/*# sourceMappingURL=approval_main.css.map */
+
+.approval_wrapper .common_table tbody tr {
+	cursor: pointer;
+}
+.approval_wrapper .common_table tbody tr:hover {
+	background-color: #e0e0e0;
+}
