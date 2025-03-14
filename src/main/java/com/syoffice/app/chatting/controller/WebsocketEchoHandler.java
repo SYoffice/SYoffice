@@ -275,7 +275,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
         		        "<img src='/syoffice/resources/profile/" + profileImage + "' style='width: 40px; height: 40px; border-radius: 50%;'>" + 
         		        "<div style='display: flex; align-items: center;'>" +
     		            "<div style='position: relative; background-color: white; display: inline-block; margin:8px 7px; padding: 7px 10px; " +
-		                "border-radius: 10px; word-break: break-word;'>" + messageVO.getMessage() +
+		                "border-radius: 15px; word-break: break-word;'>" + messageVO.getMessage() +
 		                "<div style='content: \"\"; position: absolute; left: -8px; top: 50%; transform: translateY(-50%); width: 0; height: 0; " +
 	                    "border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-right: 8px solid white;'>" + "</div>" + "</div>" +
     		            "<div style='font-size: 7pt; marginn-top: 2px; margin-left: 5px;'>" + currentTime + "</div>" + "</div>" + "</div>" + "</div>"));
@@ -293,7 +293,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
             if(messageVO.getTo().equals(ws_id)) { // 채팅방에 들어온 모든 웹소켓 id
             // messageVO.getTo() 는 클라이언트가 보내온 귓속말대상웹소켓.getId() 임.
                webSocketSession.sendMessage( // wsession.getId() 는 귓속말 때문에 해줌
-                     new TextMessage("<span style='display:none'>"+wsession.getId()+"</span>&nbsp;<span style='font-weight:bold; cursor:pointer;' class='loginuserName'>" +loginuser.getName()+ "</span>]<br><div style='background-color: white; display: inline-block; max-width: 60%; padding: 7px; border-radius: 15%; word-break: break-all; color: red;'>"+ messageVO.getMessage() +"</div> <div style='display: inline-block; padding: 20px 0 0 5px; font-size: 7pt;'>"+currentTime+"</div> <div>&nbsp;</div>"));
+                     new TextMessage("<span style='display:none'>"+wsession.getId()+"</span>&nbsp;<span style='font-weight:bold; cursor:pointer;' class='loginuserName'>" +loginuser.getName()+ "</span>]<br><div style='background-color: white; display: inline-block; max-width: 60%; padding: 7px; border-radius: 10px; word-break: break-all; color: red;'>"+ messageVO.getMessage() +"</div> <div style='display: inline-block; padding: 20px 0 0 5px; font-size: 7pt;'>"+currentTime+"</div> <div>&nbsp;</div>"));
                                                                                                                                                                                                                                                   /* word-break: break-all; 은 공백없이 영어로만 되어질 경우 해당구역을 빠져나가므로 이것을 막기위해서 사용한다. */
                break;  // 지금의 특정대상(지금은 귓속말대상 웹소켓id)은 1개이므로 
                        // 특정대상(지금은 귓속말대상 웹소켓id 임)에게만 메시지를 보내고  break;를 한다.
