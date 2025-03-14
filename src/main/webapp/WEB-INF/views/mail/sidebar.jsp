@@ -7,18 +7,18 @@
 %>
 <jsp:include page="../main/header.jsp" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<%--<link rel="preconnect" href="https://fonts.googleapis.com">--%>
+<%--<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>--%>
+<%--<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">--%>
 
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
 <style type="text/css">
-:root{
-	font-family: "Noto Sans", serif;
-	 font-optical-sizing: auto;
-}
+/*:root{*/
+/*	font-family: "Noto Sans", serif;*/
+/*	 font-optical-sizing: auto;*/
+/*}*/
 
 span.empty {
 	float: right;
