@@ -8,7 +8,7 @@
 	
 	<!-- 메일박스 총 페이지 수 가져오기 -->
 	<select id="getMailBoxTotalPage" parameterType="HashMap" resultType="Integer">
-		SELECT CEIL(count(*)/10)
+		SELECT CEIL(count(*)/to_number(#{sizePerPage}))
 		  FROM tbl_mailbox
 		 WHERE fk_emp_id = #{fk_emp_id}
 		   	<if test="division != -1">

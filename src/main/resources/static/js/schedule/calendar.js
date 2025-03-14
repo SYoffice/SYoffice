@@ -314,6 +314,9 @@ window.onload = () => {
 		
 		// 풀캘린더에서 날짜 클릭할 때 발생하는 이벤트(일정 등록창으로 넘어간다)
         dateClick: function(info) {
+
+			
+
       	  	//alert('클릭한 Date: ' + info.dateStr); // 클릭한 Date: 2021-11-20
       	    $(".fc-day").css('background','none'); // 현재 날짜 배경색 없애기
       	    info.dayEl.style.backgroundColor = '#b1b8cd'; // 클릭한 날짜의 배경색 지정하기
@@ -465,7 +468,7 @@ function showCompanyCal(){
 		dataType:"json",
 		async: false,
 		success:function(json){
-				console.log(JSON.stringify(json));
+				// console.log(JSON.stringify(json));
 				
 				var html = "";
 				if(json.length > 0){

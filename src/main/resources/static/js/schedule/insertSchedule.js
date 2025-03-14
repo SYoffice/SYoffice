@@ -84,6 +84,16 @@ $(document).ready(() => {
 						$("select.small_category").html(html);
 						$("select.small_category").show();
 					}
+					else {
+						Swal.fire({
+							title: '캘린더 소분류를 먼저 등록하세요!!',        // Alert 제목
+							icon: 'warning',
+							confirmButtonText: "확인"
+						})
+						.then((result) => {
+							location.href= $("input#path").val()+"/schedule/scheduleIndex";	// 캘린더 메인페이지로 이동
+                        })
+					}
 				},
 				error: function(request, status, error){
 		            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
