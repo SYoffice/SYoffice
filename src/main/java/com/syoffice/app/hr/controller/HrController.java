@@ -632,6 +632,15 @@ public class HrController {
 		// 각자 불러오고 싶은 리스트 메소드로 수정하시면 됩니다.
 		resourceList = service.resourceList(paraMap);
 		
+		// 예약 여부확인용 Map 생성
+	    Map<String, Integer> reservationCountMap = new HashMap<>();
+	    for (ResourceVO resource : resourceList) {
+	        int reservationCount = service.checkReservation(resource.getResource_no());
+	        reservationCountMap.put(resource.getResource_no(), reservationCount); 
+	    }
+		
+	    mav.addObject("reservationCountMap", reservationCountMap);
+	    
 		// 페이징DTO 보내주기
 		mav.addObject("pagingDTO", pagingDTO);
 		// 검색어 및 검색타입이 담긴 파라맵 보내주기
@@ -701,6 +710,16 @@ public class HrController {
 		
 		Map<String, String> map = new HashMap<>();
 		
+		String resource_no = paraMap.get("resource_no");
+		
+		// 예약 여부 확인
+		int reservationCount = service.checkReservation(resource_no);
+		if (reservationCount > 0) {
+			map.put("status", "0");
+			map.put("message", "해당 자원은 예약 중이므로 수정할 수 없습니다.");
+			return map;
+		}
+		
 		String resource_name = paraMap.get("resource_name");
 		
 		if(resource_name == null || resource_name.trim().isEmpty()) {
@@ -728,7 +747,15 @@ public class HrController {
 	@ResponseBody
 	public Map<String, String> deleteResource(@RequestParam String resource_no) {
 	    Map<String, String> map = new HashMap<>();
-
+	    
+	    // 예약 여부 확인
+	    int reservationCount = service.checkReservation(resource_no);
+	    if (reservationCount > 0) {
+	        map.put("status", "0");
+	        map.put("message", "해당 자원은 예약 중이므로 삭제할 수 없습니다.");
+	        return map;
+	    }
+	    
 	    // 자원 삭제
 	    int result = service.deleteResource(resource_no);
 

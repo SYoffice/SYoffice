@@ -80,15 +80,13 @@ public interface HrService {
 	// 신규 자원등록
 	int registerResource(Map<String, String> paraMap);
 	
+	// 예약 여부 확인
+	int checkReservation(String resource_no);
+	
 	// 자원 수정
 	int updateResource(Map<String, String> paraMap);
 
 	// 자원 삭제
 	int deleteResource(String resource_no);
-
-
-
-
-	
 	
 }

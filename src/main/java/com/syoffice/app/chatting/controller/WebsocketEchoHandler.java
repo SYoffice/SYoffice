@@ -24,8 +24,13 @@ import com.syoffice.app.employee.domain.EmployeeVO;
 @Component // (bean으로 올라감)
 public class WebsocketEchoHandler extends TextWebSocketHandler {
 	
-   // === 웹소켓서버에 연결한 클라이언트 사용자들을 저장하는 리스트 === 웹소켓에 접속된 클라이언트를 아라옵ㅁ
-   private List<WebSocketSession> connectedUsers = new ArrayList<>();
+	 // 기존 connectedUsers 선언
+    static final List<WebSocketSession> connectedUsers = new ArrayList<>();
+
+    // WebSocketSession 리스트 반환 메서드 추가
+    public static List<WebSocketSession> getConnectedUsers() {
+        return connectedUsers;
+    }
    
    // === 웹소켓 서버에 접속시 채팅에 접속한 사용자ID, 성명, 이메일 정보를 보여주기 위해 채팅에 접속한 EmployeeVO 를 저장하는 List   
    private List<EmployeeVO> employeevo_list = new ArrayList<>();
@@ -68,7 +73,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
      // ===> 웹채팅확인용 : a4a51287-2d13-3405-3ff1-c15ef11a1e71 님이 접속했습니다.
      
      
-     System.out.println("====> 웹채팅확인용 : " + "연결 IP : " + wsession.getRemoteAddress().getAddress().getHostAddress()); 
+     // System.out.println("====> 웹채팅확인용 : " + "연결 IP : " + wsession.getRemoteAddress().getAddress().getHostAddress()); 
      // ====> 웹채팅확인용 : 연결 IP : 192.168.0.210
   
      connectedUsers.add(wsession);
@@ -141,7 +146,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
      		  String Profile = list.get(i).getProfile_img();  
          	  String profileImage = (Profile != null) ? Profile : "기본이미지.png";
      		   
-     		   String str_created = sdfrmt.format(list.get(i).getCreated()); // 대화내용을 나누었던 날짜를 읽어온다. 
+     		  String str_created = sdfrmt.format(list.get(i).getCreated()); // 대화내용을 나누었던 날짜를 읽어온다. 
      		   
      		  /*
      		   System.out.println(list.get(i).getUserid() + "\n"
@@ -177,6 +182,8 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
      		   
      		   loginuser = (EmployeeVO)map.get("loginuser");  
      	       // "loginuser" 은 HttpSession에 저장된 키 값으로 로그인 되어진 사용자이다.
+     		   
+     		
      		   
      		   if(loginuser.getEmp_id().equals(list.get(i).getUserid())) { 
      			   // 본인이 작성한 채팅메시지일 경우라면.. 작성자명 없이 노랑배경색에 오른쪽 정렬로 보이게 한다.
@@ -231,8 +238,11 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
         EmployeeVO loginuser = (EmployeeVO)map.get("loginuser");
    
         MessageVO messageVO = MessageVO.convertMessage(message.getPayload());
-        String roomId = (String) wsession.getAttributes().get("roomId");  // 🌟 추가: 현재 세션의 roomId 가져오기
+        String roomId = (String) wsession.getAttributes().get("roomId");  // roomId 가져오기
       
+        
+       
+        
         Date now = new Date(); // 현재시각 (java.util)
         String currentTime = String.format("%tp %tl:%tM",now,now,now); 
         // %tp              오전, 오후를 출력
@@ -265,12 +275,13 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
         		        "<img src='/syoffice/resources/profile/" + profileImage + "' style='width: 40px; height: 40px; border-radius: 50%;'>" + 
         		        "<div style='display: flex; align-items: center;'>" +
     		            "<div style='position: relative; background-color: white; display: inline-block; margin:8px 7px; padding: 7px 10px; " +
-		                "border-radius: 10px; word-break: break-word;'>" + messageVO.getMessage() +
+		                "border-radius: 15px; word-break: break-word;'>" + messageVO.getMessage() +
 		                "<div style='content: \"\"; position: absolute; left: -8px; top: 50%; transform: translateY(-50%); width: 0; height: 0; " +
 	                    "border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-right: 8px solid white;'>" + "</div>" + "</div>" +
     		            "<div style='font-size: 7pt; marginn-top: 2px; margin-left: 5px;'>" + currentTime + "</div>" + "</div>" + "</div>" + "</div>"));
 
             }
+            
             
          }
          else { // 채팅할 대상이 "전체"가 아닌 특정대상(귀속말대상웹소켓.getId()임)인 귓속말 채팅인 경우 => one
@@ -282,7 +293,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
             if(messageVO.getTo().equals(ws_id)) { // 채팅방에 들어온 모든 웹소켓 id
             // messageVO.getTo() 는 클라이언트가 보내온 귓속말대상웹소켓.getId() 임.
                webSocketSession.sendMessage( // wsession.getId() 는 귓속말 때문에 해줌
-                     new TextMessage("<span style='display:none'>"+wsession.getId()+"</span>&nbsp;<span style='font-weight:bold; cursor:pointer;' class='loginuserName'>" +loginuser.getName()+ "</span>]<br><div style='background-color: white; display: inline-block; max-width: 60%; padding: 7px; border-radius: 15%; word-break: break-all; color: red;'>"+ messageVO.getMessage() +"</div> <div style='display: inline-block; padding: 20px 0 0 5px; font-size: 7pt;'>"+currentTime+"</div> <div>&nbsp;</div>"));
+                     new TextMessage("<span style='display:none'>"+wsession.getId()+"</span>&nbsp;<span style='font-weight:bold; cursor:pointer;' class='loginuserName'>" +loginuser.getName()+ "</span>]<br><div style='background-color: white; display: inline-block; max-width: 60%; padding: 7px; border-radius: 10px; word-break: break-all; color: red;'>"+ messageVO.getMessage() +"</div> <div style='display: inline-block; padding: 20px 0 0 5px; font-size: 7pt;'>"+currentTime+"</div> <div>&nbsp;</div>"));
                                                                                                                                                                                                                                                   /* word-break: break-all; 은 공백없이 영어로만 되어질 경우 해당구역을 빠져나가므로 이것을 막기위해서 사용한다. */
                break;  // 지금의 특정대상(지금은 귓속말대상 웹소켓id)은 1개이므로 
                        // 특정대상(지금은 귓속말대상 웹소켓id 임)에게만 메시지를 보내고  break;를 한다.
@@ -327,52 +338,53 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
              (누가누가 나갔다~ 표시)
     */
    @Override
-    public void afterConnectionClosed(WebSocketSession wsession, CloseStatus status) throws Exception {
-       // 파라미터 WebSocketSession wsession 은 연결을 끊은 웹소켓 클라이언트임.
-       // 파라미터 CloseStatus 은 웹소켓 클라이언트의 연결 상태.
-   
-      Map<String, Object> map = wsession.getAttributes();  // 세션 얻어옴
-      EmployeeVO loginuser = (EmployeeVO) map.get("loginuser");
-      
-      
-   //  System.out.println("====> 웹채팅확인용 : 웹세션ID " + wsession.getId() + "이 퇴장했습니다.");
-      
-       connectedUsers.remove(wsession); 
-       // 웹소켓 서버에 연결되어진 클라이언트 목록에서 연결은 끊은 클라이언트는 삭제시킨다.  
-      
-       
-       
-       // ===== 접속을 끊을시 현재 남아있는 접속자명단을 알려주기 위한 것 시작 ===== //
-      String connectingUserName = "";  // 「 은 자음 ㄴ을 하면 나온다.
+   public void afterConnectionClosed(WebSocketSession wsession, CloseStatus status) throws Exception {
+      // 파라미터 WebSocketSession wsession 은 연결을 끊은 웹소켓 클라이언트임.
+      // 파라미터 CloseStatus 은 웹소켓 클라이언트의 연결 상태.
+  
+     Map<String, Object> map = wsession.getAttributes();  // 세션 얻어옴
+     EmployeeVO loginuser = (EmployeeVO) map.get("loginuser");
+     
+     
+  //  System.out.println("====> 웹채팅확인용 : 웹세션ID " + wsession.getId() + "이 퇴장했습니다.");
+     
+      connectedUsers.remove(wsession); 
+      // 웹소켓 서버에 연결되어진 클라이언트 목록에서 연결은 끊은 클라이언트는 삭제시킨다.  
      
       
       
-      
-      // >>>>> 접속을 끊을시 현재 남아있는 채팅에 접속한 사용자ID, 성명, 이메일 정보를 보여주기 위한 것 시작 <<<<< //
-      if(employeevo_list.size() > 0) {
-              for(EmployeeVO EmployeeVO : employeevo_list) {
-                 if(EmployeeVO.getEmp_id().equals(loginuser.getEmp_id())) {
-                	 employeevo_list.remove(EmployeeVO);
-                    break;
+      // ===== 접속을 끊을시 현재 남아있는 접속자명단을 알려주기 위한 것 시작 ===== //
+     String connectingUserName = "";  // 「 은 자음 ㄴ을 하면 나온다.
+    
+     
+     
+     
+     // >>>>> 접속을 끊을시 현재 남아있는 채팅에 접속한 사용자ID, 성명, 이메일 정보를 보여주기 위한 것 시작 <<<<< //
+     if(employeevo_list.size() > 0) {
+             for(EmployeeVO EmployeeVO : employeevo_list) {
+                if(EmployeeVO.getEmp_id().equals(loginuser.getEmp_id())) {
+               	 employeevo_list.remove(EmployeeVO);
+                   break;
+                }
+             }
+             
+             String v_html = "⊆";  // 'ㄷ'에 있는 것임
+              if(employeevo_list.size() > 0) {
+                 for(EmployeeVO EmployeeVO : employeevo_list) {
+                    v_html += "<tr>"
+                          + "<td>"+EmployeeVO.getEmp_id()+"</td>"
+                          + "<td>"+EmployeeVO.getName()+"</td>"
+                          + "<td>"+EmployeeVO.getMail()+"</td>"
+                          + "</tr>";
                  }
+                 for(WebSocketSession webSocketSession : connectedUsers) {
+                     webSocketSession.sendMessage(new TextMessage(v_html));
+                  }// end of for------------------------
               }
-              
-              String v_html = "⊆";  // 'ㄷ'에 있는 것임
-               if(employeevo_list.size() > 0) {
-                  for(EmployeeVO EmployeeVO : employeevo_list) {
-                     v_html += "<tr>"
-                           + "<td>"+EmployeeVO.getEmp_id()+"</td>"
-                           + "<td>"+EmployeeVO.getName()+"</td>"
-                           + "<td>"+EmployeeVO.getMail()+"</td>"
-                           + "</tr>";
-                  }
-                  for(WebSocketSession webSocketSession : connectedUsers) {
-                      webSocketSession.sendMessage(new TextMessage(v_html));
-                   }// end of for------------------------
-               }
-           }
-      
-      // >>>>> 접속을 끊을시 현재 남아있는 채팅에 접속한 사용자ID, 성명, 이메일 정보를 보여주기 위한 것 끝 <<<<< //
+          }
+     
+     // >>>>> 접속을 끊을시 현재 남아있는 채팅에 접속한 사용자ID, 성명, 이메일 정보를 보여주기 위한 것 끝 <<<<< //
+     
       
       
       
