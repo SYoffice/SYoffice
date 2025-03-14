@@ -43,26 +43,27 @@ function goDetail(emp_id) {
 
 </script>
 
-
-            	
 			<span class="h2"><i class="bi bi-people-fill"></i>&nbsp;사원목록</span>
 			
-			<form name="searchFrm" style="margin: 20px auto;">
-				<select name="searchType" style="height: 26px;">
-					<option value="branch_name">지점명</option>
-					<option value="dept_name">부서명</option>
-					<option value="grade_name">직급</option>
-					<option value="name">사원명</option>
-				</select>
-				
-				<input type="text" name="searchWord" size="50" autocomplete="off" /> 
-				<input type="text" style="display: none;"/>  
-				<button type="button" class="btn btn-secondary btn-sm" onclick="goSearch()">검색</button>
+			<form name="searchFrm">
+				<div id="formContainer">
+					<select name="searchType" class="form-select">
+						<option value="branch_name">지점명</option>
+						<option value="dept_name">부서명</option>
+						<option value="grade_name">직급</option>
+						<option value="name">사원명</option>
+					</select>
+					
+					<div class="search-container">
+						<input type="text" name="searchWord" size="50" autocomplete="off" placeholder="Search..." /> 
+						<button type="button" class="btn btn-secondary btn-sm search-btn" onclick="goSearch()"><i class="fas fa-search"></i></button>
+					</div>
+				</div>			
 			</form>
 			
 			<table class="table table-bordered table-hover">
-				<thead class="thead-light">
-					<tr>
+				<thead>
+					<tr style="background-color: #e6eeff;">
 						<th style="width: 10%;  text-align: center;">사원번호</th>
 						<th style="width: 10%;  text-align: center;">지점</th>
 						<th style="width: 10%;  text-align: center;">부서</th>
