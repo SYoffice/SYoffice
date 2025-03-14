@@ -130,7 +130,10 @@ function createChatroom() {
     let roomName = \$("#chatRoomName").val(); // 채팅방이름 가져옴
     let employees = getselectedEmployeeIds(); // 사원번호 가져옴
 
-   
+    if($("input#chatRoomName").val().trim() == "" ){
+	   alert("채팅방 이름을 입력하세요");
+	   return;
+    }
 	
     $.ajax({
         type: "POST",
