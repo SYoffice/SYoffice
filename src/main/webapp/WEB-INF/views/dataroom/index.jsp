@@ -67,7 +67,7 @@ function goSearch() {
  				<option value="data_orgfilename" ${requestScope.paraMap.searchType == 'data_orgfilename' ? 'selected' : ''}>파일명</option>
 					</select>
 					<div class="search-container">
-						<input type="text" name="searchWord" size="50" autocomplete="off" value="${requestScope.paraMap.searchWord}"  /> 
+						<input type="text" name="searchWord" size="50" autocomplete="off" value="${requestScope.paraMap.searchWord}" placeholder="Search..."  /> 
 						<button type="submit" class="btn btn-secondary btn-sm search-btn"><i class="fas fa-search"></i></button>
 					</div>
 				</div>			

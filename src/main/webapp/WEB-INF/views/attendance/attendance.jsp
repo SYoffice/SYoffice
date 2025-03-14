@@ -286,7 +286,7 @@
 			    <h4>연차 내역</h4>
 			
 			    <!-- 연차 요약 박스를 감싸는 컨테이너 -->
-			   <a style="background-color:#BFD2FA" href="<%=ctxPath%>/approval/approval_setting" class="btn btn-primary">연차 신청</a>
+			   <a style="background-color:#BFD2FA" href="<%=ctxPath%>/approval/approval_main" class="btn btn-primary">연차 신청</a>
 				       
 				        
 			    <br> <br>

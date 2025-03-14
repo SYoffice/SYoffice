@@ -22,7 +22,7 @@
         ORDER BY schedule_startdate
     </select>
 
-    <!-- 내가 속한 부서 일정 가져오기 -->
+    <!-- 내가 전사 일정 가져오기 -->
     <select id="getDeptSchedule" parameterType="map" resultType="map">
         SELECT s.schedule_no, s.schedule_startdate, s.schedule_enddate, s.schedule_name, s.schedule_color, s.schedule_place
 		FROM tbl_schedule s
@@ -36,7 +36,7 @@
 	        SELECT n.notice_no        AS "notice_no",
 	               n.notice_subject   AS "notice_subject",
 	               e.name             AS "name",
-	               n.notice_regdate   AS "notice_regdate",
+	               TO_CHAR(n.notice_regdate,'YYYY-MM-DD')   AS "notice_regdate",
 	               n.notice_viewcount AS "notice_viewcount"
 	          FROM tbl_notice n
 	          JOIN tbl_employee e ON n.fk_emp_id = e.emp_id
