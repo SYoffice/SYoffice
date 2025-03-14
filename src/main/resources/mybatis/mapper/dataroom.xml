@@ -15,7 +15,7 @@
 	        AND fk_data_cateno = #{data_cateno}
 	    </if>
 	    <if test="searchType != null and searchWord != ''">
-	        AND ${searchType} LIKE '%' || #{searchWord} || '%'
+	         AND lower(data_orgfilename) LIKE '%' || lower(#{searchWord}) || '%'
 	    </if>
 	</select>
 
@@ -29,7 +29,7 @@
         FROM tbl_data
         WHERE fk_data_cateno = #{data_cateno}
         <if test="searchType != null and searchWord != ''">
-            AND ${searchType} LIKE '%' || #{searchWord} || '%'
+            AND lower(data_orgfilename) LIKE '%' || lower(#{searchWord}) || '%'
         </if>
     ) WHERE rnum BETWEEN #{startRno} AND #{endRno}
 	</select>
