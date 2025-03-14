@@ -94,3 +94,12 @@ div.fileDrop > div.fileList > span.fileSize{
     float:right;
 }
 span.clear{clear: both;}
+
+/* 보내기 외 버튼 */
+button.toolbar {
+	border-radius: 5px;
+	border: solid 1px black;
+	width: 4.5em;
+	height: 1.7em;
+    background-color: white;
+}

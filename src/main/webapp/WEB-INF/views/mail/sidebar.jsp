@@ -170,7 +170,7 @@ span.empty {
             </ul>
             
             <ul class="side_menu_list">
-            	<li><a href="${pageContext.request.contextPath}/mail/setting"><i class="fa-solid fa-gear"></i><span style="margin-left: 3%;">환경설정</span></a></li>
+            	<li><a href="#"><i class="fa-solid fa-gear"></i><span style="margin-left: 3%;">환경설정</span></a></li>
             </ul>
         </div>
     </div>
