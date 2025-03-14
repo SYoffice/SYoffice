@@ -59,7 +59,7 @@ public class MailController {
 			paraMap.put("sizePerPage", String.valueOf(sizePerPage));
 
 			int totalPage = service.getMailBoxTotalPage(paraMap);	// 메일박스의 총 페이지수 가져오기
-			
+
 			try {
 				if (Integer.parseInt(page) > totalPage || Integer.parseInt(page) <= 0) {
 					page = "1";

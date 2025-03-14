@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('salesTrendChart').innerHTML = "<p style='color:gray;'>데이터 없음</p>";
     }
 
-
+    weatherForecast();
 
 });
 
