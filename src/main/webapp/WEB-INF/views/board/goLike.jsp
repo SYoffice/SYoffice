@@ -80,29 +80,9 @@ a {text-decoration: none !important;} /* 페이지바의 a 태그에 밑줄 없�
         
 <div class="contents_wrapper" style="margin-top: 3%;">
 
-<div style="display: inline-block; width: 97%; margin-bottom: 2%;">
+<div style="display: inline-block; width: 97%; margin-bottom: 1%;">
 <!-- 페이지 공통 부분  -->
-<span class="bg-light text-dark" style="font-size: 20pt; font-weight: bold; padding: 1% 0 1% 3%;">${sessionScope.loginuser.dept_name} 게시판<i style='font-size:30px; margin-left: 1%;' class='far'>&#xf328;</i></span>
-
-<span style="float: right;">
-<!-- 검색바 -->
-<form name="searchFrm" style="display: flex; gap: 5px; margin-top: 2%; height: 30px;  width: 100%;">
-	   <select class="form-select" name="searchType" style="border-radius: 20px; border: 1px solid #ccc; height: 45px; transition: box-shadow 0.2s; color: #666; width: 120px; padding-left: 2.5%;">
-	         <option value="subject">제목</option>
-	         <option value="name">작성자</option>
-	         <option value="content">내용</option>
-	         <option value="subject_content">제목+내용</option>
-	   </select>
-	<div class="search-container">
-	  <input type="text" style="font-size:13pt;" name="searchWord" placeholder="Search..." />
-	  <button type="submit" class="search-btn" onclick="goSearch()">
-	    <i class="fas fa-search"></i>
-	  </button>
-	</div>
-</form>
-<!-- 페이지 공통 부분  -->
-</span>
-<!-- 페이지 공통 부분  -->
+<span class="bg-light text-dark" style="font-size: 20pt; font-weight: bold; padding: 1% 0 1% 3%;">좋아요<i style="font-size:30px; margin-left: 1%;" class="fa fa-heart"></i></span>
 </div>
 
   <table class="table" style="width: 95%; margin: 0 auto;">
@@ -165,9 +145,6 @@ a {text-decoration: none !important;} /* 페이지바의 a 태그에 밑줄 없�
 	    </c:if>
       </tbody>
   </table>
-  <div style="width: 95%; margin: 0 auto; text-align: right;">
-  	<button class="btn" style="font-size:18px; margin-top: 2%; height: 40px; background-color: #b3d7ff; color: white; font-weight: bold; border-radius: 5%;" onclick="goLike('${sessionScope.loginuser.emp_id}')">좋아요 누른 글보기<i class="fa fa-heart"></i></button>
-  </div>
     <%-- === 페이지바 보여주기 === --%>
   <div align="center" style="border: solid 0px gray; width: 80%; margin: 30px auto;">
   	  ${requestScope.pageBar}
@@ -185,6 +162,7 @@ a {text-decoration: none !important;} /* 페이지바의 a 태그에 밑줄 없�
 	<input type="hidden" name="searchType"/>
 	<input type="hidden" name="searchWord"/>
 	<input type="hidden" name="emp_id"/>
+	<input type="hidden" name="redirect_like"/>
 </form>
   
   
@@ -236,14 +214,9 @@ a {text-decoration: none !important;} /* 페이지바의 a 태그에 밑줄 없�
 	});// end of $(document).ready(function())--------------------------
 
 function goView(board_no){
-	
-	const goBackURL = "${requestScope.goBackURL}";
-	// console.log(goBackURL);
-	
 	const frm = document.goViewFrm;
 	frm.board_no.value = board_no;
-	frm.goBackURL.value = goBackURL;
-
+	frm.redirect_like.value = "redirect_like";
 
 /* searchType 과 searchWord 도 view단 페이지로 보내줘야 검색어가 있을 경우 이전글 다음글을 볼 때 해당 검색어가 있는 1개의 글을 알아올 수 있다. */
 
@@ -269,15 +242,7 @@ function goSearch() { // 검색을 클릭하면
 	frm.submit();
 }// end of function goSearch()--------------------------------
 	
-// 내가 좋아요 누른 게시글 보여주기	
-function goLike(emp_id) {
-	// console.log(emp_id);
-	const frm = document.goViewFrm;
-	frm.emp_id.value = emp_id;
-	frm.method = "post";
-	frm.action = "<%= ctxPath%>/board/goLike";
-	frm.submit();
-}	
+
 </script>
 
 

@@ -14,6 +14,12 @@
 
 <style>
 
+.swal2-icon.my-custom-icon {
+  top: 10px !important;
+  left: 210px !important;
+  font-size: 10pt;
+}
+
 .css-button-arrow--sand {
   min-width: 130px;
   height: 40px;
@@ -50,47 +56,67 @@
   transition: 0.4s;
 }
 
+
+   
+span.move  {cursor: pointer; color: navy;}
+.moveColor {color: #660029; font-weight: bold; background-color: #ffffe6;}
+
+td.comment {text-align: center;}
+
+a {text-decoration: none !important;}
+ 
+    
 </style>
+
 
 <script>
 
-	$(document).ready(function(){
-<%-- 		
-		$("button#like").click(function(){
-			$ajax({
-				url:"<%= ctxPath%>/board/like",
-				type:"post",
-				data:{"fk_board_no":${requestScope.boardvo.fk_board_no},   // 게시글번호
-					  "fk_emp_id":${sessionScope.loginuser.fk_emp_id}},	   // 사원번호
-				dataType:"json",
-				success:function(json) {
-					console.log(JSON.stringify(json));
-					
-					if(json.n == 1){ // 제대로 insert 가 되어져서 해당 게시글에 좋아요 개수가 1증가했다면
-						$("i#likeColor").css("color","red");
-					}
-					
-				},
-			    error: function(request, status, error){
-	               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-	            }
-			});
-			
-		});
-		 --%>
-	});
+// === 이전글, 다음글 보기 === //
+function goView(notice_no){
 
-function goDel() {
-	
-	confirm("정말 삭제하시겠습니까?");
-	
-	if()
+	const goBackURL = "${requestScope.goBackURL}";
+	console.log(goBackURL);
 	
 	const frm = document.goViewFrm;
-	frm.method = "POST";
-	frm.action = "<%= ctxPath%>/board/GroupWare_Del";
-	frm.submit();
+	frm.notice_no.value = notice_no;
+	frm.goBackURL.value = goBackURL;
 	
+	/* searchType 과 searchWord 도 view단 페이지로 보내줘야 검색어가 있을 경우 이전글 다음글을 볼 때 해당 검색어가 있는 1개의 글을 알아올 수 있다. */
+	
+	if(${not empty requestScope.paraMap}) { // 검색조건이 있을 경우
+		frm.searchType.value = "${requestScope.paraMap.searchType}";
+		frm.searchWord.value = "${requestScope.paraMap.searchWord}";
+	}
+	
+	frm.method = "post";
+	
+	<%-- === 이전글보기, 다음글보기를 클릭할때 글조회수 증가를 하기 위한 용도이다. === --%>
+	frm.action = "<%= ctxPath%>/board/noticeViewList";  
+	frm.submit();
+}
+	
+	
+function goDel() {
+	  Swal.fire({
+	    title: "정말 삭제하시겠습니까?",
+	    icon: "warning",
+	    showCancelButton: true,
+	    confirmButtonColor: "#80aaff",
+	    cancelButtonColor: "#ff471a",
+	    confirmButtonText: "네, 삭제합니다",
+	    cancelButtonText: "취소",
+	    customClass: {
+	        icon: 'my-custom-icon'
+	    }
+	  }).then((result) => {
+	    if (result.isConfirmed) {
+	      // 사용자가 확인을 눌렀을 때만 실행
+	      const frm = document.goViewFrm;
+	      frm.method = "POST";
+	      frm.action = "<%= ctxPath%>/board/GroupWare_Del";
+      	  frm.submit();
+    }
+  });
 }// end of goDel()-----------------------	
 	
 	
@@ -101,9 +127,9 @@ function goDel() {
         <div class="side_menu_inner_wrapper">
       	<button type="button"  id="write" onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_Write'">글쓰기</button>
             <ul class="side_menu_list">
-                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice">전체 게시판</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice">공지사항</a></li>
-                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_Board?boardLocation=boardDept">부서 게시판[${requestScope.fk_dept_id}]</a></li>
+                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard">전체 게시판</a></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard">공지사항</a></li>
+                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_Board">부서 게시판[${sessionScope.loginuser.dept_name}]</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="#">신간도서</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="#">오늘의 뉴스</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="#">주간식단표</a></li>
@@ -114,26 +140,23 @@ function goDel() {
         
 <div class="contents_wrapper" style="margin-top: 3%;">
 	<!-- 페이지 공통 부분  -->
-	<div style="border: solid 0px gray; display: flex;">
-		<p class="bg-light text-dark" style="font-size: 20pt; font-weight: bold; padding: 1% 0 1% 4.5%;">전체게시판&nbsp;<i style='font-size:24px' class='fas'>&#xf105;</i>&nbsp;<span style="font-size: 15pt;">공지사항</span></p>
-	</div>	
+	<div style="width: 100%;">
+		<div style="border: solid 0px gray; display: flex; width: 100%;">
+			<p class="bg-light text-dark" style="font-size: 20pt; font-weight: bold; padding: 1% 0 1% 4.5%; width: 30%;">전체게시판&nbsp;<i style='font-size:24px' class='fas'>&#xf105;</i>&nbsp;<span style="font-size: 15pt;">공지사항</span></p>
+		<span style="font-size: 15px; font-weight: normal; width: 10%; padding-top: 1.8%; float: right; margin-left: 62%;" id="viewCount">조회수&nbsp;&nbsp;<span style="font-weight: normal; ">${noticeboardvo.notice_viewcount}</span></span>
+		</div>	
+	</div>
 	<!-- 페이지 공통 부분  -->
 	
 	<div id="container" style="border: solid 0px gray; width: 90%; margin: 0 20% 0 5%;">
 		<table style="width: 100%;">
 			<tr style="margin-bottom: 3%; height: 62px;">
 				<th style="width: 7%;">
-					<div style="font-size: 25px; font-weight: bold;">[제목]</div>
+					<div style="font-size: 25px; font-weight: bold;">제목</div>
 				</th>
 				<td>
 					<div style="display: flex; margin-top:2%; border: solid 0px red; width: 100%; height: 60px;">
 						<span id="subject" style="border: solid 0px gray; width: 100%; padding-top: 0.5%; font-size: 25px; ">${noticeboardvo.notice_subject}</span>
-					
-						<span style="border: solid 0px gray;  width: 100%; text-align: right;">
-							<span style="margin-right: 2%; font-size: 15px; font-weight: normal; width: 50%;" id="viewCount">조회수&nbsp;&nbsp;<span style="font-weight: normal; ">${noticeboardvo.notice_viewcount}</span></span>
-							<button type="button" id="like" style="font-size: 15px; border: none; width: 13%;" >좋아요</button>
-							<label for="like"><i id="likeColor" class="fa fa-heart" style="font-size:40px; color:gray; border: solid 2px gray; background-color: white; padding: 0.5%; margin-left: 0.5%;"></i></label>
-						</span>
 					</div>
 				</td>
 			</tr>
@@ -151,12 +174,14 @@ function goDel() {
 			
 			<tr>
 				<th></th>
-				<td>
+				<td style="display: flex; width: 100%;">
 					<div style="display: flex; width: 100%; margin-left: 75%;">
-						<button type="button" class="btn btn-light"  onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_Write'"><i style='font-size:18px' class='fas'>&#xf304;</i>새글쓰기</button>
-						<button type="button" class="btn btn-light"  onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_Edit/${requestScope.noticeboardvo.notice_no}'" style="margin: 0 3%;"><i style='font-size:24px' class='fas'>&#xf044;</i>수정</button>
-						<button type="button" class="btn btn-light"  onclick="goDel()"><i style='font-size:18px' class='far'>&#xf2ed;</i>삭제</button>
+						<c:if test="${not empty sessionScope.loginuser && sessionScope.loginuser.emp_id == requestScope.noticeboardvo.fk_emp_id}"><!-- 로그인 되어졌고 해당글의 작성자가 사용자와 같아야한다.  -->
+							<button style="width: 45%; margin-right: 8%;" type="button" class="btn btn-light"  onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_Edit/${requestScope.noticeboardvo.notice_no}'" style="margin: 0 3%;"><i style='font-size:24px' class='fas'>&#xf044;</i>수정</button>
+							<button style="width: 45%;" type="button" class="btn btn-light"  onclick="goDel()"><i style='font-size:18px' class='far'>&#xf2ed;</i>삭제</button>
+						</c:if>
 					</div>
+					<button style="width: 45%;" type="button" class="btn btn-light"  onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_Write'"><i style='font-size:18px' class='fas'>&#xf304;</i>새글쓰기</button>
 				</td>
 			</tr>
 		</table>
@@ -172,20 +197,11 @@ function goDel() {
 				</c:if>
 			</div>
 		</div>
-
-		<div id="newReview">
-			js에서 반복문 설정 댓글작성 완료시 나오는 댓글 div
-		</div>	
 		
-		<div id="review" class="msg_wrap" style="width: 100%; border-radius: 4px; border: 1px solid #ddd; height: 82px; padding-top: 1%; padding-right: 1%; padding-left: 0.5%; margin-bottom: 2%;">
-			<i style=' font-size:24px; margin-right: 1%; vertical-align: top; background-color: white;' class='far'>&#xf2bd;</i>
-			<span>
-				<input style="width: 92%; height: 50px; border: 1px solid #ddd;" placeholder="댓글을 남겨보세요"/>
-				<button class="btn btn-secondary" style="font-size:12px; float:right; margin-top: 1%; ">등록</button>
-			</span>
-		</div>
 		<div id="container_view" style="width: 100%;">
 			<div id="container_viewList" class="container" style="margin: 0%; width: 90%; height: 20px;">            
+<%-- ==== 이전글제목, 다음글제목 보기 시작 ==== --%>
+		<c:if test="${not empty requestScope.noticeboardvo}">	
 			  <table class="table table-striped" style="width: 125%;">
 			    <thead>
 			      <tr>
@@ -196,26 +212,29 @@ function goDel() {
 			    <tbody>
 			      <tr>
 			        <td style="font-weight: bold;">이전글</td>
-			        <td style="text-align: center;">${noticeboardvo.previoussubject}</td>
+			        <td style="text-align: center;"><span class="move" onclick="goView('${requestScope.noticeboardvo.previousseq}')">${requestScope.noticeboardvo.previoussubject}</span></td>
 			      </tr>
 			      <tr>
 			        <td style="font-weight: bold;">>></td>
-			        <td style="text-align: center;">${noticeboardvo.notice_subject}</td>
+			        <td style="text-align: center;">${requestScope.noticeboardvo.notice_subject}</td>
 			      </tr>
 			      <tr>
 			        <td style="font-weight: bold;">다음글</td>
-			        <td style="text-align: center;">${noticeboardvo.nextsubject}</td>
+			        <td style="text-align: center;"><span class="move" onclick="goView('${requestScope.noticeboardvo.nextseq}')">${requestScope.noticeboardvo.nextsubject}</span></td>
 			      </tr>
 			    </tbody>
 			  </table>
+		</c:if>
+<%-- ==== 이전글제목, 다음글제목 보기 끝 ==== --%>		
 					
 			<span>
-				<button type="button" onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice'" class="btn btn-outline-secondary" style="margin-right: 2%;">전체목록조회</button>
-				<button type="button" class="btn btn-outline-secondary">검색된목록조회</button>
+				<button type="button" onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_noticeBoard'" class="btn btn-outline-secondary" style="margin-right: 2%;">전체목록조회</button>
+				<button type="button" class="btn btn-outline-secondary" onclick="javascript:location.href='<%= ctxPath%>${requestScope.goBackURL}'">검색된목록조회</button>
 			</span>
-			  
 			</div>
 		</div>
+		
+		
 	</div>
 	</div>
 </div>
@@ -227,5 +246,3 @@ function goDel() {
 	<input type="hidden" name="searchType"/>
 	<input type="hidden" name="searchWord"/>
 </form>
-
-<jsp:include page="../board/GroupWarefooter.jsp" /> 

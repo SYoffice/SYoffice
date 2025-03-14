@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 
-// === #149. FileManager 클래스 생성하기 @@@ === //
+// 9. FileManager 클래스 생성하기
 @Component
 public class FileManager {
 
@@ -22,7 +22,7 @@ public class FileManager {
     // byte[] bytes : 파일의 내용물
     // String originalFilename : 첨부된 파일의 원래이름
     // String path : 업로드 할 파일의 저장경로
-    // 리턴값 : 서버에 저장된 새로운 파일명(예: 2025020709291535243254235235234.png) 
+    // 리턴값(newFileName) : 서버에 저장된 새로운 파일명(예: 2025020709291535243254235235234.png) 
    
    public String doFileUpload(byte[] bytes, String originalFilename, String path) throws Exception {
       
@@ -38,21 +38,21 @@ public class FileManager {
       }
       
       // 확장자 알아오기(예:  강아지   또는   강아지.  또는   강아지.png   또는   강.아.지.png)
-       // 강아지.      ==>  originalFilename.lastIndexOf(".")  ==> 3 // .lastIndexOf(".")마지막 .이 위치해 있는곳
-       // 강아지.png   ==>  originalFilename.lastIndexOf(".")  ==> 3
-       // 강.아.지.png ==>  originalFilename.lastIndexOf(".")  ==> 5 
+      // 강아지.      ==>  originalFilename.lastIndexOf(".")  ==> 3 // .lastIndexOf(".")마지막 .이 위치해 있는곳
+      // 강아지.png   ==>  originalFilename.lastIndexOf(".")  ==> 3
+      // 강.아.지.png ==>  originalFilename.lastIndexOf(".")  ==> 5 
       String fileExt = originalFilename.substring(originalFilename.lastIndexOf(".")); // .png
       if(fileExt == null || "".equals(fileExt) || ".".equals(fileExt)) {
          return null; // doFileUpload() 종료
       } // 확장자가 비어있거나 없거나 .밖에 없다면
       
-      // 서버에 저장할 새로운 파일명을 만든다.
+       // 서버에 저장할 새로운 파일명을 만든다.
        // 서버에 저장할 새로운 파일명이 동일한 파일명이 되지 않고 고유한 파일명이 되도록 하기 위해
        // 현재의 년월일시분초에다가 현재 나노세컨즈nanoseconds 값을 결합하여 확장자를 붙여서 만든다.
        newFileName = String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", Calendar.getInstance()); 
        newFileName += System.nanoTime(); //나노세컨즈nanoseconds 값을 결합
        newFileName += fileExt;
-      // newFileName 은 예를 들면, 2025020709291535243254235235234.png 와 같이 된다.
+       // newFileName 은 예를 들면, 2025020709291535243254235235234.png 와 같이 된다.
        
        // 업로드할 경로가 존재하지 않는 경우 폴더를 자동생성한다.
        File dir = new File(path);
@@ -83,7 +83,7 @@ public class FileManager {
        
       return newFileName; // 나노단위의 새로만든 파일명
       // 파일을 업로드 한 이후에 
-       // 업로드 되어진 파일명(현재의 년월일시분초에다가 현재 나노세컨즈nanoseconds 값을 결합하여 확장자를 붙여서 만든것)을 알아온다.
+      // 업로드 되어진 파일명(현재의 년월일시분초에다가 현재 나노세컨즈nanoseconds 값을 결합하여 확장자를 붙여서 만든것)을 알아온다.
       
       
    }// end of public String doFileUpload(byte[] bytes, String originalFilename, String path) throws Exception-----------------------------------
@@ -138,8 +138,8 @@ public class FileManager {
    
    // === 파일 다운로드 하기 === //
    // filename : 서버에 저장된 파일명(현재의 년월일시분초에다가 현재 나노세컨즈nanoseconds 값을 결합하여 확장자를 붙여서 만든것)
-    // originalFilename : 클라이언트가 업로드한 파일명(파일명이 영어로 되어진 경우도 있지만 한글로 되어진 경우가 있다는 것에 유의하자)
-    // path : 서버에 저장된 경로
+   // originalFilename : 클라이언트가 업로드한 파일명(파일명이 영어로 되어진 경우도 있지만 한글로 되어진 경우가 있다는 것에 유의하자)
+   // path : 서버에 저장된 경로
    public boolean doFileDownload(String fileName, String originalFilename, String path, HttpServletResponse response) {
       
       String pathname = path + File.separator + fileName;
@@ -224,7 +224,7 @@ public class FileManager {
 
    // ===  파일 삭제하기 === //
    public void doFileDelete(String filename, String path) throws Exception {// filepath변수명을 path로 바꿈
-	   
+      
       String pathname = path + File.separator + filename;
       
       File file = new File(pathname);

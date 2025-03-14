@@ -5,7 +5,7 @@ String ctxPath = request.getContextPath();
 //     /syoffice
 %>
 <jsp:include page="../main/header.jsp" />
-<%--<jsp:include page="./select_form_modal.jsp" /> --%>
+<%-- <jsp:include page="./select_form_modal.jsp" /> --%>
 
 <link rel="stylesheet" href="<%=ctxPath%>/css/approval/approval_main.css">
 <%-- <script src="${pageContext.request.contextPath}/js/approval/common.js"></script> --%>
