@@ -77,6 +77,14 @@ public class Datasource_final_orauser5_Configuration {
         return tm;
     }
     
+    
+    @Bean  
+    public PlatformTransactionManager transactionManager_apr() {
+        DataSourceTransactionManager tm = new DataSourceTransactionManager();
+        tm.setDataSource(dataSource());
+        return tm;
+    }
+    
  /*
 	다음으로 transaction을 실행시키려고 하는 위치에서 다음의 예제와 같이 구현하시면 됩니다.
 	@Service
