@@ -210,7 +210,6 @@ nav.text-center {
 /* 페이징바의 숫자를 감싸고 있는 박스 */
 /* 가운데 정렬을 위해 사용 */
 div#pageNo_box {
-	width: 250px;
 	display: flex;
 	justify-content: center;
 	margin: 0 2%;	
@@ -218,21 +217,22 @@ div#pageNo_box {
 
 div#pageNo_box > li {
 	width: 50px;
-	margin: 0 2%;
+	margin: 1% 2%;
 }
 
 /* 페이징바의 숫자 요소들 (1 2 3 4 5) */
 a.pageNo {
 	font-size: 22px;
 	font-weight: lighter;	
-	border-bottom: solid 0.7px black;
 	color: gray;
 }
 
 /* 페이징바의 버튼을 감싸고 있는 박스 */
 div.pageBtn_box {
 	display: flex;
-	width: 60	px;
+	align-items: center;	
+	justify-content: center;
+	width: 60px;
 }
 
 div.pageBtn_box > li {
@@ -241,13 +241,15 @@ div.pageBtn_box > li {
 
 /* 페이지바의 이동하는 버튼 (< << > >>) */
 img.pageBtn {
-	width: 25px;
-	height: 30px;
+	margin-top: 2px;
+	width: 20px;
+	height: 25px;
 }
 
 a.active {
 	color: black;
-	font-weight: bold;
+	font-weight: normal;
+	border-bottom: solid 0.5px black;
 }
 
 
@@ -327,4 +329,5 @@ a.active {
 #editResourceForm .btn-secondary {
     background-color: #6c757d;
     color: white;
+    
 }
