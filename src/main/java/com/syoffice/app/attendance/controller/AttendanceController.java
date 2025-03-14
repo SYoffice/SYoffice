@@ -143,42 +143,7 @@ public class AttendanceController {
         return mav;
     }
     
-  /*  
-    @GetMapping("/leaveInfo")
-    @ResponseBody
-    public ResponseEntity<?> getLeaveInfo(HttpSession session) {
-        EmployeeVO loginuser = (EmployeeVO) session.getAttribute("loginuser");
-        if (loginuser == null) {
-            return ResponseEntity.status(401).body(Collections.singletonMap("error", "로그인이 필요합니다."));
-        }
-
-        String empId = loginuser.getEmp_id();
-        System.out.println("✅ API 요청 - empId: " + empId);
-
-        try {
-            Map<String, Object> leaveInfo = attendanceService.getLeaveInfo(empId);
-
-            // 🔹 MyBatis에서 받은 값 디버깅 로그
-            System.out.println("✅ Controller에서 받은 leaveInfo: " + leaveInfo);
-
-            int usedLeave = leaveInfo.get("usedLeave") != null ? Integer.parseInt(leaveInfo.get("usedLeave").toString()) : 0;
-            int leaveCount = leaveInfo.get("leaveCount") != null ? Integer.parseInt(leaveInfo.get("leaveCount").toString()) : 0;
-
-            System.out.println("🟢 Controller 변환 후 사용한 연차: " + usedLeave);
-            System.out.println("🟢 Controller 변환 후 잔여 연차: " + leaveCount);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("usedLeave", usedLeave);
-            response.put("leaveCount", leaveCount);
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            System.err.println("[ERROR] 연차 정보 조회 중 오류 발생: " + e.getMessage());
-            return ResponseEntity.status(500).body(Collections.singletonMap("error", "연차 정보 조회 중 오류 발생"));
-        }
-    }
-*/
-
+  
 
 
     @GetMapping("/leaveInfo")

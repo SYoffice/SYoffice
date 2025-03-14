@@ -73,7 +73,7 @@ public class IndexController {
         // 내 실적 가져오기 (최근 7일)
         paramMap.put("fk_emp_id", fk_emp_id);
         List<Map<String, Object>> weeklyPerformance = indexService.getWeeklyPerformance(paramMap);
-        System.out.println(">>> 내 일주일   = " + weeklyPerformance);
+        //System.out.println(">>> 내 일주일   = " + weeklyPerformance);
         
         // 내 실적과 부서 실적을 비교한 데이터 가져오기
         List<Map<String, Object>> performanceData = indexService.getDepartmentPerformance(loginUser.getEmp_id());

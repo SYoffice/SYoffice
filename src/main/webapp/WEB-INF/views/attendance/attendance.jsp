@@ -282,25 +282,18 @@
                 </div>
 
                 <!-- 연차 내역 탭 -->
-                <div class="tab-pane fade" id="leaveHistory">
+                <div class="tab-pane fade" id="leaveHistory" >
 			    <h4>연차 내역</h4>
 			
 			    <!-- 연차 요약 박스를 감싸는 컨테이너 -->
-			    <div class="summary-container">
-			        <div class="summary-box">
-			            <div>사용한 연차</div>
-			            <div>${weeklyAccumulated}</div>
-			        </div>
-			        <div class="summary-box">
-			            <div>잔여 연차</div>
-			            <div>${monthlyAccumulated}</div>
-			        </div>
-			    </div>
-			    <br>
+			   <a style="background-color:#BFD2FA" href="<%=ctxPath%>/approval/approval_setting" class="btn btn-primary">연차 신청</a>
+				       
+				        
+			    <br> <br>
                     <!-- 연차 내역 테이블 -->
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" >
                         <thead>
-                            <tr>
+                            <tr style="background-color:#e6eeff; color:black;">
                                 <th>연차 시작일</th>
                                 <th>연차 종료일</th>
                                 <th>연차 제목</th>
@@ -327,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error(" 캘린더 컨테이너를 찾을 수 없습니다.");
         return;
     }
-    console.log(" 캘린더 컨테이너 확인:", calendarEl);
+    //console.log(" 캘린더 컨테이너 확인:", calendarEl);
 
     calendar = new FullCalendar.Calendar(calendarEl, {
         googleCalendarApiKey: "YOUR_GOOGLE_API_KEY", // 구글 캘린더 API 키
@@ -355,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 근태 데이터(출퇴근, 결근 등) 조회
 function fetchCalendarEvents(year, month) {
     let empId = '<c:out value="${sessionScope.loginuser.emp_id}" />';
-    console.log(" [INFO] 근태 + 연차 AJAX 요청 시작: empId=" + empId + ", year=" + year + ", month=" + month);
+    //console.log(" [INFO] 근태 + 연차 AJAX 요청 시작: empId=" + empId + ", year=" + year + ", month=" + month);
 
     $.ajax({
         url: '<%=ctxPath%>/attendance/calendarEvents',
@@ -366,34 +359,39 @@ function fetchCalendarEvents(year, month) {
             month: month
         },
         success: function(response) {
-            console.log(" [SUCCESS] 근태 데이터 응답:", response);
+            //console.log(" [SUCCESS] 근태 데이터 응답:", response);
             let events = [];
             let today = new Date();
 
             response.forEach(function(item) {
                 let eventDate = new Date(item.attendDate);
-                if ((!item.attendStart || item.attendStart.trim() === "") &&
-                    (!item.attendEnd || item.attendEnd.trim() === "") &&
-                    item.attendStatus !== 5 && item.attendStatus !== 4) {
-                    return;
-                }
-                if (item.attendStatus == 6 && eventDate < today) {
+                // 결근 상태 처리 (attendStatus === 6)
+                if (item.attendStatus === 6) { 
                     events.push({
                         title: "결근",
                         start: item.attendDate,
-                        allDay: true,
-                        backgroundColor: "#ff4d4d"
+                        backgroundColor: "red"
                     });
                 }
+                // 지각 상태 처리 (attendStatus === 2)
+                else if (item.attendStatus === 2) {
+                    events.push({
+                        title: "지각",
+                        start: item.attendStart,
+                        backgroundColor: "#ffcc00"
+                    });
+                }
+                // 출근 상태 처리 (attendStatus !== 6, 2)
                 else if (item.attendStart) {
-                    let titleText = (item.attendStatus == 2) ? "지각" : "출근";
-                    let backgroundColor = (item.attendStatus == 2) ? "#ffcc00" : "green";
+                    let titleText = "출근";
+                    let backgroundColor = "green";
                     events.push({
                         title: titleText,
                         start: item.attendStart,
                         backgroundColor: backgroundColor
                     });
                 }
+                // 퇴근 상태 처리
                 if (item.attendEnd) {
                     events.push({
                         title: "퇴근",
@@ -403,14 +401,14 @@ function fetchCalendarEvents(year, month) {
                 }
             });
 
-         //  연차 데이터 추가
+            // 연차 데이터 추가
             $.ajax({
                 url: '<%=ctxPath%>/attendance/leaveInfo',
                 method: 'GET',
                 dataType: 'json',
                 data: { empId: empId },
                 success: function(leaveResponse) {
-                    console.log("연차 데이터 수신 완료:", leaveResponse);
+                    // console.log("연차 데이터 수신 완료:", leaveResponse);
 
                     // 테이블 내용 초기화
                     $("#leaveTableBody").empty();
@@ -446,15 +444,13 @@ function fetchCalendarEvents(year, month) {
                     // **캘린더에 이벤트 추가**
                     calendar.removeAllEvents();
                     calendar.addEventSource(events);
-                    calendar.refetchEvents();
                     calendar.render();
-                    console.log(" 최종 이벤트 리스트:", calendar.getEvents());
+                    //console.log(" 최종 이벤트 리스트:", calendar.getEvents());
                 },
                 error: function(error) {
                     console.error(" 연차 데이터 조회 실패:", error);
                 }
             });
-
 
         },
         error: function(request, status, error) {

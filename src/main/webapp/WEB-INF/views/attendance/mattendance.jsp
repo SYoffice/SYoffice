@@ -25,6 +25,7 @@
         .summary-box { display: flex; justify-content: space-around; padding: 20px; background: white; border-radius: 10px; margin-top: 20px; }
         .summary-item { text-align: center; }
         .table th, .table td { text-align: center; }
+        .summary-item {font-weight: bold;  /* 글씨를 두껍게 */}
     </style>
 </head>
 
@@ -75,15 +76,7 @@
     <div class="table-container">
         <h5 id="tableTitle"></h5>
         <table class="table">
-            <thead>
-                <tr>
-                    <th>사원명</th>
-                    <th>부서명</th>
-                    <th>날짜</th>
-                    <th id="timeColumn">출근</th>
-                    <th>퇴근</th>
-                    <th>상태</th>
-                </tr>
+            <thead id="tableHeader">
             </thead>
             <tbody id="dataTableBody"></tbody>
         </table>
@@ -91,7 +84,7 @@
 
     <script>
         $(document).ready(function() {
-            let today = new Date().toISOString().slice(0, 10);  // 현재 날짜 가져오기 (YYYY-MM-DD 형식)
+            let today = new Date().toISOString().slice(0, 10);  
             $("#selectedDate").val(today);
 
             // 지점 목록 가져오기
@@ -105,7 +98,7 @@
                 }
             });
 
-            // 부서 목록 가져오기 (지점 선택 후)
+            // 부서 목록 가져오기
             $("#branchSelect").change(function() {
                 let branchNo = $(this).val();
                 let deptSelect = $("#deptSelect").html('<option value="">부서 선택</option>').prop("disabled", true);
@@ -131,7 +124,6 @@
                 $("#typeSelect").prop("disabled", !$(this).val());
             });
 
-            //  조회 버튼 클릭 시 데이터 가져오기
             $("#searchBtn").click(function() {
                 let deptId = $("#deptSelect").val();
                 let type = $("#typeSelect").val();
@@ -151,16 +143,37 @@
                     dataType: "json",
                     data: { deptId: deptId, date: selectedDate, type: type },
                     success: function(data) {
-                        //console.log("📌 받은 데이터 확인:", data);  // 디버깅
                         renderTable(data, type);
                         updateSummary(data, type);
                     }
                 });
             });
 
-            //  테이블 렌더링
             function renderTable(list, type) {
+                let thead = $("#tableHeader").empty();
                 let tbody = $("#dataTableBody").empty();
+
+                if (type === "attendance") {
+                    thead.append(`
+                        <tr style="background-color:#e6eeff; color:black;">
+                            <th>사원명</th>
+                            <th>부서명</th>
+                            <th>날짜</th>
+                            <th>출근</th>
+                            <th>퇴근</th>
+                            <th>상태</th>
+                        </tr>
+                    `);
+                } else {
+                    thead.append(`
+                        <tr style="background-color:#e6eeff; color:black;">
+                            <th>사원명</th>
+                            <th>부서명</th>
+                            <th>연차 시작</th>
+                            <th>연차 종료</th>
+                        </tr>
+                    `);
+                }
 
                 if (!list || list.length === 0) {
                     tbody.append("<tr><td colspan='6'>데이터 없음</td></tr>");
@@ -168,31 +181,55 @@
                 }
 
                 list.forEach(item => {
-                    let row = `<tr>
-                        <td>\${item.EMPNAME || "-"}</td>
-                        <td>\${item.DEPTNAME || "-"}</td>
-                        <td>\${item.ATTENDDATE || "-"}</td>   
-                        <td>\${item.STARTTIME || "-"}</td>
-                        <td>\${item.ENDTIME || "-"}</td>
-                        <td>\${item.STATUS || "-"}</td>
-                    </tr>`;
-                    tbody.append(row);
+                    if (type === "attendance") {
+                        tbody.append(`<tr>
+                        		<td>\${item.EMPNAME || "-"}</td> 
+                        		<td>\${item.DEPTNAME || "-"}</td> 
+                        		<td>\${item.ATTENDDATE || "-"}</td> 
+                        		<td>\${item.STARTTIME || "-"}</td> 
+                        		<td>\${item.ENDTIME || "-"}</td> 
+                        		<td>\${item.STATUS || "-"}</td>
+                        </tr>`);
+                    } else {
+                        tbody.append(`<tr>
+                       		<td>\${item.EMPNAME || "-"}</td> 
+                       		<td>\${item.DEPTNAME || "-"}</td> 
+                       		<td>\${item.STARTTIME || "-"}</td> 
+                    		<td>\${item.ENDTIME || "-"}</td> 
+                        </tr>`);
+                    }
                 });
-
-                //console.log(" 테이블 렌더링 완료");
             }
 
-            //  근태/연차 요약 데이터 업데이트
             function updateSummary(data, type) {
-                let missedCheckIn = 0, missedCheckOut = 0, absentOrLeave = 0;
+                let missedCheckInCount = 0;
+                let missedCheckOutCount = 0;
+                let leaveCount = 0;
+
                 data.forEach(item => {
-                    if (item.STARTTIME === "-") missedCheckIn++;
-                    if (item.ENDTIME === "-") missedCheckOut++;
-                    if (item.STATUS === "결근" || item.STATUS === "연차") absentOrLeave++;
+                    // 출근 미체크 (출근 기록이 없는 경우)
+                    if (type === "attendance" && !item.STARTTIME) {
+                        missedCheckInCount++;
+                    }
+                    
+                    // 퇴근 미체크 (퇴근 기록이 없는 경우)
+                    if (type === "attendance" && !item.ENDTIME) {
+                        missedCheckOutCount++;
+                    }
+
+                    // 결근 또는 연차 사용
+                    if (type === "attendance" && item.STATUS === "결근") {
+                        leaveCount++;
+                    }
+                    if (type === "leave") {
+                        leaveCount++;
+                    }
                 });
-                $("#missedCheckIn").text(missedCheckIn);
-                $("#missedCheckOut").text(missedCheckOut);
-                $("#absentOrLeave").text(absentOrLeave);
+
+                // 업데이트된 값들 설정
+                $("#missedCheckIn").text(missedCheckInCount);
+                $("#missedCheckOut").text(missedCheckOutCount);
+                $("#absentOrLeave").text(leaveCount);
             }
         });
     </script>

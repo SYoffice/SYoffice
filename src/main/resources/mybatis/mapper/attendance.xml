@@ -13,21 +13,46 @@
 		    d.dept_name AS deptName,
 		    lf.leave_startdate AS leaveStart,
 		    lf.leave_enddate AS leaveEnd,
-		    lf.leave_subject AS leaveSubject
+		    lf.leave_subject AS leaveSubject,
+		    
+		    -- 사용한 연차
+		    (SELECT COUNT(*) 
+		     FROM tbl_leaveform 
+		     WHERE fk_doc_no IN (
+		         SELECT doc_no 
+		         FROM tbl_document 
+		         WHERE fk_emp_id = e.emp_id
+		     )) AS used_leave,
+		
+		    -- 잔여 연차
+		    (SELECT leave_count 
+		     FROM tbl_employee 
+		     WHERE emp_id = e.emp_id) AS remaining_leave
+		
 		FROM tbl_leaveform lf
 		LEFT JOIN tbl_document doc ON lf.fk_doc_no = doc.doc_no
 		LEFT JOIN tbl_employee e ON doc.fk_emp_id = e.emp_id
 		LEFT JOIN tbl_department d ON e.fk_dept_id = d.dept_id
 		WHERE e.emp_id = #{empId}
 		ORDER BY lf.leave_startdate DESC
+
     </select>
 
-    <!-- 사용한 연차 조회 -->
-    <select id="selectUsedLeave" parameterType="string" resultType="int">
-        SELECT COUNT(*) FROM tbl_leaveform
-        WHERE fk_doc_no IN (
-            SELECT doc_no FROM tbl_document WHERE fk_emp_id = #{empId}
-        )
+    <!-- 잔여, 사용 연차 조회 -->
+    <select id="getLeaveInfono" parameterType="string" resultType="int">
+        SELECT 
+		    (SELECT COUNT(*) 
+		     FROM tbl_leaveform 
+		     WHERE fk_doc_no IN (
+		         SELECT doc_no 
+		         FROM tbl_document 
+		         WHERE fk_emp_id = #{empId}
+		     )) AS used_leave,  -- 사용한 연차
+		
+		    (SELECT leave_count 
+		     FROM TBL_EMPLOYEE 
+		     WHERE emp_id = #{empId}) AS remaining_leave  -- 잔여 연차
+		FROM DUAL
     </select>
 
     <!-- 오늘의 출퇴근 정보 조회 -->
@@ -45,14 +70,14 @@
     </select>
 
     <!-- 출근 (UPDATE 방식) -->
-	<update id="checkIn" parameterType="string">
-	    UPDATE tbl_attendance
-	    SET attend_start = SYSDATE,
-	        attend_status = CASE WHEN SYSDATE > TRUNC(SYSDATE) + (9/24) THEN 2 ELSE 1 END
-	    WHERE fk_emp_id = #{empId}
-	      AND attend_date = TRUNC(SYSDATE)
-	      AND attend_start IS NULL
-	</update>
+   <update id="checkIn" parameterType="string">
+       UPDATE tbl_attendance
+       SET attend_start = SYSDATE,
+           attend_status = CASE WHEN SYSDATE > TRUNC(SYSDATE) + (9/24) THEN 2 ELSE 1 END
+       WHERE fk_emp_id = #{empId}
+         AND attend_date = TRUNC(SYSDATE)
+         AND attend_start IS NULL
+   </update>
 
 
     <!-- 퇴근 -->
@@ -69,32 +94,37 @@
     <select id="getCalendarEvents" parameterType="map" resultType="com.syoffice.app.attendance.domain.AttendanceVO">
         <![CDATA[
         SELECT 
-            d.dt AS attendDate,
-            t.attend_start AS attendStart,
-            t.attend_end   AS attendEnd,
-            NVL(t.attend_status, 4) AS attendStatus
-        FROM (
-            SELECT TRUNC(TO_DATE(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01', 'YYYY-MM-DD'), 'MONTH') + (LEVEL - 1) AS dt
-            FROM DUAL
-            CONNECT BY LEVEL &lt;= LAST_DAY(TO_DATE(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01', 'YYYY-MM-DD')) 
-                                  - TRUNC(TO_DATE(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01', 'YYYY-MM-DD'), 'MONTH') + 1
-        ) d
-        LEFT JOIN tbl_attendance t
-            ON t.attend_date = d.dt
-            AND t.fk_emp_id  = #{empId}
-        UNION ALL
-        SELECT 
-            leave_startdate AS attendDate,
-            NULL AS attendStart,
-            NULL AS attendEnd,
-            5 AS attendStatus
-        FROM tbl_leaveform
-        WHERE fk_doc_no IN (
-            SELECT doc_no FROM tbl_document WHERE fk_emp_id = #{empId}
-        )
-        AND leave_startdate &gt;= TO_DATE(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01', 'YYYY-MM-DD')
-        AND leave_startdate &lt;= LAST_DAY(TO_DATE(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01', 'YYYY-MM-DD'))
-        ORDER BY attendDate
+		    d.dt AS attendDate,
+		    t.attend_start AS attendStart,
+		    t.attend_end   AS attendEnd,
+		    CASE 
+		        WHEN t.attend_status IS NULL THEN 4
+		        WHEN t.attend_status = 6 THEN 6  -- attend_status가 6일 경우 6을 반환
+		        ELSE t.attend_status
+		    END AS attendStatus
+		FROM (
+		    SELECT TRUNC(TO_DATE(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01', 'YYYY-MM-DD'), 'MONTH') + (LEVEL - 1) AS dt
+		    FROM DUAL
+		    CONNECT BY LEVEL <= LAST_DAY(TO_DATE(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01', 'YYYY-MM-DD')) 
+		                              - TRUNC(TO_DATE(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01', 'YYYY-MM-DD'), 'MONTH') + 1
+		) d
+		LEFT JOIN tbl_attendance t
+		    ON t.attend_date = d.dt
+		    AND t.fk_emp_id  = #{empId}
+		UNION ALL
+		SELECT 
+		    leave_startdate AS attendDate,
+		    NULL AS attendStart,
+		    NULL AS attendEnd,
+		    5 AS attendStatus
+		FROM tbl_leaveform
+		WHERE fk_doc_no IN (
+		    SELECT doc_no FROM tbl_document WHERE fk_emp_id = #{empId}
+		)
+		AND leave_startdate >= TO_DATE(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01', 'YYYY-MM-DD')
+		AND leave_startdate <= LAST_DAY(TO_DATE(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01', 'YYYY-MM-DD'))
+		ORDER BY attendDate
+
         ]]>
     </select>
 
@@ -124,20 +154,20 @@
 
     <!-- 연차 -->
   <!-- 연차 상세 목록 조회 -->
-	<select id="selectLeaveInfo" parameterType="string" resultType="map">
-	    SELECT 
-	        TO_CHAR(leave_startdate,'YYYY-MM-DD') AS leaveStart,
-	        TO_CHAR(leave_enddate,'YYYY-MM-DD')   AS leaveEnd,
-	        leave_subject   AS leaveSubject,
-	        leave_content   AS leaveContent
-	    FROM tbl_leaveform
-	    WHERE fk_doc_no IN (
-	        SELECT doc_no 
-	        FROM tbl_document 
-	        WHERE fk_emp_id = #{empId}
-	    )
-	    ORDER BY leave_startdate DESC
-	</select>
+   <select id="selectLeaveInfo" parameterType="string" resultType="map">
+       SELECT 
+           TO_CHAR(leave_startdate,'YYYY-MM-DD') AS leaveStart,
+           TO_CHAR(leave_enddate,'YYYY-MM-DD')   AS leaveEnd,
+           leave_subject   AS leaveSubject,
+           leave_content   AS leaveContent
+       FROM tbl_leaveform
+       WHERE fk_doc_no IN (
+           SELECT doc_no 
+           FROM tbl_document 
+           WHERE fk_emp_id = #{empId}
+       )
+       ORDER BY leave_startdate DESC
+   </select>
 
   
     <!--  조직도(지점 + 부서)만 가져오도록 수정 -->
@@ -186,37 +216,37 @@
     <!--  특정 지점의 부서 목록 조회 -->
     <select id="selectDeptListByBranch" parameterType="string" resultType="map">
         SELECT DISTINCT d.dept_id, d.dept_name
-		FROM tbl_department d
-		JOIN tbl_employee e ON d.dept_id = e.fk_dept_id
-		JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
-		WHERE b.branch_no = #{branch_no}
+      FROM tbl_department d
+      JOIN tbl_employee e ON d.dept_id = e.fk_dept_id
+      JOIN tbl_branch b ON e.fk_branch_no = b.branch_no
+      WHERE b.branch_no = #{branch_no}
     </select>
 
     <!--  특정 부서의 근태 내역 조회 -->
     <select id="selectDeptAttendance" parameterType="map" resultType="map">
-	    SELECT 
-		    e.emp_id AS EMPID, 
-		    e.name AS EMPNAME, 
-		    d.dept_name AS DEPTNAME,
-		    TO_CHAR(a.attend_date, 'YYYY-MM-DD') AS ATTENDDATE, 
-		    NVL(TO_CHAR(a.attend_start, 'HH24:MI'), '-') AS STARTTIME,
-		    NVL(TO_CHAR(a.attend_end, 'HH24:MI'), '-') AS ENDTIME,
-		    CASE 
-		        WHEN a.attend_status = 1 THEN '출근'
-		        WHEN a.attend_status = 2 THEN '지각'
-		        WHEN a.attend_status = 3 THEN '조퇴'
-		        WHEN a.attend_status = 4 THEN '출근 전'
-		        WHEN a.attend_status = 6 THEN '결근'
-		        ELSE '미체크'
-		    END AS STATUS
-		FROM tbl_employee e
-		JOIN tbl_attendance a ON e.emp_id = a.fk_emp_id
-		JOIN tbl_department d ON e.fk_dept_id = d.dept_id
-		WHERE d.dept_id = #{deptId}  
-		  AND a.attend_date = TO_DATE(#{date}, 'YYYY-MM-DD')
-		ORDER BY a.attend_date DESC
+       SELECT 
+          e.emp_id AS EMPID, 
+          e.name AS EMPNAME, 
+          d.dept_name AS DEPTNAME,
+          TO_CHAR(a.attend_date, 'YYYY-MM-DD') AS ATTENDDATE, 
+          NVL(TO_CHAR(a.attend_start, 'HH24:MI'), '-') AS STARTTIME,
+          NVL(TO_CHAR(a.attend_end, 'HH24:MI'), '-') AS ENDTIME,
+          CASE 
+              WHEN a.attend_status = 1 THEN '출근'
+              WHEN a.attend_status = 2 THEN '지각'
+              WHEN a.attend_status = 3 THEN '퇴근'
+              WHEN a.attend_status = 4 THEN '출근 전'
+              WHEN a.attend_status = 6 THEN '결근'
+              ELSE '미체크'
+          END AS STATUS
+      FROM tbl_employee e
+      JOIN tbl_attendance a ON e.emp_id = a.fk_emp_id
+      JOIN tbl_department d ON e.fk_dept_id = d.dept_id
+      WHERE d.dept_id = #{deptId}  
+        AND a.attend_date = TO_DATE(#{date}, 'YYYY-MM-DD')
+      ORDER BY a.attend_date DESC
 
-	</select>
+   </select>
     
     
     
@@ -224,19 +254,19 @@
     <!--  특정 부서의 연차 내역 조회 -->
     <select id="selectDeptLeaveHistory" parameterType="map" resultType="map">
         SELECT 
-		    e.emp_id AS empId, 
-		    e.name AS empName, 
-		    d.dept_name AS deptName,
-		    lf.leave_startdate AS leaveStart,
-		    lf.leave_enddate AS leaveEnd,
-		    lf.leave_subject AS leaveSubject
-		FROM tbl_leaveform lf
-		LEFT JOIN tbl_document doc ON lf.fk_doc_no = doc.doc_no
-		LEFT JOIN tbl_employee e ON doc.fk_emp_id = e.emp_id
-		LEFT JOIN tbl_department d ON e.fk_dept_id = d.dept_id
-		WHERE d.dept_id = #{deptId} 
-		  AND lf.leave_startdate BETWEEN TRUNC(SYSDATE) - 7 AND TRUNC(SYSDATE)
-		ORDER BY lf.leave_startdate DESC
+          e.emp_id AS empId, 
+          e.name AS empName, 
+          d.dept_name AS deptName,
+          TO_CHAR(lf.leave_startdate,'YYYY-MM-DD') AS STARTTIME,
+          TO_CHAR(lf.leave_enddate,'YYYY-MM-DD') AS ENDTIME,
+          lf.leave_subject AS leaveSubject
+      FROM tbl_leaveform lf
+      LEFT JOIN tbl_document doc ON lf.fk_doc_no = doc.doc_no
+      LEFT JOIN tbl_employee e ON doc.fk_emp_id = e.emp_id
+      LEFT JOIN tbl_department d ON e.fk_dept_id = d.dept_id
+      WHERE d.dept_id = #{deptId} 
+        AND lf.leave_startdate BETWEEN TRUNC(SYSDATE) - 7 AND TRUNC(SYSDATE)
+      ORDER BY lf.leave_startdate DESC
 
     </select>
     
@@ -244,14 +274,14 @@
     
     <!--  출근 전 스케쥴러 상태(4) -->
     <insert id="insertDailyAttendance">
-	    INSERT INTO tbl_attendance (attend_no, attend_date, fk_emp_id, attend_status)
-	    SELECT attend_seq.NEXTVAL, TRUNC(SYSDATE), e.emp_id, 4  -- 4 = 출근 전
-	    FROM tbl_employee e
-	    WHERE NOT EXISTS (
-	        SELECT 1 FROM tbl_attendance a
-	        WHERE a.fk_emp_id = e.emp_id
-	        AND a.attend_date = TRUNC(SYSDATE)
-	    )
+       INSERT INTO tbl_attendance (attend_no, attend_date, fk_emp_id, attend_status)
+       SELECT attend_seq.NEXTVAL, TRUNC(SYSDATE), e.emp_id, 4  -- 4 = 출근 전
+       FROM tbl_employee e
+       WHERE NOT EXISTS (
+           SELECT 1 FROM tbl_attendance a
+           WHERE a.fk_emp_id = e.emp_id
+           AND a.attend_date = TRUNC(SYSDATE)
+       )
    </insert>
    
    <!--  모든 직원의 연차 하루 증가 -->
@@ -261,27 +291,27 @@
     </update>
        
     <!--  모든 직원의 결근 처리 (공휴일 & 주말 제외) -->
-	<update id="updateAbsenceForEmployees">
-	   UPDATE tbl_attendance a
-		SET a.attend_status = 6
-		WHERE a.attend_start IS NULL
-		  AND a.attend_end IS NULL
-		  AND a.attend_status = 4
-		  AND a.attend_date = TRUNC(SYSDATE)
-		  AND NOT EXISTS (
-		      SELECT 1 FROM tbl_leaveform l
-		      WHERE l.leave_startdate &lt;= a.attend_date
-		        AND l.leave_enddate &gt;= a.attend_date
-		        AND l.fk_doc_no IN (
-		            SELECT doc_no FROM tbl_document WHERE fk_emp_id = a.fk_emp_id
-		        )
-		  )
-		  AND TO_CHAR(a.attend_date, 'D') NOT IN (1, 7)
-	</update>
+   <update id="updateAbsenceForEmployees">
+      UPDATE tbl_attendance a
+      SET a.attend_status = 6
+      WHERE a.attend_start IS NULL
+        AND a.attend_end IS NULL
+        AND a.attend_status = 4
+        AND a.attend_date = TRUNC(SYSDATE)
+        AND NOT EXISTS (
+            SELECT 1 FROM tbl_leaveform l
+            WHERE l.leave_startdate &lt;= a.attend_date
+              AND l.leave_enddate &gt;= a.attend_date
+              AND l.fk_doc_no IN (
+                  SELECT doc_no FROM tbl_document WHERE fk_emp_id = a.fk_emp_id
+              )
+        )
+        AND TO_CHAR(a.attend_date, 'D') NOT IN (1, 7)
+   </update>
 
 
-	
-	
+   
+   
 
     
       
