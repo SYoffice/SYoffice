@@ -520,6 +520,14 @@
     	VALUES (resource_seq.NEXTVAL, #{fk_category_no}, #{resource_name}, 1)
 	</insert>
 	
+	<!-- 자원 예약 여부 확인 -->
+	<select id="checkReservation" parameterType="String" resultType="Integer">
+		SELECT COUNT(*)
+		FROM tbl_reservation
+    	WHERE fk_resource_no = #{resource_no}
+		AND reserv_end &gt; SYSDATE
+	</select>
+	
 	<!-- 자원수정 -->
 	<update id="updateResource" parameterType="HashMap">
 	    UPDATE tbl_resource

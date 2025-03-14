@@ -255,8 +255,20 @@ function deleteResource(resource_no) {
 					</c:if>
 					<td>
 						<div class="btn-container">
-					        <button type="button" class="btn btn-sm btn-primary" id="editBtn" onclick="editResource('${resource.resource_no}', '${resource.resource_name}', '${resource.resource_status}', '${resource.category_name}', '${resource.fk_category_no}')">수정</button>
-			                <button type="button" class="btn btn-sm btn-danger" id="deleteBtn" onclick="deleteResource('${resource.resource_no}')">삭제</button>
+					        <c:choose>
+			                    <c:when test="${requestScope.reservationCountMap[resource.resource_no] > 0}">
+			                        <span style="color: orange; font-weight: bold;">예약중</span>
+			                    </c:when>
+			
+			                    <c:otherwise>
+			                        <button type="button" class="btn btn-sm btn-primary" id="editBtn" onclick="editResource('${resource.resource_no}', '${resource.resource_name}', '${resource.resource_status}', '${resource.category_name}', '${resource.fk_category_no}')">
+			                            수정
+			                        </button>
+			                        <button type="button" class="btn btn-sm btn-danger" id="deleteBtn" onclick="deleteResource('${resource.resource_no}')">
+			                            삭제
+			                        </button>
+			                    </c:otherwise>
+			                </c:choose>
 					    </div>
 		            </td>
 				</tr>

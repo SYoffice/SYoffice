@@ -444,6 +444,13 @@ public class HrService_imple implements HrService {
 		return result;
 	}// end of public int registerResource(Map<String, String> paraMap) -----
 	
+	// 예약 여부 확인
+	@Override
+	public int checkReservation(String resource_no) {
+		int result = dao.checkReservation(resource_no);
+		return result;
+	}// end of public int checkResrvation(String resource_no) -----
+	
 	// 자원 수정
 	@Override
 	public int updateResource(Map<String, String> paraMap) {
