@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="com.syoffice.app.approval.model.ApprovalDAO">
+
+	<!-- 결재선 조회 -->
+	<select id="selectAprLineList" parameterType="String" resultType="ApprovalLineVO">
+		SELECT
+		    a.apline_no,
+		    a.fk_emp_id,
+		    a.apline_name,
+		    a.apline_approver,
+		    a.apline_approver2,
+		    a.apline_approver3,
+		    e1.name as apline_approver_name,
+		    e2.name as apline_approver2_name,
+		    e3.name as apline_approver3_name,
+		    COALESCE(e1.name, '') || 
+		    CASE 
+		    	WHEN e2.name IS NULL THEN ''
+		    	ELSE ' - ' || COALESCE(e2.name, '')
+		    END ||
+		    CASE 
+		    	WHEN e3.name IS NULL THEN ''
+		    	ELSE ' - ' || COALESCE(e3.name, '')
+		    END AS approval_chain_names
+		FROM tbl_approval_line a
+		LEFT JOIN tbl_employee e1 ON a.apline_approver = e1.emp_id
+		LEFT JOIN tbl_employee e2 ON a.apline_approver2 = e2.emp_id
+		LEFT JOIN tbl_employee e3 ON a.apline_approver3 = e3.emp_id
+		WHERE a.fk_emp_id = #{fk_emp_id}
+		order by apline_no desc
+	</select>
+	
+	<!-- 결재선 등록 -->
+	<insert id="registerApprovalLine" parameterType="HashMap">
+	    	insert into tbl_approval_line (apline_no, fk_emp_id, apline_name, apline_approver
+		        <if test="apline_approver2 != null">
+		            , apline_approver2
+		        </if>
+		        <if test="apline_approver3 != null">
+		            , apline_approver3
+		        </if>
+	    	)
+	    values (apline_seq.NEXTVAL, #{fk_emp_id}, #{apline_name}, #{apline_approver}
+	        <if test="apline_approver2 != null">
+	            , #{apline_approver2}
+	        </if>
+	        <if test="apline_approver3 != null">
+	            , #{apline_approver3}
+	        </if>
+	    )
+	</insert>
+	
+	
+	<!-- 자동 결재선 삭제 -->
+	<delete id="deleteAprLine">
+	    DELETE FROM tbl_approval_line
+	    WHERE apline_no IN
+	    <foreach collection="checkedList" index="index" open="(" separator="," close=")">
+	        '${checkedList[index]}'
+	    </foreach>
+	</delete>
+	
+	<!-- seq -->
+	<select id="getDraftKey" resultType="int">
+		SELECT draft_seq.NEXTVAL FROM dual
+	</select>
+	
+	<select id="getLeaveKey" resultType="int">
+		SELECT leave_seq.NEXTVAL FROM dual
+	</select>
+	
+	<!-- 품의서 등록 -->
+	<insert id="insertDraft" parameterType="HashMap">
+		insert into tbl_draftform (draft_no, draft_subject, draft_content)
+		values (#{draft_no}, #{draft_subject}, #{draft_content})
+	</insert>
+	
+	<!-- 근태신청서 등록 -->
+	<insert id="insertLeave" parameterType="HashMap">
+		insert into tbl_leaveform (leave_no, leave_subject, leave_startdate, leave_enddate, leave_content, type)
+		values (#{leave_no}, #{leave_subject}, #{leave_startdate}, #{leave_enddate}, #{leave_content}, #{leave_type})
+	</insert>
+
+	
+	<!-- 전자결재 테이블 등록 -->
+	<insert id="insertApr" parameterType="HashMap">
+		insert into tbl_approval (
+				apr_no, apr_startdate, apr_status, apr_important, type, fk_emp_id,
+				fk_leave_no, fk_draft_no, fk_expend_no, apr_approver, apr_approver2, apr_approver3)
+		values (apr_seq.NEXTVAL, sysdate, 1, #{apr_important}, #{type}, #{fk_emp_id},
+				<if test="fk_leave_no != null">
+					#{fk_leave_no},
+				</if>
+				<if test="fk_leave_no == null">
+					null,
+				</if>
+				<if test="fk_draft_no != null">
+					#{fk_draft_no}, 
+				</if>
+				<if test="fk_draft_no == null">
+					null,
+				</if>
+				null, #{apr_approver}, #{apr_approver2}, #{apr_approver3})
+	</insert>
+	
+	<!-- 내 apr_status 별 전자결재 문서 리스트 수 조회 -->
+	<select id="selectAprCount" parameterType="HashMap" resultType="int">
+	    SELECT count(*)
+        FROM tbl_approval
+        WHERE fk_emp_id = #{emp_id}
+        <if test="apr_status != 0">
+		    AND apr_status = #{apr_status}
+		</if>
+	</select>
+	
+	<!-- 내 apr_status 별 전자결재 문서 리스트 조회 -->
+	<select id="selectAprList" parameterType="HashMap" resultType="ApprovalVO">
+		SELECT 
+			A.apr_no,
+		    A.apr_startdate, 
+		    A.apr_enddate,
+		    df.draft_no, 
+		    A.type,
+		    A.apr_comment,
+		    typename,
+		    statusname,
+		    df.draft_subject, 
+		    A.apr_important,
+		    A.rno,
+		    lf.leave_subject,
+		    lf.leave_content,
+		    lf.type as leave_type,
+		    lf.leave_startdate,
+		    lf.leave_enddate
+		FROM 
+		    (
+		        SELECT 
+		            ROW_NUMBER() OVER (ORDER BY A.apr_no DESC) AS rno,
+		            TO_CHAR(A.apr_startdate, 'YYYY-MM-DD') AS apr_startdate,
+		            TO_CHAR(A.apr_enddate, 'YYYY-MM-DD') AS apr_enddate,
+		            A.type, 
+		            CASE
+		                WHEN A.type = 1 THEN '업무품의서'
+		                WHEN A.type = 2 THEN '지출결의서'
+		                WHEN A.type = 3 THEN '근태신청서'
+		            END AS typename,
+		            CASE
+		                WHEN A.apr_status = 1 THEN '기안'
+		                WHEN A.apr_status = 2 THEN '진행중'
+		                WHEN A.apr_status = 4 THEN '전결'
+		                WHEN A.apr_status = 5 THEN '반려'
+		            END AS statusname,
+		            A.apr_important,
+		            A.apr_no,
+		            A.fk_draft_no,
+		            A.fk_leave_no,
+		            A.fk_emp_id,
+		            A.apr_status,
+		    		A.apr_comment
+		        FROM tbl_approval A
+		        WHERE A.fk_emp_id = #{emp_id}
+		        <if test="apr_status != 0">
+				    AND A.apr_status = #{apr_status}
+				</if>
+		    ) A
+		LEFT JOIN tbl_draftform df 
+		ON A.fk_draft_no = df.draft_no
+		LEFT JOIN tbl_leaveform lf 
+		ON A.fk_leave_no = lf.leave_no
+		WHERE 
+		    <if test="startRno != null">
+				A.rno BETWEEN #{startRno} AND #{endRno}
+			</if>
+			<if test="startRno == null">
+				A.rno BETWEEN 1 AND 5
+			</if>
+		ORDER BY A.apr_important DESC, A.apr_no DESC
+	</select>
+	
+	<!-- 내가 결재해야할 문서 리스트 수 조회 -->
+	<select id="selectMyAprCount" parameterType="HashMap" resultType="int">
+		SELECT count(*)
+	    FROM tbl_approval A 
+	    LEFT JOIN tbl_draftform DF ON DF.draft_no = A.fk_draft_no
+	    LEFT JOIN tbl_leaveform LF ON LF.leave_no = A.fk_leave_no
+	    JOIN tbl_employee E ON E.emp_id = A.FK_EMP_ID
+	    JOIN TBL_department D ON D.dept_id = E.fk_dept_id
+	    WHERE (apr_approver = #{emp_id} OR apr_approver2 = #{emp_id} OR apr_approver3 = #{emp_id}) 
+	      AND A.apr_status != 4
+	    <if test="type != null and type != 0">
+	        AND A.type = #{type}
+	    </if>
+	    <if test="emp_name != null and emp_name != ''">
+	        AND e.name LIKE #{emp_name} || '%'
+	    </if>
+	    <if test="dept_name != null and dept_name != ''">
+	        AND D.dept_name LIKE #{dept_name} || '%'
+	    </if>
+	</select>
+	
+	<!-- 내가 결재해야할 문서 리스트 조회 -->
+	<select id="selectMyAprList" parameterType="HashMap" resultType="ApprovalVO">
+		SELECT * FROM (
+		    SELECT A.type, DF.draft_subject, LF.leave_subject, e.name, TO_char(A.apr_startdate, 'YYYY-MM-DD') as apr_startdate,
+		           CASE
+		               WHEN A.type = 1 THEN '업무품의서'
+		               WHEN A.type = 2 THEN '지출결의서'
+		               WHEN A.type = 3 THEN '근태신청서'
+		           END AS typename,
+		           A.apr_no,
+		           d.dept_name,
+		           ROW_NUMBER() OVER (ORDER BY A.apr_startdate DESC) AS rno
+		    FROM tbl_approval A 
+		    LEFT JOIN tbl_draftform DF ON DF.draft_no = A.fk_draft_no
+		    LEFT JOIN tbl_leaveform LF ON LF.leave_no = A.fk_leave_no
+		    JOIN tbl_employee E ON E.emp_id = A.FK_EMP_ID
+		    JOIN TBL_department D ON D.dept_id = E.fk_dept_id
+		    WHERE (apr_approver = #{emp_id} OR apr_approver2 = #{emp_id} OR apr_approver3 = #{emp_id}) 
+		      AND A.apr_status NOT IN (4, 5)
+		    <if test="type != null and type != 0">
+		        AND A.type = #{type}
+		    </if>
+		    <if test="emp_name != null and emp_name != ''">
+		        AND e.name LIKE #{emp_name} || '%'
+		    </if>
+		    <if test="dept_name != null and dept_name != ''">
+		        AND D.dept_name LIKE #{dept_name} || '%'
+		    </if>
+		    ORDER BY A.apr_startdate DESC
+		)
+		WHERE 
+		<if test="startRno != null">
+			rno BETWEEN #{startRno} AND #{endRno}
+		</if>
+		<if test="startRno == null">
+			rno &lt;= 4
+		</if>
+	</select>
+	
+	<!-- 팀문서함(팀내 기안한 문서 중 전결된 문서) 리스트 총 개수 조회 -->
+	<select id="selectTeamAprCount" parameterType="HashMap" resultType="int">
+		SELECT count(*)
+		FROM 
+		    (
+		        SELECT 
+		            ROW_NUMBER() OVER (ORDER BY A.apr_no DESC) AS rno,
+		            TO_CHAR(A.apr_startdate, 'YYYY-MM-DD') AS apr_startdate,
+		            TO_CHAR(A.apr_enddate, 'YYYY-MM-DD') AS apr_enddate,
+		            A.type, 
+		            CASE
+		                WHEN A.type = 1 THEN '업무품의서'
+		                WHEN A.type = 2 THEN '지출결의서'
+		                WHEN A.type = 3 THEN '근태신청서'
+		            END AS typename,
+		            A.apr_important,
+		            A.apr_no,
+		            A.fk_draft_no,
+		            A.fk_leave_no,
+		            A.fk_emp_id,
+		            A.apr_status
+		        FROM tbl_approval A
+		        WHERE A.apr_status = 4
+			    <if test='type != null'>
+			        AND A.type = #{type}
+			    </if>
+		    ) A
+		LEFT JOIN tbl_draftform df 
+		ON A.fk_draft_no = df.draft_no
+		LEFT JOIN tbl_leaveform lf
+		ON A.fk_leave_no = lf.leave_no
+		JOIN tbl_employee E
+		ON E.emp_id = A.fk_emp_id
+		JOIN TBL_department D
+		ON D.dept_id = E.fk_dept_id
+		WHERE E.fk_dept_id = (SELECT FK_DEPT_ID FROM TBL_EMPLOYEE WHERE EMP_ID = #{emp_id}) 
+		    <if test="emp_name != null and emp_name != ''">
+		        AND E.name LIKE #{emp_name} || '%'
+		    </if>
+	</select>
+	
+	<!-- 팀문서함(팀내 기안한 문서 중 전결된 문서) 리스트 조회 -->
+	<select id="selectTeamAprList" parameterType="HashMap" resultType="ApprovalVO">
+		SELECT 
+		    A.apr_no,
+		    A.apr_startdate, 
+		    A.apr_enddate,
+		    A.draft_no, 
+		    A.type, 
+		    A.typename, 
+		    A.draft_subject,
+		    A.leave_subject,
+		    A.apr_important,
+		    A.NAME,
+		    A.rno,
+		    A.DEPT_ID
+		FROM 
+		    (
+		        SELECT 
+		            ROW_NUMBER() OVER (ORDER BY A.apr_no DESC) AS rno,
+		            TO_CHAR(A.apr_startdate, 'YYYY-MM-DD') AS apr_startdate,
+		            TO_CHAR(A.apr_enddate, 'YYYY-MM-DD') AS apr_enddate,
+		            A.type, 
+		            CASE
+		                WHEN A.type = 1 THEN '업무품의서'
+		                WHEN A.type = 2 THEN '지출결의서'
+		                WHEN A.type = 3 THEN '근태신청서'
+		            END AS typename,
+		            A.apr_important,
+		            A.apr_no,
+		            A.fk_draft_no,
+		            A.fk_leave_no,
+		            A.fk_emp_id,
+		            A.apr_status,
+		            df.draft_no,
+					df.draft_subject,
+		            lf.leave_no,
+					lf.leave_subject,
+		            D.*, E.*
+		        FROM tbl_approval A
+				LEFT JOIN tbl_draftform df 
+				ON A.fk_draft_no = df.draft_no
+				LEFT JOIN tbl_leaveform lf
+				ON A.fk_leave_no = lf.leave_no
+		        JOIN tbl_employee E
+		        ON E.emp_id = A.fk_emp_id
+		        JOIN TBL_department D
+		        ON D.dept_id = E.fk_dept_id
+		        WHERE A.apr_status = 4
+		        AND E.fk_dept_id = (SELECT FK_DEPT_ID FROM TBL_EMPLOYEE WHERE EMP_ID = #{emp_id})
+			    <if test='type != null'>
+			        AND A.type = #{type}
+			    </if>
+			    <if test='search_type == "subject" and search_text != null and type == null'>
+			    	AND (df.draft_subject LIKE #{search_text} || '%' OR lf.leave_subject LIKE #{search_text} || '%')
+			    </if>
+			    <if test='search_type == "subject" and search_text != null and type == "1"'>
+			        AND df.draft_subject LIKE #{search_text} || '%'
+			    </if>
+			    <if test='search_type == "subject" and search_text != null and type == "3"'>
+			        AND lf.leave_subject LIKE #{search_text} || '%'
+			    </if>
+			    <if test='search_type == "emp_name" and search_text != null'>
+			        AND E.name LIKE #{search_text} || '%'
+			    </if>
+		    ) A
+		WHERE 
+		    <if test="startRno != null">
+				A.rno BETWEEN #{startRno} AND #{endRno}
+			</if>
+			<if test="startRno == null">
+				A.rno BETWEEN 1 AND 5
+			</if>
+			ORDER BY A.apr_no DESC
+	</select>
+	
+	
+	<select id="selectAprDetail" parameterType="String">
+		SELECT 
+		    A.apr_no, 
+		    E.name, 
+		    D.dept_name, 
+		    TO_CHAR(A.apr_startdate, 'YYYY-MM-DD') AS apr_startdate, 
+		    fk_draft_no, 
+		    fk_leave_no, 
+		    A.type, 
+		    CASE
+		        WHEN A.type = 1 THEN '업무품의서'
+		        WHEN A.type = 2 THEN '지출결의서'
+		        WHEN A.type = 3 THEN '근태신청서'
+		    END AS typename,
+		    draft_subject, 
+		    draft_content, 
+		    leave_subject, 
+		    leave_content, 
+		    TO_CHAR(leave_startdate, 'YYYY-MM-DD') AS leave_startdate, 
+		    TO_CHAR(leave_enddate, 'YYYY-MM-DD') AS leave_enddate, 
+		    A.fk_emp_id,
+		    A.apr_important,
+		    L.type AS leave_type,
+		    A.apr_approver,
+		    A.apr_approver2,
+		    A.apr_approver3,
+		    E1.name as apr_approver_name,
+		    E2.name as apr_approver2_name,
+		    E3.name as apr_approver3_name,
+		    A.apr_status,
+		    A.apr_acceptday1,
+		    A.apr_acceptday2,
+		    A.apr_acceptday3
+		FROM tbl_employee E 
+		JOIN tbl_approval A
+		    ON E.emp_id = A.fk_emp_id
+		JOIN tbl_department D
+		    ON E.fk_dept_id = D.dept_id
+		LEFT JOIN tbl_draftform DF
+		    ON A.fk_draft_no = DF.draft_no
+		LEFT JOIN tbl_leaveform L
+		    ON A.fk_leave_no = L.leave_no 
+		LEFT JOIN tbl_employee E1 ON A.apr_approver = E1.emp_id
+		LEFT JOIN tbl_employee E2 ON a.apr_approver2 = E2.emp_id
+		LEFT JOIN tbl_employee E3 ON a.apr_approver3 = E3.emp_id
+		WHERE A.apr_no = #{apr_no}
+	</select>
+	
+	<delete id="deleteApproval" parameterType="String">
+		delete from tbl_approval
+		where apr_no = #{apr_no}
+	</delete>
+	<delete id="deleteDraft" parameterType="String">
+		DELETE FROM tbl_draftform
+		WHERE draft_no = #{draft_no}
+	</delete>
+	<delete id="deleteLeave" parameterType="String">
+		DELETE FROM tbl_leaveform
+		WHERE leave_no = #{leave_no}
+	</delete>
+	
+	<update id="acceptApr" parameterType="HashMap">
+        UPDATE tbl_approval
+        SET 
+        		<if test="status != null">
+        			apr_status = #{status},
+        		</if>
+        		<if test='status != null and status == "4"'>
+        			apr_enddate = SYSDATE,
+        		</if>
+            apr_acceptday1 = CASE 
+                                WHEN #{emp_id} = apr_approver THEN SYSDATE 
+                                ELSE apr_acceptday1 
+                             END,
+            apr_acceptday2 = CASE 
+                                WHEN #{emp_id} = apr_approver2 THEN SYSDATE 
+                                ELSE apr_acceptday2 
+                             END,
+            apr_acceptday3 = CASE 
+                                WHEN #{emp_id} = apr_approver3 THEN SYSDATE 
+                                ELSE apr_acceptday3 
+                             END
+        WHERE apr_no = #{apr_no}
+	</update>
+	
+	
+	<select id="selectApr" parameterType="String" resultType="ApprovalVO">
+		select *
+		from tbl_approval
+		where apr_no = #{apr_no}
+	</select>
+	
+	<update id="rejectApr" parameterType="String">
+		UPDATE tbl_approval
+        SET apr_status = '5', apr_comment = #{apr_comment}
+   		WHERE apr_no = to_number(#{apr_no})
+   	</update>
+
+</mapper>
