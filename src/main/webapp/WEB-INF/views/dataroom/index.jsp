@@ -60,15 +60,36 @@ function goSearch() {
 
 			<span class="h2">${selectedCategoryName}</span>
 			
+			<form name="searchFrm" method="get" action="${pageContext.request.contextPath}/dataroom/index">
+			<input type="hidden" name="data_cateno" value="${param.data_cateno != null ? param.data_cateno : '1'}" />  
+				<div id="formContainer">
+					<select name="searchType" class="form-select">
+ 				<option value="data_orgfilename" ${requestScope.paraMap.searchType == 'data_orgfilename' ? 'selected' : ''}>파일명</option>
+					</select>
+					<div class="search-container">
+						<input type="text" name="searchWord" size="50" autocomplete="off" value="${requestScope.paraMap.searchWord}"  /> 
+						<button type="submit" class="btn btn-secondary btn-sm search-btn"><i class="fas fa-search"></i></button>
+					</div>
+				</div>			
+			</form>
+			
+			
+			
+			
+			
+		<%-- 	
 			<form name="searchFrm" method="get" action="${pageContext.request.contextPath}/dataroom/index" style="margin: 20px auto;">
+			<div id="formContainer">
+			
 			    <input type="hidden" name="data_cateno" value="${param.data_cateno != null ? param.data_cateno : '1'}" />  
 			    <select name="searchType" style="height: 26px;">
-			        <option value="data_orgfilename" ${requestScope.paraMap.searchType == 'data_orgfilename' ? 'selected' : ''}>파일명</option>
+			       
 			    </select>
 			    
-			    <input type="text" name="searchWord" size="50" autocomplete="off" value="${requestScope.paraMap.searchWord}" />
-			    <button type="submit" class="btn btn-secondary btn-sm">검색</button>
-			</form>
+			    <input type="text" name="searchWord" size="50" autocomplete="off" />
+			    <button type="button" class="btn btn-secondary btn-sm search-btn" onclick="goSearch()"><i class="fas fa-search"></i></button>
+			    </div>		
+			</form> --%>
 
 
 			
