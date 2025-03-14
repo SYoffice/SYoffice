@@ -6,36 +6,102 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.syoffice.app.board.domain.BoardVO;
+import com.syoffice.app.board.domain.CommentVO;
 import com.syoffice.app.board.domain.NoticeBoardVO;
+
+// 3. @Mapper 어노테이션을 사용하여 Repository 역할을 하는 인터페이스 생성하기
 
 //=== SqlSessionTemplate 을 사용하지 않는 Mapper Interface 예제(myBatis 3.0 이상 부터 사용가능함) === //
 @Mapper	  // @Mapper 어노테이션을 붙여서 DAO 역할의 Mapper 인터페이스 파일을 만든다. 
 		  // EmpDAO 인터페이스를 구현한 DAO 클래스를 생성하면 오류가 뜨므로 절대로 DAO 클래스를 생성하면 안된다.!!! 
 		  // @Mapper 어노테이션을 사용하면 빈으로 등록되며 Service단에서 @Autowired 하여 사용할 수 있게 된다. 
-
 public interface BoardDAO {
 	
+///////////////////////////////////////// 공지사항 시작 ///////////////////////////////////////////////////		
+	// 부서번호로 부서명 알아오기
+	NoticeBoardVO getDeptName(String fk_dept_id);
 	
-	// 부서 게시판 글쓰기 insert(파일첨부가 없는)
-	int deptBoardWrite(BoardVO boardvo);
-	
-	// 부서 게시판 마지막글번호 조회해오기(파일첨부시 필요)
-	List<Integer> board_no();
-	
-	// 부서별 게시판 파일첨부 테이블에 insert(파일 첨부가 있는 경우라면)
-	int BoardWrite_withFile(BoardVO boardvo);
 	
 	// 공지사항 게시판 글쓰기 insert(파일첨부가 없는)
 	int noticeBoardWrite(NoticeBoardVO noticevo);
 	
+	
 	// 공지사항게시판 마지막 글번호 조회(파일첨부시 필요)
-	List<Integer> notice_no();
-
-	// 공지사항 게시판 파일첨부 테이블에 insert(파일 첨부가 있는 경우라면)
+	Integer notice_no();
+	
+	
+	// 공지사항 게시판 테이블 및 파일첨부 테이블에 insert(파일 첨부가 있는)
 	int NoticeWrite_withFile(NoticeBoardVO noticevo);
 	
+	
+	// 페이징 처리를 안한 검색어가 없는 공지사항 게시판 전체 글목록 보여주기
+	List<Map<String, String>> noticeBoardListNoSearch();
+	
+	
+	// 공지사항 게시판의 총 게시물 건수 (totalCount를 구해야 페이징처리 가능)
+	int getNoticeTotalCount(Map<String, String> paraMap);
+	
+	
+	// 공지사항 글목록 가져오기(페이징 처리 했으며, 검색어가 있는것 또는 검색어가 없는 것 모두 다 포함한 것이다.)
+	List<Map<String, String>> noticeBoardListSearch_withPaging(Map<String, String> paraMap);
+	
+	
+	// 글 조회수 증가는 없고 단순히 공지사항 게시판의 글 1개만 조회를 해오는 것
+	NoticeBoardVO getNoticeBoardView_no_increase_readCount(Map<String, String> paraMap);
+	
+	
+	// 글 조회수 증가와 함께 공지사항 게시판의 글 1개를 조회를 해오는 것
+	NoticeBoardVO getView(Map<String, String> paraMap);
+
+	
+	// 공지사항 게시판 글 조회수 1증가하기
+	int increase_noticeViewCount(String notice_no);
+	
+	
+	// 공지사항 게시판 글수정하기
+	int update_notice_board(NoticeBoardVO noticeboardvo);
+	
+	
+	// 공지사항 게시글에 첨부파일 또는 사진이 있는지 확인하는 메서드 호출 (0: 없음, 그외 있음)
+	List<Map<String, String>> ischeckAttachfile(String notice_no);
+	
+	
+	// (파일첨부, 사진이미지가 들었는 경우 포함) 공지사항 글 삭제하기
+	int noticeBoardDel(String notice_no);
+	
+	
+	// 공지사항 테이블에 임시저장상태(status = 2 ) 로 insert 해주는 메소드 
+	int noticeTempBoardWrite(NoticeBoardVO noticevo);
+	
+	
+	// 공지사항 게시판에 임시저장글 상태(status = 2 )로 저장된 글의 정보를 가져온다.(페이징처리가 되지 않은 검색어가 없는 모든 임시저장글을 싹다 가져온다.)
+	List<Map<String, String>> noticeTemporaryBoardList(Map<String, Object> paraMap);
+	
+	
+	// 페이징 처리를 위한 공지사항 전체 임시저장 글 수 조회
+	int getTemporaryBoardCount(String fk_emp_id);
+	
+	// 공지사항 임시저장글 조회하기
+	NoticeBoardVO getTemporaryNotice(NoticeBoardVO noticevo);
+
+	// 공지사항 임시저장글 내용과 status = 2 를 1로 업데이트 해주기
+	int updateNoticeTemporary(NoticeBoardVO noticevo);
+///////////////////////////////////////// 공지사항 끝 ///////////////////////////////////////////////////	
+	
+	
+	
+///////////////////////////////////////// 부서게시판 시작 ///////////////////////////////////////////////////		
+	// 부서 게시판 글쓰기 insert(파일첨부가 없는)
+	int deptBoardWrite(BoardVO boardvo);
+	
+	// 부서 게시판 마지막글번호 조회해오기(파일첨부시 필요)
+	Integer board_no();
+	
+	// 부서별 게시판 파일첨부 테이블에 insert(파일 첨부가 있는 경우라면)
+	int BoardWrite_withFile(BoardVO boardvo);
+	
 	// 페이징 처리를 안한 검색어가 없는 공지사항 게시판 또는 부서게시판 전체 글목록 보여주기
-	List<Map<String, String>> boardListNoSearch(String boardLocation);
+	List<Map<String, String>> boardListNoSearch();
 
 	// 총 게시물 건수 (totalCount) 구하기 --> 검색이 있을 때와 검색이 없을때로 나뉜다.
 	int getTotalCount(Map<String, String> paraMap);
@@ -43,116 +109,87 @@ public interface BoardDAO {
 	// 글목록 가져오기(페이징 처리 했으며, 검색어가 있는것 또는 검색어가 없는 것 모두 다 포함한 것이다.)
 	List<Map<String, String>> boardListSearch_withPaging(Map<String, String> paraMap);
 
-	// 글 조회수 증가는 없고 단순히 공지사항 게시판의 글 1개만 조회를 해오는 것
-	NoticeBoardVO getNoticeBoardView_no_increase_readCount(Map<String, String> paraMap);
+	// 글 조회수 증가와 함께 부서 게시판의 글 1개를 조회를 해오는 것
+	BoardVO getBoardView(Map<String, String> paraMap);
 
-	// 글 1개 조회하기
-	NoticeBoardVO getView(Map<String, String> paraMap);
+	// 부서 게시판 글 조회수 1증가하기(service단에서 만든 메소드)
+	int increase_BoardViewCount(String board_no);
 
-	// 공지사항 게시판 글 조회수 1증가하기
-	int increase_noticeViewCount(String notice_no);
+	// 부서 게시판 글수정하기
+	int update_board(BoardVO boardvo);
 
-	// 공지사항 게시판 글수정하기
-	int update_notice_board(NoticeBoardVO noticeboardvo);
+	// 부서 게시글에 첨부파일 또는 사진이 있는지 확인하는 메서드 호출
+	List<Map<String, String>> ischeckBoardAttachfile(String board_no);
 
-	// 파일첨부가 있는 글 삭제
-	Map<String, String> noticeBoardView_delete(String notice_no);
+	// 부서 게시판 글삭제
+	int BoardDel(String board_no);
 
-	// 파일첨부, 사진이미지가 들었는 경우의 글 삭제하기
-	int noticeBoarDel(String notice_no);
+	// 파일첨부가 없을 경우에 부서 테이블에 임시저장상태(status =2 ) 로 insert 해주는 메소드 
+	int TempBoardWrite(BoardVO boardvo);
 
-	// 첨부파일 있는지 없는지 확인 0: 없음, 그외 있음
-	List<Map<String, String>> ischeckAttachfile(String notice_no);
+	// 파일첨부가 있을 경우에 부서 파일첨부 테이블에 해당 게시글번호를 가진 게시글에 insert 해주는 메소드
+	int TempWrite_withFile(BoardVO boardvo);
+
+	// 부서 게시판 임시저장 글 목록 조회(페이징 처리)
+	List<Map<String, String>> TemporaryBoardList(Map<String, Object> paraMap);
+
+	// 부서 게시판 전체 임시저장 글 수 조회
+	int getTemporaryCount(String fk_emp_id);
+
+	// 부서게시판 임시저장글 조회하기
+	BoardVO getTemporaryBoard(BoardVO boardvo);
+	
+	// 부서 게시판 임시저장글 내용과 status = 2 를 1로 업데이트 해주기
+	int updateBoardTemporary(BoardVO boardvo);
+// ------------------------------------------- 부서 게시판 댓글 ------------------------------------ //
+
+	// comment 테이블에 댓글 insert 해주는 메소드
+	int addBoardComment(Map<String, String> paraMap);
+
+	// 등록된 댓글 조회하기(페이징처리된 댓글목록)
+	List<Map<String, Object>> CommentList_withPaging(Map<String, String> paraMap);
+
+	// 페이징처리를 위한 각 게시글의 총 댓글수 알아오기
+	int getCmtTotalCount(String fk_board_no);
+	
+	// 해당 게시글의 댓글을 삭제하는 메소드
+	int cmtDel(CommentVO cmtvo);
+
+	// 웹에서 수정한 댓글 저장하기
+	int cmtSave(CommentVO cmtvo);
+	
+// ------------------------------------------- 부서 게시판 좋아요 ---------------------------------- // 	
+
+	// 하트를 최초로 클릭했을 경우(0이 나왔을 경우)에만 tbl_like 테이블에 insert 해준다.
+	int addlike(String board_no, String fk_emp_id);
+
+	// 해당 게시글에 사용자가 좋아요를 눌렀는지 여부 알아오기(뷰단에 데이터 저장하여 좋아요 상태 유지 용도)
+	int isExistLike(String board_no, String fk_emp_id);
+
+	// 하트를 눌렀던 상태에서 한번 더 눌렀을 경우(1이 나왔을 경우)에만 tbl_like 테이블에 delete 해준다.
+	int removeLike(String board_no, String fk_emp_id);
+
+	// 해당 게시글의 좋아요 수 알아오기 시작
+	int likeCnt(String board_no);
+
+	// 내가 좋아요 누른 총 게시물 건수(페이징 처리)
+	int getLikeTotalCount(String emp_id);
+
+	// 페이징 처리된 내가 좋아요 누른 게시글 목록 조회하기
+	List<BoardVO> goLike_withPaging(Map<String, String> paraMap);
+
+
+
+
+
+
+
+
+
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// 부서별게시판과 공지사항게시판에 글쓰기 insert(파일 첨부가 없는 경우라면)
-//	int Board_Write(Map<String, String> paraMap);
-	
-
-
-
-	// 부서별 게시판과 공지사항 게시판 글쓰기에서 작성한 임시저장글 insert 해주기
-//	int TempBoard_Write(Map<String, String> paraMap);
-
-	// 페이징 처리를 안한 검색어가 없는 공지사항게시판 또는 부서게시판에 작성한 임시저장글 목록 보여주기
-//	List<Map<String, String>> temporaryBoardSearch(String boardLocation);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

@@ -15,8 +15,6 @@
 
 	$(document).ready(function(){
 		
-		$("select[name='fk_bcate_no']").hide();
-		
 		/* 스마트 에디터를 사용할 경우 */
 		<%-- === 스마트 에디터 구현 시작 === --%>
       //전역변수
@@ -120,13 +118,13 @@
 	           alert("글내용을 입력하세요!!");
 	           return;   // 종료
 	        }
-		
+			
 			// 위치 설정에 따라 각 URL로 폼 데이터 보내주기 //
 			if(boardLocation == "boardDept") {
 				// 폼(form)을 전송(submit)
 				const frm = document.BoardFrm;
 				frm.method = "post";
-				frm.action = "<%= ctxPath%>/board/GroupWare_deptEdit"; // 부서 수정할때 다시 만들어야함. 
+				frm.action = "<%= ctxPath%>/board/GroupWare_BoardEdit"; 
 		        frm.submit();
 			}
 			else if(boardLocation == "notice"){
@@ -199,7 +197,7 @@
 	           alert("글내용을 입력하세요!!");
 	           return;   // 종료
 	        }
-		
+			
 			//	alert("임시저장 클릭");
 			// 폼(form)을 전송(submit)
 			const frm = document.BoardFrm;
@@ -225,9 +223,9 @@
         <div class="side_menu_inner_wrapper">
       	<button type="button"  id="write" onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_Write'">글쓰기</button>
            <ul class="side_menu_list">
-                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice">전체 게시판</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard?boardLocation=notice">공지사항</a></li>
-                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_Board?boardLocation=boardDept">부서 게시판[${sessionScope.loginuser.dept_name}]</a></li>
+                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard">전체 게시판</a></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard">공지사항</a></li>
+                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_Board">부서 게시판[${sessionScope.loginuser.dept_name}]</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="#">신간도서</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="#">오늘의 뉴스</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="#">주간식단표</a></li>
@@ -256,11 +254,12 @@
 			    <td >
 					<span class="dropdown">
 					   <select class="form-select" name="boardLocation">
-					       <option value="notice">전체 게시판</option>
+					       <!-- <option value="notice">전체 게시판</option> -->
+					       <option value="boardDept">부서 게시판[${sessionScope.loginuser.dept_name}]</option>
 					   </select>
 					</span>
 					
-<!-- 					<span class="dropdown">
+					<span class="dropdown">
 					   <select class="form-select" name="fk_bcate_no">
 					       <option selected disabled>카테고리</option>
 					       <option value="1">신간도서</option>
@@ -268,12 +267,13 @@
 					       <option value="3">주간식단표</option>
 					       <option value="4">무엇이든 물어보세요!</option>
 					   </select>
-				   </span> -->
-				   <span class="dropdown">
+				   </span>
+				   
+<!-- 				   <span class="dropdown">
 				   <select class="form-select" name="notice">
 				       <option value="notice">공지사항</option>
 				   </select>
-				   </span>
+				   </span> -->
 
 				</td>
 			 </tr> 
@@ -281,10 +281,11 @@
 			<tr style="margin-bottom: 5%; border: solid 0px red; height: 60px;">
 				<td style="width: 10%;">
 					<span style="font-size:20px;" class='fas'>제목</span>
-					<input type="hidden" name="notice_no" value="${requestScope.noticeboardvo.notice_no}"/>
+					<input type="hidden" name="board_no" value="${requestScope.boardvo.board_no}"/>
+					<%-- <input type="hidden" name="notice_no" value="${requestScope.boardvo.notice_no}"/> --%>
 				</td>
 				<td>
-					<input type="text" name="subject" class="form-control" id="subject" value="${requestScope.noticeboardvo.notice_subject}"/>
+					<input type="text" name="subject" class="form-control" id="subject" value="${requestScope.boardvo.subject}"/>
 				</td>
 			</tr>
 			
@@ -293,7 +294,7 @@
 					<div style="font-size:20px;" class='fas'>내용</div>
 				</td>
 				<td>
-					<textarea name="content" class="form-control-file border" style="width: 100%; height: 500px;" id="content">${requestScope.noticeboardvo.notice_content}</textarea>
+					<textarea name="content" class="form-control-file border" style="width: 100%; height: 500px;" id="content">${requestScope.boardvo.content}</textarea>
 				</td>
 			</tr>
 
