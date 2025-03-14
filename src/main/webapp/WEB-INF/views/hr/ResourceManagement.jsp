@@ -216,24 +216,25 @@ function deleteResource(resource_no) {
 
 	<span class="h2"><i class="bi-archive"></i> 자원관리</span>
 	
-	<div id="header">
-		<form name="searchFrm">
-			<select name="searchType" style="height: 26px;">
+	<form name="searchFrm">
+		<div id="formContainer">
+			<select name="searchType" class="form-select">
 				<option value="category_name">자원분류</option>
 				<option value="resource_name">자원명</option>
 			</select>
 			
-			<input type="text" name="searchWord" size="50" autocomplete="off" /> 
-			<input type="text" style="display: none;"/>  
-			<button type="button" class="btn btn-secondary btn-sm" onclick="goSearch()" id="searchBtn">검색</button>
-		</form>
-		
-		<button type="button" id="registerResourceBtn" onclick="registerResource()">신규 자원등록</button>
-	</div>
+			<div class="search-container">
+				<input type="text" name="searchWord" size="50" autocomplete="off" placeholder="Search..." /> 
+				<button type="button" class="btn btn-secondary btn-sm search-btn" onclick="goSearch()"><i class="fas fa-search"></i></button>
+			</div>
+			
+			<button type="button" id="registerResourceBtn" onclick="registerResource()">신규 자원등록</button>
+		</div>			
+	</form>
 	
 	<table id="table" class="table table-bordered table-hover">
-		<thead class="thead-light">
-			<tr>
+		<thead>
+			<tr style="background-color: #e6eeff;">
 	 			<th>자원분류</th>
 	            <th>자원명</th>
 	            <th>자원상태</th>
@@ -243,7 +244,7 @@ function deleteResource(resource_no) {
 		
 		<tbody>
 			<c:forEach items="${requestScope.resourceList}" var="resource">
-				<tr id="main">
+				<tr id="main" >
 					<td>${resource.category_name}</td>
 					<td>${resource.resource_name}</td>
 					<c:if test="${resource.resource_status eq 0}">
