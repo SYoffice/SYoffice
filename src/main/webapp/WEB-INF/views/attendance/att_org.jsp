@@ -123,7 +123,6 @@ function convertToJsTreeFormat(data) {
                 "id": `att_${deptId}`,
                 "parent": deptId,
                 "text": "📊 부서 근태 현황",
-                "type": "executive",
                 "original": { 
                     "deptName": deptName, 
                     "branchName": branchName,
