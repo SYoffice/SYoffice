@@ -22,11 +22,17 @@
         ORDER BY schedule_startdate
     </select>
 
-    <!-- 내가 전사 일정 가져오기 -->
+    <!--  전사 일정 가져오기 -->
     <select id="getDeptSchedule" parameterType="map" resultType="map">
-        SELECT s.schedule_no, s.schedule_startdate, s.schedule_enddate, s.schedule_name, s.schedule_color, s.schedule_place
-		FROM tbl_schedule s
-		WHERE TRUNC(s.schedule_startdate) = TRUNC(SYSDATE)
+        SELECT s.schedule_no, 
+		       s.schedule_startdate, 
+		       s.schedule_enddate, 
+		       s.schedule_name, 
+		       s.schedule_color, 
+		       s.schedule_place 
+		FROM tbl_schedule s 
+		WHERE TRUNC(s.schedule_startdate) = TRUNC(SYSDATE) 
+		  AND s.FK_LGCATEGO_NO = 2 
 		ORDER BY s.schedule_startdate
     </select>
     
