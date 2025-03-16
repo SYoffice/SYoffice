@@ -53,8 +53,13 @@ public class ApprovalController {
 		String apr_status = "1";
 
 		Map<String, String> paraMap = new HashMap<>();
-		paraMap.put("apr_status", apr_status);
+
 		paraMap.put("emp_id", emp_id);
+		
+		// 내가 결재해야할 문서 개수
+		int myAprCount = apvservice.selectMyAprCount(paraMap);
+		
+		paraMap.put("apr_status", apr_status);
 
 		List<ApprovalVO> aprList = apvservice.selectAprList(paraMap);
 
@@ -69,6 +74,7 @@ public class ApprovalController {
 		// 내가 결재해야할 문서 리스트 조회
 		List<ApprovalVO> myaprList = apvservice.selectMyAprList(paraMap2);
 
+		mav.addObject("myAprCount", myAprCount);
 		mav.addObject("aprList", aprList);
 		mav.addObject("aprList4", aprList4);
 		mav.addObject("myaprList", myaprList);

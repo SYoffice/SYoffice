@@ -191,7 +191,7 @@
 	    JOIN tbl_employee E ON E.emp_id = A.FK_EMP_ID
 	    JOIN TBL_department D ON D.dept_id = E.fk_dept_id
 	    WHERE (apr_approver = #{emp_id} OR apr_approver2 = #{emp_id} OR apr_approver3 = #{emp_id}) 
-	      AND A.apr_status != 4
+	      AND A.apr_status NOT IN (4, 5)
 	    <if test="type != null and type != 0">
 	        AND A.type = #{type}
 	    </if>
@@ -470,7 +470,7 @@
    		WHERE emp_id = ${requester_id}
    	</update>
    	
-	<!-- 사원 정보에서 연차 감소 -->
+	<!-- tbl_document테이블에 저장 -->
 	<insert id="insertDoc" parameterType="HashMap">
 		insert into tbl_document (doc_no, fk_emp_id)
 		values (#{doc_no}, #{requester_id})
