@@ -215,6 +215,9 @@ public class ApprovalService_imple implements ApprovalService {
 		if(!"".equals(apr_approver3) && apr_approver3 != null) {
 			apr_approver_cnt++;
 		}
+		
+		// 최종 결재자가 승인한지 여부
+		boolean isAcceptedLastApr = false;
 
 		// 결재자가 한명도 승인을 안했을 경우
 		int accepted_cnt = 0; // 승인한 결재자 
@@ -241,12 +244,24 @@ public class ApprovalService_imple implements ApprovalService {
 			isLast = true;
 		}
 		
+
+		// 최종 결재자가 승인했을때 
+		if (apr_approver_cnt == 2 && apr_approver2.equals(emp_id)) {
+			isAcceptedLastApr = true;
+		}
+		
+		if (apr_approver_cnt == 3 && apr_approver3.equals(emp_id)) {
+			isAcceptedLastApr = true;
+		}
+		
 		// status를 확인해서 update를 2, 3, 4중 뭘로 할건지 
 		if (isFirst) {
 			paraMap.put("status", "2");
 		}
-		if (isLast) {
-			// 결재자 모두가 승인을 완료한 경우(status,APR_ENDDATE, APR_ACCEPTDAY1, APR_ACCEPTDAY2 ,APR_ACCEPTDAY3)
+
+		// 결재자 모두가 승인을 완료한 경우(status,APR_ENDDATE, APR_ACCEPTDAY1, APR_ACCEPTDAY2 ,APR_ACCEPTDAY3)
+		// 혹은 최종 결재자가 승인한 경우
+		if (isLast || isAcceptedLastApr) {
 			paraMap.put("status", "4");
 
 		}
@@ -255,7 +270,7 @@ public class ApprovalService_imple implements ApprovalService {
 		paraMap.put("apr_no", apr_no);
 		int acceptApr = mapper_dao.acceptApr(paraMap);
 		
-		if(isLast && acceptApr == 1) {
+		if((isLast || isAcceptedLastApr) && acceptApr == 1) {
 			// 근태신청서일 경우 연차 삭감
 			if (aprvo.getType().equals("3")) {
 				LeaveformVO leaveform = mapper_dao.selectLeave(aprvo.getFk_leave_no());
