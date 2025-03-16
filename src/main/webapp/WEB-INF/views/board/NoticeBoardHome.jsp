@@ -12,6 +12,10 @@
 
 <style type="text/css">
 
+.table td {
+	vertical-align: inherit;
+}
+
 .subjectStyle {font-weight: lighter;
                color: #4d94ff;
                cursor: pointer; }
@@ -70,11 +74,11 @@ a {text-decoration: none !important;} /* 페이지바의 a 태그에 밑줄 없�
             <ul class="side_menu_list">
                 <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard">전체 게시판</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard">공지사항</a></li>
-                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_Board?boardLocation=boardDept">부서 게시판[${sessionScope.loginuser.dept_name}]</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">신간도서</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">오늘의 뉴스</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">주간식단표</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">무엇이든 물어보세요!</a></li>
+                <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_Board">부서 게시판[${sessionScope.loginuser.dept_name}]</a></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>신간도서</span></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>오늘의 뉴스</span></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>주간식단표</span></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>무엇이든 물어보세요!</span></li>
             </ul>
         </div>
     </div>

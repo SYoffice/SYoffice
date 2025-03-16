@@ -589,18 +589,17 @@ function goDel() {
                 <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard">전체 게시판</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard">공지사항</a></li>
                 <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_Board">부서 게시판[${sessionScope.loginuser.dept_name}]</a></li>
-
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">신간도서</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">오늘의 뉴스</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">주간식단표</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">무엇이든 물어보세요!</a></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>신간도서</span></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>오늘의 뉴스</span></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>주간식단표</span></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>무엇이든 물어보세요!</span></li>
             </ul>
         </div>
     </div>
               
 <div class="contents_wrapper" style="margin-top: 3%;">
 	<!-- 페이지 공통 부분  -->
-	<div style="border: solid 0px gray; display: flex;">
+	<div style="border: solid 0px gray; display: flex; width: 100%;">
 		<p class="bg-light text-dark" style="font-size: 20pt; font-weight: bold; padding: 1% 0 1% 4.5%;">부서게시판&nbsp;<i style='font-size:24px' class='fas'>&#xf105;</i>&nbsp;<span class="fk_bcate_no" style="font-size: 16pt;"></span></p>
 	</div>	
 	<!-- 페이지 공통 부분  -->
@@ -614,9 +613,6 @@ function goDel() {
 				<td>
 					<div style="display: flex; margin-top:2%; border: solid 0px red; width: 100%; height: 60px;">
 						<span id="subject" style="border: solid 0px gray; width: 100%; padding-top: 0.5%; font-size: 25px;">${boardvo.subject}</span>
-						<span style="font-size: 15px; font-weight: normal; width: 7%; padding-top: 1.7%;" id="viewCount">조회수&nbsp;&nbsp;<span style="font-weight: normal;">${boardvo.view_count}</span></span>
-						<button id="like" style="font-size: 15px; border: none; width: 8%; background-color: transparent;">좋아요&nbsp;&nbsp;<span id="likeCnt" style="font-weight: normal;">${requestScope.n}</span></button>
-						<span class="btn_like" style="font-size:40px; background-color: transparent; color:gray; border: solid 0px gray; padding: 0.5%; margin-left: 0.5%; cursor: pointer;"></span>
 					</div>
 				</td>
 			</tr>
@@ -627,16 +623,19 @@ function goDel() {
 					<img src="<%= ctxPath%>/resources/profile/${boardvo.profile_img}" style='font-size:25px; width: 80%; border-radius: 50%;'/>
 				</div>
 				</th>
-				<td style="vertical-align: middle;">
-					<span style="margin-right: 0.5%;">${boardvo.name}</span>
-					<span style="font-size: 10pt;">${boardvo.board_regdate}</span>
+				<td style="vertical-align: middle; display: flex; width: 100%;">
+					<span style="font-size: 18px; font-weight: bold; width: 8%;">${boardvo.name}</span>
+					<span style="font-size: 15px; padding-top: 0.3%; width: 17%;">${boardvo.board_regdate}</span>
+					<span style="font-size: 15px; font-weight: normal; width: 7%; padding-top: 1.9%; margin-left: 56%; float: right;" id="viewCount">조회수&nbsp;&nbsp;<span style="font-weight: normal;">${boardvo.view_count}</span></span>
+					<button id="like" style="font-size: 15px; font-weight: normal; padding-top: 1.3%; border: none; background-color: transparent;">좋아요&nbsp;&nbsp;<span id="likeCnt" style="font-weight: normal;">${requestScope.n}</span></button>
+					<span class="btn_like" style="font-size:40px; background-color: transparent; color:gray; border: solid 0px gray; padding: 0.5%; margin-left: 0.5%; cursor: pointer;"></span>
 					<input type="hidden" name="fk_emp_id" value=""/>
 				</td>
 			</tr>
 			
 			<tr>
 				<th></th>
-				<td style="display: flex; width: 100%;">
+				<td style="display: flex; width: 100%; margin-top: 1%;">
 					<div style="display: flex; width: 100%; margin-left: 75%;">
 						<c:if test="${not empty sessionScope.loginuser && sessionScope.loginuser.emp_id == requestScope.boardvo.fk_emp_id}"><!-- 로그인 되어졌고 해당글의 작성자가 사용자와 같아야한다.  -->
 							<button style="width: 45%; margin-right: 8%;" type="button" class="btn btn-light"  onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_BoardEdit/${requestScope.boardvo.board_no}'" style="margin: 0 3%;"><i style='font-size:24px' class='fas'>&#xf044;</i>수정</button>
