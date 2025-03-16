@@ -27,8 +27,6 @@ public class ApprovalService_imple implements ApprovalService {
 
 	@Override
 	public List<ApprovalLineVO> selectAprLineList(String emp_id) {
-
-		System.out.println(emp_id);
 		return mapper_dao.selectAprLineList(emp_id);
 	}
 
@@ -47,11 +45,7 @@ public class ApprovalService_imple implements ApprovalService {
 		paraMap.put("apline_approver2", aprLineVO.getApline_approver2());
 		paraMap.put("apline_approver3", aprLineVO.getApline_approver3());
 
-		System.out.println(">> " + paraMap);
-
 		result += mapper_dao.registerApprovalLine(paraMap);
-
-		System.out.println("결과 >> " + result);
 		return result;
 	}
 
@@ -81,8 +75,6 @@ public class ApprovalService_imple implements ApprovalService {
 	@Transactional(value="transactionManager_apr")
 	@Override
 	public int registerApproval(Map<String, String> paraMap, String formType) {
-		
-		System.out.println("type : " + formType);
 		// key 채번
 		int nextSeq = 0;
 		
@@ -98,8 +90,6 @@ public class ApprovalService_imple implements ApprovalService {
         SimpleDateFormat smdatefm = new SimpleDateFormat("yyMMddHHmm");
         
         String no = smdatefm.format(now) + nextSeq;
-        
-        System.out.println(no);
         
         int result = 0;
         
@@ -118,7 +108,6 @@ public class ApprovalService_imple implements ApprovalService {
 	    }
 
     	paraMap.put("type", formType);
-        System.out.println("전자결재 저장~ paramap:" + paraMap);
         int a_result = mapper_dao.insertApr(paraMap);
 		
 		return result == 1 && a_result == 1 ? 1 : 0;
@@ -134,10 +123,6 @@ public class ApprovalService_imple implements ApprovalService {
 	@Override
 	public List<ApprovalVO> selectMyAprList(Map<String, String> paraMap) {
 		
-		System.out.println("-------------------------");
-		System.out.println(paraMap);
-		System.out.println("-------------------------");
-		
 		List<ApprovalVO> selectMyAprList = mapper_dao.selectMyAprList(paraMap);
 		return selectMyAprList;  
 	}
@@ -152,12 +137,6 @@ public class ApprovalService_imple implements ApprovalService {
 	@Override
 	public List<ApprovalVO> selectTeamAprList(Map<String, String> paraMap) {
 		List<ApprovalVO> selectTeamAprList = mapper_dao.selectTeamAprList(paraMap);
-		
-		selectTeamAprList.forEach(v -> {
-			System.out.println(v.getDraft_subject());
-			System.out.println(v.getLeave_subject());
-			System.out.println(v.getFk_emp_id());
-		});
 		
 		return selectTeamAprList;
 	}
@@ -183,10 +162,6 @@ public class ApprovalService_imple implements ApprovalService {
 		if (form_type.equals("3")) {
 			result = mapper_dao.deleteLeave(form_no);
 		}
-		
-		System.out.println("apr_no::" + apr_no);
-		System.out.println("form_type::" + form_type);
-		System.out.println("form_no::" + form_no);
 		
 		return (result + result2) == 2 ? 1 : 0;
 	}
@@ -325,8 +300,6 @@ public class ApprovalService_imple implements ApprovalService {
         LocalDate endDate = LocalDate.parse(end, formatter);
         
         int daysBetween = startDate.until(endDate).getDays();
-        
-        System.out.println("날짜 차이: " + daysBetween + "일");
         
         // 날짜 차이 계산
         return daysBetween + 1;
