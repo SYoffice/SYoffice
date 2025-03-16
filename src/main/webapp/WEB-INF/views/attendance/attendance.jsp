@@ -282,13 +282,15 @@
                 </div>
 
                 <!-- 연차 내역 탭 -->
-                <div class="tab-pane fade" id="leaveHistory" >
-			    <h4>연차 내역</h4>
-			
+                <div class="tab-pane fade" id="leaveHistory" >  
+                <div class="summary-box">
+                    <div>잔여 연차 </div>
+                    <div>${remainingLeave}</div>
+                </div>
+			    <br> <br>
 			    <!-- 연차 요약 박스를 감싸는 컨테이너 -->
 			   <a style="background-color:#BFD2FA" href="<%=ctxPath%>/approval/approval_main" class="btn btn-primary">연차 신청</a>
-				       
-				        
+				      
 			    <br> <br>
                     <!-- 연차 내역 테이블 -->
                     <table class="table table-bordered" >
