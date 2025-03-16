@@ -13,9 +13,9 @@ String ctxPath = request.getContextPath();
 <input type="hidden" id="form_name" value="leave">
 <div class="container">
    <form  name="leave_form">
-      <input type="hidden" name="apr_approver" id="apr_approver" value="">
-      <input type="hidden" name="apr_approver2" id="apr_approver2" value="">
-      <input type="hidden" name="apr_approver3" id="apr_approver3" value="">
+      <input type="hidden" name="apr_approver" id="apr_approver" value="" required/>
+      <input type="hidden" name="apr_approver2" id="apr_approver2" value="" />
+      <input type="hidden" name="apr_approver3" id="apr_approver3" value="" />
       <input type="hidden" name="apr_important" id="apr_important" value="">
       <input type="hidden" name="leave_startdate" id="leave_startdate" value="">
       <input type="hidden" name="leave_enddate" id="leave_enddate" value="">
@@ -106,11 +106,6 @@ String ctxPath = request.getContextPath();
             <tr>
                <th>내용</th>
                <td class="approval-contents"><textarea placeholder="" name="leave_content" id="approval-comments" style="height: 100%; resize: none"></textarea></td>
-            </tr>
-
-            <tr>
-               <th>첨부 파일</th>
-               <td><input type="file" id="attachment" name="attachment" /></td>
             </tr>
          </table>
       </div>
