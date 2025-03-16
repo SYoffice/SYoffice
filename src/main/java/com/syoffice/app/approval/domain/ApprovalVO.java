@@ -38,6 +38,8 @@ public class ApprovalVO {
    
    private String draft_subject;
    private String draft_content;
+   
+   private String fk_doc_no;
 
    
    
@@ -289,7 +291,14 @@ public class ApprovalVO {
       this.apr_approver3_name = apr_approver3_name;
    }
    
-   
+	public String getFk_doc_no() {
+		return fk_doc_no;
+	}
+	
+	public void setFk_doc_no(String fk_doc_no) {
+		this.fk_doc_no = fk_doc_no;
+	}
+	   
 
    
    

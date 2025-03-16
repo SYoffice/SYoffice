@@ -126,8 +126,20 @@
          <!-- 종류, 상신자, 결재 내용 테이블 -->
          <table>
             <tr>
-               <th>문서 번호</th>
-               <td>${aprvo.apr_no}</td>
+               <th>
+	               	<c:if test="${empty aprvo.fk_doc_no}">
+	               		임시 
+	               	</c:if>
+               		문서 번호
+               </th>
+               <td>
+	               	<c:if test="${not empty aprvo.fk_doc_no}">
+	               		${aprvo.fk_doc_no}
+	               	</c:if>
+	               	<c:if test="${empty aprvo.fk_doc_no}">
+	               		${aprvo.apr_no}
+	               	</c:if>
+				</td>
             </tr>
             <tr>
                <th>결재 종류</th>
