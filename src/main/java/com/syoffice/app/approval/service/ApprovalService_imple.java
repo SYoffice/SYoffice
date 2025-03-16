@@ -245,6 +245,9 @@ public class ApprovalService_imple implements ApprovalService {
 		paraMap.put("apr_no", apr_no);
 		int acceptApr = mapper_dao.acceptApr(paraMap);
 		
+		// 연차감소 및 문서 테이블에 필요한 기안자의 아이디
+		paraMap.put("requester_id", aprvo.getFk_emp_id());
+		
 		if((isLast || isAcceptedLastApr) && acceptApr == 1) {
 			// 근태신청서일 경우 연차 삭감
 			if (aprvo.getType().equals("3")) {
@@ -256,7 +259,6 @@ public class ApprovalService_imple implements ApprovalService {
 				if (leaveform.getType().equals("1")) {
 			        count = String.valueOf(calDateBetween(leaveform.getLeave_startdate(), leaveform.getLeave_enddate()));
 				}
-				paraMap.put("requester_id", aprvo.getFk_emp_id());
 				paraMap.put("count", count);
 				
 				// 삭감~
