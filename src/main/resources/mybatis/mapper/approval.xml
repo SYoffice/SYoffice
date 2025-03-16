@@ -392,7 +392,8 @@
 		    A.apr_status,
 		    TO_CHAR(A.apr_acceptday1, 'YYYY-MM-DD') AS apr_acceptday1,
 		    TO_CHAR(A.apr_acceptday2, 'YYYY-MM-DD') AS apr_acceptday2,
-		    TO_CHAR(A.apr_acceptday3, 'YYYY-MM-DD') AS apr_acceptday3
+		    TO_CHAR(A.apr_acceptday3, 'YYYY-MM-DD') AS apr_acceptday3,
+		    COALESCE(DF.fk_doc_no, L.fk_doc_no) AS fk_doc_no
 		FROM tbl_employee E 
 		JOIN tbl_approval A
 		    ON E.emp_id = A.fk_emp_id
