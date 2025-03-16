@@ -28,7 +28,7 @@ String ctxPath = request.getContextPath();
 		<div class="contents">
 			<div class="content_title">결재대기문서</div>
 			<div class="content_sub_title">
-				결재해야할 문서가 <span style="color: #95b6ff; font-weight: bold;">${myaprList.size()}</span>건
+				결재해야할 문서가 <span style="color: #95b6ff; font-weight: bold;">${myAprCount}</span>건
 				있습니다.
 			</div>
 			<div class="gridbox_wrapper">
