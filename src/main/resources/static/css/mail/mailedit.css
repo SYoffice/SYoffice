@@ -100,7 +100,7 @@ span.clear{clear: both;}
 button.toolbar {
 	border-radius: 5px;
 	border: solid 1px black;
-	width: 4.5em;
+	width: 5em;
 	height: 1.7em;
     background-color: white;
 }
