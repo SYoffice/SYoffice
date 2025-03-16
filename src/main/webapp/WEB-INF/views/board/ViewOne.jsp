@@ -130,10 +130,10 @@ function goDel() {
                 <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard">전체 게시판</a></li>
                 <li style="margin-left: 10%; font-size: 11pt;"><a href="<%= ctxPath%>/board/GroupWare_noticeBoard">공지사항</a></li>
                 <li style="font-weight: bold;"><a href="<%= ctxPath%>/board/GroupWare_Board">부서 게시판[${sessionScope.loginuser.dept_name}]</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">신간도서</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">오늘의 뉴스</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">주간식단표</a></li>
-                <li style="margin-left: 10%; font-size: 11pt;"><a href="#">무엇이든 물어보세요!</a></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>신간도서</span></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>오늘의 뉴스</span></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>주간식단표</span></li>
+                <li style="margin-left: 10%; font-size: 11pt;"><span>무엇이든 물어보세요!</span></li>
             </ul>
         </div>
     </div>
@@ -143,7 +143,6 @@ function goDel() {
 	<div style="width: 100%;">
 		<div style="border: solid 0px gray; display: flex; width: 100%;">
 			<p class="bg-light text-dark" style="font-size: 20pt; font-weight: bold; padding: 1% 0 1% 4.5%; width: 30%;">전체게시판&nbsp;<i style='font-size:24px' class='fas'>&#xf105;</i>&nbsp;<span style="font-size: 15pt;">공지사항</span></p>
-		<span style="font-size: 15px; font-weight: normal; width: 10%; padding-top: 1.8%; float: right; margin-left: 62%;" id="viewCount">조회수&nbsp;&nbsp;<span style="font-weight: normal; ">${noticeboardvo.notice_viewcount}</span></span>
 		</div>	
 	</div>
 	<!-- 페이지 공통 부분  -->
@@ -167,16 +166,17 @@ function goDel() {
 						<img src="<%= ctxPath%>/resources/profile/${noticeboardvo.profile_img}" style='font-size:25px; width: 80%; border-radius: 50%;'/>
 					</div>
 				</th>
-				<td style="vertical-align: middle;">
-					<span style="margin-right: 0.5%; font-size: 16px;">${noticeboardvo.name}</span>
-					<span style="font-size: 12px;">${noticeboardvo.notice_regdate}</span>
+				<td style="vertical-align: middle;  display: flex; width: 100%;">
+					<span style="font-size: 18px; font-weight: bold; width: 8%;">${noticeboardvo.name}</span>
+					<span style="font-size: 15px; width: 17%; padding-top: 0.3%;">${noticeboardvo.notice_regdate}</span>
+					<span style="font-size: 15px; font-weight: normal; width: 10%; padding-top: 1.8%; float: right; margin-left: 77%;" id="viewCount">조회수&nbsp;&nbsp;<span style="font-weight: normal; ">${noticeboardvo.notice_viewcount}</span></span>
 					<input type="hidden" name="fk_emp_id" value=""/>
 				</td>
 			</tr>
 			
 			<tr>
 				<th></th>
-				<td style="display: flex; width: 100%;">
+				<td style="display: flex; width: 100%; margin-top: 1%;">
 					<div style="display: flex; width: 100%; margin-left: 75%;">
 						<c:if test="${not empty sessionScope.loginuser && sessionScope.loginuser.emp_id == requestScope.noticeboardvo.fk_emp_id}"><!-- 로그인 되어졌고 해당글의 작성자가 사용자와 같아야한다.  -->
 							<button style="width: 45%; margin-right: 8%;" type="button" class="btn btn-light"  onclick="javascript:location.href='<%= ctxPath%>/board/GroupWare_Edit/${requestScope.noticeboardvo.notice_no}'" style="margin: 0 3%;"><i style='font-size:24px' class='fas'>&#xf044;</i>수정</button>
