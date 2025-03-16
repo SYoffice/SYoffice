@@ -79,8 +79,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		flatpickr("mySelector");
 	}
-
-	console.log('formNm::' , formNm)
+	
+	// 체크박스 선택시 랄ㄹ라
+	document.getElementById("isImportant").addEventListener("change", function () {
+		const title = formNm == "leave" ? `근태 신청서` : `업무 품의서`;
+		let html = ``;
+		if (this.checked) {
+			html += `<img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Emergency_Light.gif" style="
+						width: 63px;">`
+		}
+		html += `${title}`;
+		
+		document.getElementById("title_sec").innerHTML = html;
+	})
 
 	// formNm 으로 공통 사용
 	const submit_btn = document.getElementById(`${formNm}-submit`);

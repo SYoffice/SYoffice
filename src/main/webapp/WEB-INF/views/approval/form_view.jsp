@@ -69,7 +69,10 @@
             </div>
             
             <c:if test="${aprvo.apr_status == 5}">
-            <img class="apr_reject_stamp" src="<%=ctxPath%>/images/approval/기안반려.png">
+            	<img class="apr_reject_stamp" src="<%=ctxPath%>/images/approval/기안반려.png">
+            </c:if>
+            <c:if test="${aprvo.apr_status == 4}">
+            	<img class="apr_reject_stamp" src="<%=ctxPath%>/images/approval/전결.png">
             </c:if>
             
             <div class="signature-table">

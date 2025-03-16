@@ -7,7 +7,9 @@ String ctxPath = request.getContextPath();
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/approval/apr_write_form.css">
 <script src="${pageContext.request.contextPath}/js/approval/apr_write_form.js"></script>
 
-<div class="common_title" style="text-align: center">근태 신청서</div>
+<div id="title_sec" class="common_title icon" style="text-align: center">
+	근태 신청서
+</div>
 
 <!-- 폼 이름 -->
 <input type="hidden" id="form_name" value="leave">
@@ -20,9 +22,9 @@ String ctxPath = request.getContextPath();
       <input type="hidden" name="leave_startdate" id="leave_startdate" value="">
       <input type="hidden" name="leave_enddate" id="leave_enddate" value="">
       <div class="btn-container">
-         <button type="button" class="btn-submit" id="leave-submit">결재요청</button>
-         <button type="button" class="btn-cancel" onclick="onClickCancel()">취소</button>
          <button type="button" onclick="openModal()">결재정보</button>
+         <button type="button" class="btn-cancel" onclick="onClickCancel()">취소</button>
+         <button type="button" class="btn-submit" id="leave-submit">결재요청</button>
       </div>
       <!-- 모달 (select_employee_modal) -->
       <jsp:include page="../select_approver_sec.jsp" />

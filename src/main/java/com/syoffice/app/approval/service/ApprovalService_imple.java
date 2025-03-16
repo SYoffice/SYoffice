@@ -1,6 +1,8 @@
 package com.syoffice.app.approval.service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.syoffice.app.approval.domain.ApprovalLineVO;
 import com.syoffice.app.approval.domain.ApprovalVO;
+import com.syoffice.app.approval.domain.LeaveformVO;
 import com.syoffice.app.approval.model.ApprovalDAO;
 
 @Service
@@ -189,6 +192,7 @@ public class ApprovalService_imple implements ApprovalService {
 	}
 
 	// 결재 승인
+	@Transactional(value="transactionManager_apr")
 	@Override
 	public int acceptApr(String apr_no, String emp_id) { 
 		Map<String, String> paraMap = new HashMap<>();
@@ -244,12 +248,48 @@ public class ApprovalService_imple implements ApprovalService {
 		if (isLast) {
 			// 결재자 모두가 승인을 완료한 경우(status,APR_ENDDATE, APR_ACCEPTDAY1, APR_ACCEPTDAY2 ,APR_ACCEPTDAY3)
 			paraMap.put("status", "4");
+
 		}
 	
 		paraMap.put("emp_id", emp_id);
 		paraMap.put("apr_no", apr_no);
-		System.out.println(paraMap);
 		int acceptApr = mapper_dao.acceptApr(paraMap);
+		
+		if(isLast && acceptApr == 1) {
+			// 근태신청서일 경우 연차 삭감
+			if (aprvo.getType().equals("3")) {
+				LeaveformVO leaveform = mapper_dao.selectLeave(aprvo.getFk_leave_no());
+				String count = "1";
+				if (leaveform.getType().equals("2")) {
+					count = "0.5";
+				}
+				if (leaveform.getType().equals("1")) {
+			        count = String.valueOf(calDateBetween(leaveform.getLeave_startdate(), leaveform.getLeave_enddate()));
+				}
+				paraMap.put("requester_id", aprvo.getFk_emp_id());
+				paraMap.put("count", count);
+				
+				// 삭감~
+				mapper_dao.subtractLeaveCount(paraMap);
+				
+				// doc_no 채번 및 세팅
+				paraMap.put("doc_no", "DOC_" + aprvo.getFk_leave_no());
+			} else {
+				// 업무품의서 doc_no 채번 및 세팅
+				paraMap.put("doc_no", "DOC_" + aprvo.getFk_draft_no());
+			}
+			
+			mapper_dao.insertDoc(paraMap);
+			
+			if (aprvo.getType().equals("3")) {
+				paraMap.put("leave_no", aprvo.getFk_leave_no());
+				mapper_dao.updateLeaveDocno(paraMap);
+			} else if(aprvo.getType().equals("1")) {
+				paraMap.put("draft_no", aprvo.getFk_draft_no());
+				mapper_dao.updateDraftDocno(paraMap);
+			}
+		}
+		
 		return acceptApr;
 	}
 
@@ -259,6 +299,22 @@ public class ApprovalService_imple implements ApprovalService {
 	@Override
 	public int rejectApr(String apr_no, String apr_comment) {
 		return mapper_dao.rejectApr(apr_no, apr_comment);
+	}
+	
+	// 두 날짜 사이 차이를 구함
+	private int calDateBetween(String start, String end) {
+
+		// 날짜 문자열을 LocalDate로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDate startDate = LocalDate.parse(start, formatter);
+        LocalDate endDate = LocalDate.parse(end, formatter);
+        
+        int daysBetween = startDate.until(endDate).getDays();
+        
+        System.out.println("날짜 차이: " + daysBetween + "일");
+        
+        // 날짜 차이 계산
+        return daysBetween + 1;
 	}
 
 
