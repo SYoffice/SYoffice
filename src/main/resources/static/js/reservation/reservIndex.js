@@ -56,15 +56,24 @@ document.getElementById("reservationForm").onsubmit = function(event) {
 	event.preventDefault();
 	const newItem = getItemDataFromForm();
 
+
 	if (!isEndTimeValid(newItem.end)) {
 		alert("종료일은 18시 이전까지 가능합니다. ");
 		return;
 	}
 
+	if (!isStartTimeValid(newItem.start)) {
+		alert("시작일은 09시 이후부터 가능합니다.");
+		return;
+	}
+
+
+	debugger
+
 	handleItemSubmit(newItem);
 };
 
-function handleAddItem(item) {	
+function handleAddItem(item) {
 	onDoubleClick(item);
 }
 
@@ -94,18 +103,25 @@ function handleUpdateItem(item) {
 function handleMoveItem(item) {
 
 	const itemIdx = getItemIndexById(item.id);
+	
+	let isReload = false;
 
 	if (!isMyReserv(item) || !isTimeSlotAvailable(item)) {
-		updateTimeline();
-		return;
+		isReload = true;
 	} else if (!isEndTimeValid(item.end)) {
 		alert("종료일은 18시 이전까지 가능합니다. ");
+		isReload = true;
+	} else if (!isStartTimeValid(item.start)) {
+		alert("시작일은 09시 이후부터 가능합니다.");
+		isReload = true;
 	} else {
 		tl_reservations[itemIdx].group = item.group;
 		tl_reservations[itemIdx].start = item.start;
 		tl_reservations[itemIdx].end = item.end;
 		updateReservation(item)
 	}
+	
+	if (isReload) updateTimeline();
 }
 
 function handleRemoveItem(id, fk_emp_id) { // fk_emp_id 예약한 사람
@@ -163,7 +179,7 @@ function setModalForm(item, groupName) {
 		endDate.setMinutes(endDate.getMinutes() + 60);
 	}
 
-	if (!isEndTimeValid(endDate)) {
+	if (!isEndTimeValid(endDate)) { // todo 오류 수정 필요
 		endDate.setHours(18, 0, 0);
 	}
 
@@ -182,16 +198,29 @@ function setModalForm(item, groupName) {
 
 
 function isEndTimeValid(endTime) {
-   // 가능한 마지막 시간대: 18시 00분
-   const _today_endtime = today;
-   _today_endtime.setHours(18); // 18시
-   _today_endtime.setMinutes(0); // 00분
-      
-   if (endTime > _today_endtime) {
-      return false;
-   }
-   return true;
+	// 가능한 마지막 시간대: 18시 00분
+	const _today_endtime = today;
+	_today_endtime.setHours(18); // 18시
+	_today_endtime.setMinutes(0); // 00분
+
+	if (endTime > _today_endtime) {
+		return false;
+	}
+	return true;
 }
+
+function isStartTimeValid(startTime) {
+	// 가능한 시작 시간대: 09시 00분
+	const _today_starttime = today;
+	_today_starttime.setHours(9); // 09시
+	_today_starttime.setMinutes(0); // 00분
+
+	if (startTime < _today_starttime) {
+		return false;
+	}
+	return true;
+}
+
 
 function getItemIndexById(id) {
 	for (let i = 0; i < tl_reservations.length; i++) {
