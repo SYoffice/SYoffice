@@ -54,6 +54,12 @@
 		     WHERE emp_id = #{empId}) AS remaining_leave  -- 잔여 연차
 		FROM DUAL
     </select>
+    
+    <select id="getRemainingLeave" parameterType="String" resultType="double">
+        SELECT leave_count
+        FROM tbl_employee
+        WHERE emp_id = #{empId}
+    </select>
 
     <!-- 오늘의 출퇴근 정보 조회 -->
     <select id="getTodayAttendance" parameterType="string" resultType="com.syoffice.app.attendance.domain.AttendanceVO">

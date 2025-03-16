@@ -30,5 +30,6 @@ public interface AttendanceDAO {
 	int updateAbsenceForEmployees(Map<String, Object> params);
 	List<Map<String, Object>> selectLeaveInfo(String empId);
 	Map<String, Object> getLeaveInfono(String empId);
+	double getRemainingLeave(String empId);
 	
 }
