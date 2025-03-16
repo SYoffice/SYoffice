@@ -147,7 +147,7 @@ function addEmployeeListAprLine(item) {
 		{ EMP_ID: parsedItem.apline_approver, NAME: parsedItem.apline_approver_name },
 		{ EMP_ID: parsedItem.apline_approver2, NAME: parsedItem.apline_approver2_name },
 		{ EMP_ID: parsedItem.apline_approver3, NAME: parsedItem.apline_approver3_name }
-	];
+	].filter((_item) => _item.EMP_ID != null);
 	
 	drawTable();
 }
@@ -155,7 +155,7 @@ function addEmployeeListAprLine(item) {
 
 // 전역 selected_emp_list 변수에 push
 function addEmployeeList(empInfo) {
-
+	
 	if (selected_emp_list.find((emp) => emp.EMP_ID == empInfo.EMP_ID)) {
 		alert("이미 선택된 결재자입니다.");
 		return;
@@ -185,7 +185,7 @@ function drawTable() {
 
 		const empInfo = selected_emp_list[i];
 
-		if(empInfo && empInfo.NAME) {
+		if(empInfo) {
 			html += `<div>
 						<div class="approver-item">${i + 1} ${empInfo.NAME}
 							<span onclick="removeEmp(${empInfo.EMP_ID})">삭제</span>
@@ -203,6 +203,7 @@ function validationCheck(employee) {
 		if (employee.FK_GRADE_NO > emp.FK_GRADE_NO) {
 			alert('선택한 결재자의 직책이 낮습니다.')
 			result = false;
+			return;
 		}
 	}
 	return result;
@@ -213,9 +214,20 @@ function removeEmp(emp_id) {
 	drawTable();
 }
 
-function completeSelect() {
-	// apr_write_form.js 의 서명 섹션에 그리기 함수에
-	// selected_emp_list를 넘겨준다 apr_write_form.js
-	drawSignatureSection(selected_emp_list);
-}
 
+
+
+function completeSelect() {
+   
+   // 로그인한 아이디
+   const loginuser_id = document.getElementById("loginuser_id").value;
+   
+   if (selected_emp_list.findIndex((item) => item.EMP_ID == loginuser_id) > -1) {
+      alert("기안자는 결재자가 될 수 없습니다. 선택한 결재자를 다시 확인하세요.");
+      return;
+   }
+   
+   // apr_write_form.js 의 서명 섹션에 그리기 함수에
+   // selected_emp_list를 넘겨준다 apr_write_form.js
+   drawSignatureSection(selected_emp_list);
+}

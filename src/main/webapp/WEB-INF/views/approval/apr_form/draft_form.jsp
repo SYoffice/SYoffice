@@ -12,9 +12,9 @@ String ctxPath = request.getContextPath();
 <input type="hidden" id="form_name" value="draft">
 <div class="container">
 	<form name="draft_form">
-		<input type="hidden" name="apr_approver" id="apr_approver" value="">
-		<input type="hidden" name="apr_approver2" id="apr_approver2" value="">
-		<input type="hidden" name="apr_approver3" id="apr_approver3" value="">
+		<input type="hidden" name="apr_approver" id="apr_approver" value="" required />
+		<input type="hidden" name="apr_approver2" id="apr_approver2" value="" />
+		<input type="hidden" name="apr_approver3" id="apr_approver3" value="" />
 		<input type="hidden" name="apr_important" id="apr_important" value="">
 		<div class="btn-container">
 			<button type="button" class="btn-submit" id="draft-submit">결재요청</button>
@@ -78,11 +78,6 @@ String ctxPath = request.getContextPath();
 							<textarea required name="draft_content" placeholder="위의 양식을 따라주시기 바랍니다." id="approval-comments" style="width: 100%; height: 220px; resize: vertical"></textarea>
 						</div>
 					</td>
-				</tr>
-
-				<tr>
-					<th>첨부 파일</th>
-					<td><input type="file" id="attachment" name="attachment" /></td>
 				</tr>
 			</table>
 		</div>

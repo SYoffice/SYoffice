@@ -50,6 +50,7 @@ String ctxPath = request.getContextPath();
 				</button>
 			</div>
 			<div class="modal-body">
+				<input type="hidden" id="loginuser_id" value="${sessionScope.loginuser.emp_id}">
 				<div style="display: flex; justify-content: space-between; align-content: center;">
 					<div id="jojikdo" style="width: 48%">
 						<div class="card">
