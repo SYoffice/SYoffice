@@ -1,9 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%
    String ctxPath = request.getContextPath();
    //     /syoffice 
 %>
+
 <jsp:include page="../main/header.jsp" />
 
 <%-- full calendar css --%>
@@ -48,8 +51,13 @@
                 <li>
                 	<input style="cursor: pointer;" type="checkbox" id="allComCal" class="calendar_checkbox" checked/>&nbsp;&nbsp;<label style="cursor: pointer;" for="allComCal">전사 일정</label>
                  	<span class="btn btn_edit showComCal"><i class="fa-solid fa-caret-up"></i></span>
-                 	<span class="btn btn_edit" onclick='inputSmallCategoInfo("1")' style="float: right;"><i class="fa-solid fa-plus"></i></span>
-                	<%-- 전사 캘린더를 보여주는 곳 --%>
+
+                    <%-- 인사부만 전사일정 소분류를 추가할 수 있다. --%>
+                    <c:if test="${sessionScope.loginuser.fk_dept_id == 2}">
+                        <span class="btn btn_edit" onclick='inputSmallCategoInfo("1")' style="float: right;"><i class="fa-solid fa-plus"></i></span>
+                    </c:if>
+
+                	<%-- 전사 일정 소분류를 보여주는 곳 --%>
                  	<ul id="comCal"></ul>
                 </li>
 				<!--
@@ -66,7 +74,7 @@
                 	<input style="cursor: pointer;" type="checkbox" id="allMyCal" class="calendar_checkbox" checked/>&nbsp;&nbsp;<label style="cursor: pointer;" for="allMyCal">내 일정</label>
                  	<span class="btn btn_edit showMyCal"><i class="fa-solid fa-caret-up"></i></span>
                  	<span class="btn btn_edit" onclick='inputSmallCategoInfo("2")' style="float: right;"><i class="fa-solid fa-plus"></i></span>
-                	<%-- 내 캘린더를 보여주는 곳 --%>
+                	<%-- 내 일정 소분류를 보여주는 곳 --%>
                  	<ul id="myCal"></ul>
                 </li>
              </ul>
