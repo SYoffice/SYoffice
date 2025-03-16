@@ -323,7 +323,7 @@ public class ApprovalController {
 		paraMap.put("startRno", startRno);
 		paraMap.put("endRno", endRno);
 
-		System.out.println("team_approval_box paraMap:: " + paraMap);
+		// System.out.println("team_approval_box paraMap:: " + paraMap);
 
 		List<ApprovalVO> aprList = apvservice.selectTeamAprList(paraMap);
 		mav.addObject("aprList", aprList);
@@ -412,8 +412,6 @@ public class ApprovalController {
 
 		List<String> checkedList = Arrays.asList(str_checked.split(","));
 
-		System.out.println(checkedList);
-
 		// 삭제 잘 되었는지 확인
 		int n = apvservice.deleteAprLine(checkedList);
 
@@ -467,7 +465,7 @@ public class ApprovalController {
 
 		Map<String, String> paraMap = new HashMap<>();
 
-		System.out.println(leave_enddate != null ? leave_enddate : leave_startdate);
+		// System.out.println(leave_enddate != null ? leave_enddate : leave_startdate);
 
 		paraMap.put("fk_emp_id", emp_id);
 		paraMap.put("leave_type", leave_type);

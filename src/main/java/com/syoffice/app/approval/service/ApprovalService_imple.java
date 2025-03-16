@@ -27,8 +27,6 @@ public class ApprovalService_imple implements ApprovalService {
 
 	@Override
 	public List<ApprovalLineVO> selectAprLineList(String emp_id) {
-
-		System.out.println(emp_id);
 		return mapper_dao.selectAprLineList(emp_id);
 	}
 
@@ -47,11 +45,7 @@ public class ApprovalService_imple implements ApprovalService {
 		paraMap.put("apline_approver2", aprLineVO.getApline_approver2());
 		paraMap.put("apline_approver3", aprLineVO.getApline_approver3());
 
-		System.out.println(">> " + paraMap);
-
 		result += mapper_dao.registerApprovalLine(paraMap);
-
-		System.out.println("결과 >> " + result);
 		return result;
 	}
 
@@ -81,8 +75,6 @@ public class ApprovalService_imple implements ApprovalService {
 	@Transactional(value="transactionManager_apr")
 	@Override
 	public int registerApproval(Map<String, String> paraMap, String formType) {
-		
-		System.out.println("type : " + formType);
 		// key 채번
 		int nextSeq = 0;
 		
@@ -98,8 +90,6 @@ public class ApprovalService_imple implements ApprovalService {
         SimpleDateFormat smdatefm = new SimpleDateFormat("yyMMddHHmm");
         
         String no = smdatefm.format(now) + nextSeq;
-        
-        System.out.println(no);
         
         int result = 0;
         
@@ -118,7 +108,6 @@ public class ApprovalService_imple implements ApprovalService {
 	    }
 
     	paraMap.put("type", formType);
-        System.out.println("전자결재 저장~ paramap:" + paraMap);
         int a_result = mapper_dao.insertApr(paraMap);
 		
 		return result == 1 && a_result == 1 ? 1 : 0;
@@ -134,10 +123,6 @@ public class ApprovalService_imple implements ApprovalService {
 	@Override
 	public List<ApprovalVO> selectMyAprList(Map<String, String> paraMap) {
 		
-		System.out.println("-------------------------");
-		System.out.println(paraMap);
-		System.out.println("-------------------------");
-		
 		List<ApprovalVO> selectMyAprList = mapper_dao.selectMyAprList(paraMap);
 		return selectMyAprList;  
 	}
@@ -152,12 +137,6 @@ public class ApprovalService_imple implements ApprovalService {
 	@Override
 	public List<ApprovalVO> selectTeamAprList(Map<String, String> paraMap) {
 		List<ApprovalVO> selectTeamAprList = mapper_dao.selectTeamAprList(paraMap);
-		
-		selectTeamAprList.forEach(v -> {
-			System.out.println(v.getDraft_subject());
-			System.out.println(v.getLeave_subject());
-			System.out.println(v.getFk_emp_id());
-		});
 		
 		return selectTeamAprList;
 	}
@@ -183,10 +162,6 @@ public class ApprovalService_imple implements ApprovalService {
 		if (form_type.equals("3")) {
 			result = mapper_dao.deleteLeave(form_no);
 		}
-		
-		System.out.println("apr_no::" + apr_no);
-		System.out.println("form_type::" + form_type);
-		System.out.println("form_no::" + form_no);
 		
 		return (result + result2) == 2 ? 1 : 0;
 	}
@@ -215,6 +190,9 @@ public class ApprovalService_imple implements ApprovalService {
 		if(!"".equals(apr_approver3) && apr_approver3 != null) {
 			apr_approver_cnt++;
 		}
+		
+		// 최종 결재자가 승인한지 여부
+		boolean isAcceptedLastApr = false;
 
 		// 결재자가 한명도 승인을 안했을 경우
 		int accepted_cnt = 0; // 승인한 결재자 
@@ -241,12 +219,24 @@ public class ApprovalService_imple implements ApprovalService {
 			isLast = true;
 		}
 		
+
+		// 최종 결재자가 승인했을때 
+		if (apr_approver_cnt == 2 && apr_approver2.equals(emp_id)) {
+			isAcceptedLastApr = true;
+		}
+		
+		if (apr_approver_cnt == 3 && apr_approver3.equals(emp_id)) {
+			isAcceptedLastApr = true;
+		}
+		
 		// status를 확인해서 update를 2, 3, 4중 뭘로 할건지 
 		if (isFirst) {
 			paraMap.put("status", "2");
 		}
-		if (isLast) {
-			// 결재자 모두가 승인을 완료한 경우(status,APR_ENDDATE, APR_ACCEPTDAY1, APR_ACCEPTDAY2 ,APR_ACCEPTDAY3)
+
+		// 결재자 모두가 승인을 완료한 경우(status,APR_ENDDATE, APR_ACCEPTDAY1, APR_ACCEPTDAY2 ,APR_ACCEPTDAY3)
+		// 혹은 최종 결재자가 승인한 경우
+		if (isLast || isAcceptedLastApr) {
 			paraMap.put("status", "4");
 
 		}
@@ -255,7 +245,10 @@ public class ApprovalService_imple implements ApprovalService {
 		paraMap.put("apr_no", apr_no);
 		int acceptApr = mapper_dao.acceptApr(paraMap);
 		
-		if(isLast && acceptApr == 1) {
+		// 연차감소 및 문서 테이블에 필요한 기안자의 아이디
+		paraMap.put("requester_id", aprvo.getFk_emp_id());
+		
+		if((isLast || isAcceptedLastApr) && acceptApr == 1) {
 			// 근태신청서일 경우 연차 삭감
 			if (aprvo.getType().equals("3")) {
 				LeaveformVO leaveform = mapper_dao.selectLeave(aprvo.getFk_leave_no());
@@ -266,7 +259,6 @@ public class ApprovalService_imple implements ApprovalService {
 				if (leaveform.getType().equals("1")) {
 			        count = String.valueOf(calDateBetween(leaveform.getLeave_startdate(), leaveform.getLeave_enddate()));
 				}
-				paraMap.put("requester_id", aprvo.getFk_emp_id());
 				paraMap.put("count", count);
 				
 				// 삭감~
@@ -310,8 +302,6 @@ public class ApprovalService_imple implements ApprovalService {
         LocalDate endDate = LocalDate.parse(end, formatter);
         
         int daysBetween = startDate.until(endDate).getDays();
-        
-        System.out.println("날짜 차이: " + daysBetween + "일");
         
         // 날짜 차이 계산
         return daysBetween + 1;
