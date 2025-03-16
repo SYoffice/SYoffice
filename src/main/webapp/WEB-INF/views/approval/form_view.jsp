@@ -12,10 +12,13 @@
   <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" >
 <script type="text/javascript" src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
 <script src="${pageContext.request.contextPath}/js/approval/form_view.js"></script>
-<div class="common_title" style="text-align: center">기안 문서
-   <c:if test="${aprvo.apr_important == '1'}">
-      <span style="background-color: red">긴급</span>
-   </c:if>
+<div class="common_title icon" style="text-align: center">
+	<c:if test="${aprvo.apr_important == '1'}">
+		<img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Emergency_Light.gif" style="
+		    width: 63px;
+		">
+	</c:if>
+	기안 문서
 </div>
 
 <input type="hidden" id="form_type" value="${aprvo.type}">
@@ -46,6 +49,7 @@
 
       <div class="contents-section">
          <!-- 상단 기안자 정보 및 서명 테이블 -->
+
          <div class="top-info">
             <div class="info-table">
                <table>
@@ -61,9 +65,13 @@
                      <th>기안일</th>
                      <td>${aprvo.apr_startdate}</td>
                   </tr>
-               </table>
+               </table>         
             </div>
-
+            
+            <c:if test="${aprvo.apr_status == 5}">
+            <img class="apr_reject_stamp" src="<%=ctxPath%>/images/approval/기안반려.png">
+            </c:if>
+            
             <div class="signature-table">
                <table>
                   <tr id="signature-table-names">
@@ -81,22 +89,31 @@
                   <tr id="signature-table-sec2">
                      <td>
                         <c:if test="${not empty aprvo.apr_acceptday1}">
-                           승인
+                           	<img class="apr_accept_stamp" src="<%=ctxPath%>/images/approval/기안승인.png">
                         </c:if>
                      </td>
                      <c:if test="${not empty aprvo.apr_approver2_name}">
                         <td>
                            <c:if test="${not empty aprvo.apr_acceptday2}">
-                              승인
-                           </c:if>
+                           		<img class="apr_accept_stamp" src="<%=ctxPath%>/images/approval/기안승인.png">
+                           </c:if> 
                         </td>
                      </c:if>
                      <c:if test="${not empty aprvo.apr_approver3_name}">
                         <td>
                            <c:if test="${not empty aprvo.apr_acceptday3}">
-                              승인
-                           </c:if>
+                           		<img class="apr_accept_stamp" src="<%=ctxPath%>/images/approval/기안승인.png">
+                           </c:if> 
                         </td>
+                     </c:if>
+                  </tr>
+                  <tr>
+                     <td>${aprvo.apr_acceptday1}</td>
+                     <c:if test="${not empty aprvo.apr_approver2_name}">
+                     	<td><c:if test="${not empty aprvo.apr_acceptday2}">${aprvo.apr_acceptday2}</c:if></td>
+                     </c:if>
+                     <c:if test="${not empty aprvo.apr_approver3_name}">
+                     	<td><c:if test="${not empty aprvo.apr_acceptday3}">${aprvo.apr_acceptday3}</c:if></td>
                      </c:if>
                   </tr>
                </table>
@@ -162,11 +179,14 @@
                   </div>
                </td>
             </tr>
+	        <!-- 반려 의견 테이블 -->
+	        <c:if test="${aprvo.apr_status == 5}">
+	        	<tr>
+	         		<th>반려의견</th>
+	         		<td>${aprvo.apr_comment}</td>
+	         	</tr>
+	        </c:if>
 
-            <tr>
-               <th>첨부 파일</th>
-               <td></td>
-            </tr>
          </table>
       </div>
    </form>

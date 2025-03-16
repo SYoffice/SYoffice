@@ -385,13 +385,14 @@
 		    A.apr_approver,
 		    A.apr_approver2,
 		    A.apr_approver3,
+		    A.apr_comment,
 		    E1.name as apr_approver_name,
 		    E2.name as apr_approver2_name,
 		    E3.name as apr_approver3_name,
 		    A.apr_status,
-		    A.apr_acceptday1,
-		    A.apr_acceptday2,
-		    A.apr_acceptday3
+		    TO_CHAR(A.apr_acceptday1, 'YYYY-MM-DD') AS apr_acceptday1,
+		    TO_CHAR(A.apr_acceptday2, 'YYYY-MM-DD') AS apr_acceptday2,
+		    TO_CHAR(A.apr_acceptday3, 'YYYY-MM-DD') AS apr_acceptday3
 		FROM tbl_employee E 
 		JOIN tbl_approval A
 		    ON E.emp_id = A.fk_emp_id

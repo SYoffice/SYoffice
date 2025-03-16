@@ -9,7 +9,7 @@
 
 table {
 	text-align: center;
-	font-size: small; 
+	/* font-size: small;  */
 	width : 100%;
 	border-collapse: collapse;
 	margin-top: 20px;

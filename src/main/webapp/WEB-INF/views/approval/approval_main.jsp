@@ -22,7 +22,7 @@ String ctxPath = request.getContextPath();
     }
 </style>
 
-<div class="common_title mb-80">전자결재</div>
+<div class="common_title mb-45">전자결재</div>
 <div class="approval_wrapper">
 	<c:if test="${myaprList.size() > 0}">
 		<div class="contents">

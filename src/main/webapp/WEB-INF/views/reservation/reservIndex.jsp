@@ -21,7 +21,7 @@ String ctxPath = request.getContextPath();
 <!-- 로그인 아이디 -->
 <input type="hidden" id="login_user_id" value="${sessionScope.loginuser.emp_id}" />
 
-<div class="common_title mb-80">
+<div class="common_title mb-45">
    <c:if test="${category_no == 1}">
        회의실
    </c:if>

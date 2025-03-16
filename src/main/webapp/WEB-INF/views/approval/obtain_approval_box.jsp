@@ -15,7 +15,7 @@
 <c:set var="href" value="${href}" scope="request" />
 
 <script src="${pageContext.request.contextPath}/js/approval/obtain_approval_box.js"></script>
-<div class="common_title mb-80">결재대기문서함</div>
+<div class="common_title mb-45">결재대기문서함</div>
             <div class="approval_wrapper">
                 <div class="contents">
                    <div class="searchsortbox">

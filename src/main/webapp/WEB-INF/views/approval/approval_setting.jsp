@@ -9,7 +9,7 @@ String ctxPath = request.getContextPath();
 <link rel="stylesheet" href="<%=ctxPath%>/css/approval/approval_setting.css">
 <script src="${pageContext.request.contextPath}/js/approval/approval_setting.js"></script>
 
-<div class="common_title mb-80">전자결재 환경설정</div>
+<div class="common_title mb-45">전자결재 환경설정</div>
 
 <div>
 </div>
@@ -17,7 +17,7 @@ String ctxPath = request.getContextPath();
 <div class="approval_wrapper">
 	<div class="contents">
 		<div class="content-header">
-			<span class="content_title mb-none">자동결재선 목록</span>
+			<span class="content_title mb-45">자동결재선 목록</span>
 			<div>
 				<button type="button" onclick="goRegisterPage()">결재선 등록</button>
 				<button type="button" onclick="onClickRemove()">삭제</button>

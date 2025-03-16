@@ -52,6 +52,16 @@ table {
 	cursor: default;
 }
 
+.common_wrapper .common_title.icon {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.common_wrapper .common_title.mb-45 {
+	margin-bottom: 45px;
+}
+
 .common_wrapper .common_title.mb-80 {
 	margin-bottom: 80px;
 }
@@ -181,6 +191,7 @@ table {
 .common_wrapper .contents_wrapper {
 	width: calc(100vw - 17%);
 	overflow-y: auto;
+	font-size: 14px;
 }
 
 .common_wrapper .contents_wrapper .contents_inner_wrapper {
@@ -197,7 +208,7 @@ table {
 }
 
 .common_wrapper .common_table th, .common_wrapper .common_table td {
-	font-size: 16px;
+	/* font-size: 16px; */
 	padding: 12px;
 	text-align: center;
 	vertical-align: middle;
@@ -219,7 +230,7 @@ table {
 	align-items: center;
 	width: 32px;
 	height: 16px;
-	font-size: 12px;
+	/* font-size: 12px; */
 	border-radius: 10px;
 	background-color: red;
 	color: #fff;
