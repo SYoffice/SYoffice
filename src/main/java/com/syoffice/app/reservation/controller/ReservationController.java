@@ -76,8 +76,6 @@ public class ReservationController {
       mav.addObject("pagingDTO", pagingDTO);
       //////////////////////페이징 처리 /////////////////////////
       
-      System.out.println("totalRowCount >>>>>" + totalRowCount);
-      
       List<ReservationVO> reservationList = service.selectAllReservation(paraMap);
       mav.addObject("category_no", category_no);
       mav.addObject("reservationList", reservationList);
@@ -90,11 +88,6 @@ public class ReservationController {
    public ModelAndView reservationList(HttpServletRequest request, ModelAndView mav) {
 
       String emp_id = getEmpIdFromSession(request);
-
-      // 세션에 있는 아이디 값 담아주기
-      // String emp_id = loginuser.getEmp_id();
-
-      System.out.println("로그인 아이디 :: " + emp_id);
       
       //////////////////////페이징 처리 /////////////////////////
       int curPage = 1;
@@ -213,8 +206,6 @@ public class ReservationController {
           paraMap.put("startRno", startRno);
           paraMap.put("endRno", endRno);
        }
-       
-       System.out.println("selectAllReservation :: " + paraMap);
 
        // 예약 리스트 조회
        List<ReservationVO> reservationList = service.selectAllReservation(paraMap);
