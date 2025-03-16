@@ -22,6 +22,7 @@
 	    <typeAlias type="com.syoffice.app.reservation.domain.ResourceVO" alias="ResourceVO"/>
 	    <typeAlias type="com.syoffice.app.approval.domain.ApprovalLineVO" alias="ApprovalLineVO"/> 
 	    <typeAlias type="com.syoffice.app.approval.domain.ApprovalVO" alias="ApprovalVO"/> 
+	    <typeAlias type="com.syoffice.app.approval.domain.LeaveformVO" alias="LeaveformVO"/> 
 		<typeAlias type="com.syoffice.app.weather.domain.WeatherForecastVO" alias="WeatherForecastVO"/>
 	</typeAliases>
 

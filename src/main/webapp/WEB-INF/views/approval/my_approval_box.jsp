@@ -18,7 +18,7 @@
 <%-- paraMap : ${requestScope.paraMap} <br/> --%>
 
 
-             <div class="common_title mb-80">기안 문서함</div>
+             <div class="common_title mb-45">기안 문서함</div>
              <div class="approval_wrapper">
                 <div class="contents">
                     <div class="searchsortbox">

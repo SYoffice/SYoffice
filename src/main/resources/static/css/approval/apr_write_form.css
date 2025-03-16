@@ -33,10 +33,14 @@ table {
 
 td {
 	min-width: 65%;
-	height: 20px;
+	height: 42px;
 	padding: 10px;
 	border: 1px solid black;
 	align-content: center;
+}
+
+.apr_accept_stamp {
+ 	width: 65px;
 }
 
 .contents-section table td label {
@@ -82,6 +86,8 @@ textarea {
 .btn-container {
 	margin-top: 10px;
 	margin-bottom: 10px;
+	display: flex;
+    justify-content: flex-end;
 }
 
 /* 버튼 */
@@ -109,7 +115,7 @@ textarea {
 .top-info {
 	display: flex;
 	justify-content: space-between;
-	gap: 35%;
+	/* gap: 35%; */
 }
 
 .info-table, .signature-table {
@@ -118,8 +124,8 @@ textarea {
 	vertical-align: top;
 }
 
-.signature-table td:nth-child(1) {
-	height: 60px;
+#signature-table-sec2 td {
+	height: 86px;
 }
 
 .signature-table {

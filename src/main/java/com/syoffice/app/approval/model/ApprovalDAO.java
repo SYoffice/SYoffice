@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.syoffice.app.approval.domain.ApprovalLineVO;
 import com.syoffice.app.approval.domain.ApprovalVO;
+import com.syoffice.app.approval.domain.LeaveformVO;
 
 @Mapper
 public interface ApprovalDAO {
@@ -66,7 +67,19 @@ public interface ApprovalDAO {
 	ApprovalVO selectApr(String apr_no);
 
 	int rejectApr(String apr_no, String apr_comment);
-
-
 	
+	// 근태신청서 조회
+	LeaveformVO selectLeave(String leave_no);
+
+	// 사원 정보에서 연차 감소
+	int subtractLeaveCount(Map<String, String> paraMap);
+	
+	// document에 insert
+	int insertDoc(Map<String, String> paraMap);
+	
+	// 근태 신청서 fk_doc_no 세팅
+	int updateLeaveDocno(Map<String, String> paraMap);
+	
+	// 업무 품의서 fk_doc_no 세팅
+	int updateDraftDocno(Map<String, String> paraMap);
 }

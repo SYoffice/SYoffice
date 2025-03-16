@@ -6,8 +6,9 @@ String ctxPath = request.getContextPath();
 <jsp:include page="../sidebar.jsp" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/approval/apr_write_form.css">
 <script src="${pageContext.request.contextPath}/js/approval/apr_write_form.js"></script>
-<div class="common_title" style="text-align: center">업무 품의서</div>
-
+<div id="title_sec" class="common_title icon" style="text-align: center">
+	업무 품의서
+</div>
 <!-- 폼 이름 -->
 <input type="hidden" id="form_name" value="draft">
 <div class="container">
