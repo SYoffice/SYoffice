@@ -259,20 +259,22 @@
 
     <!--  특정 부서의 연차 내역 조회 -->
     <select id="selectDeptLeaveHistory" parameterType="map" resultType="map">
-        SELECT 
-          e.emp_id AS empId, 
-          e.name AS empName, 
-          d.dept_name AS deptName,
-          TO_CHAR(lf.leave_startdate,'YYYY-MM-DD') AS STARTTIME,
-          TO_CHAR(lf.leave_enddate,'YYYY-MM-DD') AS ENDTIME,
-          lf.leave_subject AS leaveSubject
-      FROM tbl_leaveform lf
-      LEFT JOIN tbl_document doc ON lf.fk_doc_no = doc.doc_no
-      LEFT JOIN tbl_employee e ON doc.fk_emp_id = e.emp_id
-      LEFT JOIN tbl_department d ON e.fk_dept_id = d.dept_id
-      WHERE d.dept_id = #{deptId} 
-        AND lf.leave_startdate BETWEEN TRUNC(SYSDATE) - 7 AND TRUNC(SYSDATE)
-      ORDER BY lf.leave_startdate DESC
+       
+       SELECT 
+		    d.dept_name AS deptName,  -- 부서명
+		    e.name AS empName,        -- 사원명
+		    TO_CHAR(lf.leave_startdate, 'YYYY-MM-DD') AS STARTTIME,
+		    TO_CHAR(lf.leave_enddate, 'YYYY-MM-DD') AS ENDTIME,
+		    lf.leave_subject AS leaveSubject,
+		    lf.leave_content AS leaveContent
+		FROM tbl_department d
+		LEFT JOIN tbl_employee e ON d.dept_id = e.fk_dept_id
+		LEFT JOIN tbl_document doc ON e.emp_id = doc.fk_emp_id
+		LEFT JOIN tbl_leaveform lf ON doc.doc_no = lf.fk_doc_no
+		WHERE d.dept_id = #{deptId} 
+		  AND lf.fk_doc_no IS NOT NULL 
+		ORDER BY lf.leave_startdate DESC
+       
 
     </select>
     

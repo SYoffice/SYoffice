@@ -13,6 +13,10 @@
 
 <style type="text/css">
 
+.table td {
+	vertical-align: inherit;
+}
+
 .subjectStyle {font-weight: lighter;
                color: #4d94ff;
                cursor: pointer; }
@@ -80,7 +84,7 @@ a {text-decoration: none !important;} /* 페이지바의 a 태그에 밑줄 없�
         
 <div class="contents_wrapper" style="margin-top: 3%;">
 
-<div style="display: inline-block; width: 97%; margin-bottom: 1%;">
+<div style="display: inline-block; width: 97%; margin-bottom: 2%;">
 <!-- 페이지 공통 부분  -->
 <span class="bg-light text-dark" style="font-size: 20pt; font-weight: bold; padding: 1% 0 1% 3%;">좋아요<i style="font-size:30px; margin-left: 1%;" class="fa fa-heart"></i></span>
 </div>
