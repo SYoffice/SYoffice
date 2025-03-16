@@ -182,7 +182,7 @@ body {
 
 .common_wrapper {
   display: flex;
-  height: calc(100vh - 65px);
+  height: calc(100vh - 80px);
 }
 
 /* 왼쪽 사이드바 */

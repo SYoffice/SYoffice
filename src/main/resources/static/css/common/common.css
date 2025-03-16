@@ -43,7 +43,7 @@ table {
 
 .common_wrapper {
 	display: flex;
-	height: calc(100vh - 65px);
+	height: calc(100vh - 80px);
 }
 
 .common_wrapper .common_title {
@@ -137,7 +137,7 @@ table {
 	display: flex;
 	flex-direction: column;
 	width: 17%;
-	height: calc(100vh - 65px);
+	height: calc(100vh - 80px);
 }
 
 .common_wrapper .side_menu_wrapper a, .common_wrapper .side_menu_wrapper a:link,
