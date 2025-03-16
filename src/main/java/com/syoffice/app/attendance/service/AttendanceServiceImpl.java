@@ -132,7 +132,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public List<Map<String, Object>> getLeaveInfo(String empId) {
-        // 🔹 DAO 호출: selectLeaveInfo(empId)가 List<Map<String, Object>> 형태로 반환되도록 수정
         return attendanceDAO.selectLeaveInfo(empId);
     }
     
@@ -140,6 +139,11 @@ public class AttendanceServiceImpl implements AttendanceService {
     public Map<String, Object> getLeaveInfono(String empId) {
     	return attendanceDAO.getLeaveInfono(empId);
     }
+
+	@Override
+	public double getRemainingLeave(String empId) {
+		return attendanceDAO.getRemainingLeave(empId);
+	}
 
 
     

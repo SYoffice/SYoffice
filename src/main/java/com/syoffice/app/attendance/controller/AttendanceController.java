@@ -136,15 +136,17 @@ public class AttendanceController {
             String monthlyAccumulated = attendanceService.getMonthlyAccumulated(empId);
             mav.addObject("weeklyAccumulated", weeklyAccumulated);
             mav.addObject("monthlyAccumulated", monthlyAccumulated);
+            
+            double remainingLeave = attendanceService.getRemainingLeave(empId);
+            mav.addObject("remainingLeave", remainingLeave);  // ModelAndView에 잔여 연차를 추가
+            
         } catch (Exception e) {
             System.err.println("[ERROR] 근태 정보 조회 중 오류 발생: " + e.getMessage());
             e.printStackTrace();
         }
         return mav;
     }
-    
-  
-
+   
 
     @GetMapping("/leaveInfo")
     @ResponseBody
@@ -201,6 +203,8 @@ public class AttendanceController {
             return ResponseEntity.status(500).body(Collections.singletonMap("error", "부서 목록 조회 실패"));
         }
     }
+    
+    
 
     /**
      *  🔹 선택한 부서의 근태 및 연차 데이터 조회 API
