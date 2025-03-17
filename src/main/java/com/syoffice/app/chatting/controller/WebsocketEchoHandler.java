@@ -275,7 +275,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
         		        "<img src='/syoffice/resources/profile/" + profileImage + "' style='width: 40px; height: 40px; border-radius: 50%;'>" + 
         		        "<div style='display: flex; align-items: center;'>" +
     		            "<div style='position: relative; background-color: white; display: inline-block; margin:8px 7px; padding: 7px 10px; " +
-		                "border-radius: 15px; word-break: break-word;'>" + messageVO.getMessage() +
+		                "border-radius: 10px; word-break: break-word;'>" + messageVO.getMessage() +
 		                "<div style='content: \"\"; position: absolute; left: -8px; top: 50%; transform: translateY(-50%); width: 0; height: 0; " +
 	                    "border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-right: 8px solid white;'>" + "</div>" + "</div>" +
     		            "<div style='font-size: 7pt; marginn-top: 2px; margin-left: 5px;'>" + currentTime + "</div>" + "</div>" + "</div>" + "</div>"));
