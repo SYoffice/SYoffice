@@ -228,7 +228,14 @@ public class KpiService_imple implements KpiService {
 
 	// === 엑셀다운로드 === //
 	@Override
-	public void kpiResult_to_Excel(Map<String, String> paraMap, Model model) {
+	public void kpiResult_to_Excel(Map<String, String> paraMap, Model model, List<ResultVO> kpiResultList) {
+
+//		List<ResultVO> kpiResultList = dao.getResultBydeptKpi(paraMap);
+
+		if (kpiResultList == null || kpiResultList.size() == 0) {
+			return;
+		}
+
 		SXSSFWorkbook workbook = new SXSSFWorkbook();	// 엑셀 파일 생성
 		
 		SXSSFSheet sheet = workbook.createSheet("실적내역");
@@ -291,7 +298,7 @@ public class KpiService_imple implements KpiService {
         
         Row mergeRow = sheet.createRow(rowLocation);	// 엑셀에서 행의 시작은 0부터 시작한다.
         
-        List<ResultVO> kpiResultList = dao.getResultBydeptKpi(paraMap);
+
         
         // title 제작
         for (int i=0; i<cellCount; i++) {

@@ -2,8 +2,11 @@ package com.syoffice.app.kpi.controller;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.syoffice.app.kpi.domain.ResultVO;
+import com.syoffice.app.kpi.model.KpiDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +28,9 @@ public class KpiController {
 
 	@Autowired
 	private KpiService service;
+
+	@Autowired
+	private KpiDAO dao;
 	
 	
 	
@@ -108,7 +114,7 @@ public class KpiController {
 	public String downloadExcelFile(@RequestParam(defaultValue="") String fk_dept_id,
 									@RequestParam(defaultValue="") String searchYear,
 									@RequestParam(defaultValue="") String searchQuarter,
-									Model model) {	// Model : 저장소 기능만 있는 객체
+									Model model, HttpServletRequest request) {	// Model : 저장소 기능만 있는 객체
 	
 //		System.out.println("fk_dept_id : "+ fk_dept_id);
 //		System.out.println("searchYear : "+ searchYear);
@@ -119,8 +125,16 @@ public class KpiController {
 		paraMap.put("kpi_year", searchYear);
 		paraMap.put("kpi_quarter", searchQuarter);
 
+		List<ResultVO> kpiResultList = dao.getResultBydeptKpi(paraMap);
+
+		if (kpiResultList == null || kpiResultList.size() == 0) {
+			request.setAttribute("message", "등록된 실적이 없습니다.");
+			request.setAttribute("loc", "javascript:history.back();");
+
+			return "common/msg";
+		}
 		
-		service.kpiResult_to_Excel(paraMap, model);
+		service.kpiResult_to_Excel(paraMap, model, kpiResultList);
 		
 		return "excelDownloadView";		// ViewConfig 에 설정 된 Bean Name
 	}// end of public String downloadExcelFile() ------------------------------------- 
