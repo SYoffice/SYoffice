@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				flatOptions.mode = "single";
 				flatOptions.defaultDate = document.getElementById('leave_startdate').value;
 				// 종료 날짜 시작날짜와 같은 날짜로 세팅
-				document.getElementById('leave_leavedate').value = document.getElementById('leave_startdate').value;
+				document.getElementById('leave_enddate').value = document.getElementById('leave_startdate').value;
 				
 				flatpickr("#date", flatOptions);
 			} else {

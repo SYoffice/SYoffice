@@ -436,8 +436,10 @@ function getReservationPageList(curPage) {
 						html += `<td>
                            ${item.posibleCancel ? `<button onclick="handleReturnItem(${item.reserv_no}, ${item.fk_emp_id})">반납</button>` : `<button onclick="handleRemoveItem(${item.reserv_no}, ${item.fk_emp_id})">취소</button>`}
                         </td>`;
-					} else {
+					} else if (item.isPassed) {
 						html += `<td style="text-align: center"> 사용 완료 </td>`;
+					} else {
+						html += `<td style="text-align: center"> - </td>`;
 					}
 
 					html += `</tr>`;

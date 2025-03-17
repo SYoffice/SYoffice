@@ -50,8 +50,11 @@ String ctxPath = request.getContextPath();
                         </c:if>
                      </td>
                   </c:if>
-                  <c:if test="${sessionScope.loginuser.emp_id != reservation.fk_emp_id || reservation.isPassed}">
+                  <c:if test="${reservation.isPassed}">
                      <td> 사용 완료 </td>
+                  </c:if>
+                  <c:if test="${sessionScope.loginuser.emp_id != reservation.fk_emp_id && !reservation.isPassed}">
+                     <td> - </td>
                   </c:if>
                </tr>
             </c:forEach>
