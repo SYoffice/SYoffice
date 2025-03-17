@@ -197,8 +197,8 @@
 			       
 			FROM (
 			    SELECT 
-			        LAG(N.notice_no) OVER(ORDER BY N.notice_no DESC) AS previousseq,
-			        LAG(N.notice_subject) OVER(ORDER BY N.notice_no DESC) AS previoussubject,
+			        LAG(N.notice_no) OVER(ORDER BY N.notice_regdate DESC) AS previousseq,
+			        LAG(N.notice_subject) OVER(ORDER BY N.notice_regdate DESC) AS previoussubject,
 			
 			        N.notice_no, 
 			        N.fk_emp_id, 
@@ -208,8 +208,8 @@
 			        N.notice_viewcount, 
 			        N.notice_regdate,
 			        E.profile_img,
-			        LEAD(N.notice_no) OVER(ORDER BY N.notice_no DESC) AS nextseq,
-			        LEAD(N.notice_subject) OVER(ORDER BY N.notice_no DESC) AS nextsubject,
+			        LEAD(N.notice_no) OVER(ORDER BY N.notice_regdate DESC) AS nextseq,
+			        LEAD(N.notice_subject) OVER(ORDER BY N.notice_regdate DESC) AS nextsubject,
 			
 			        COALESCE(LISTAGG(A.atnotice_filename, ', ') WITHIN GROUP (ORDER BY A.atnotice_no), '') AS atnotice_filename,
 			        COALESCE(LISTAGG(A.atnotice_orgfilename, ', ') WITHIN GROUP (ORDER BY A.atnotice_no), '') AS atnotice_orgfilename,
@@ -587,8 +587,8 @@
 			       
 			FROM (
 			    SELECT 
-			        LAG(N.board_no) OVER(ORDER BY N.board_no DESC) AS previousseq,
-			        LAG(N.subject) OVER(ORDER BY N.board_no DESC) AS previoussubject,
+			        LAG(N.board_no) OVER(ORDER BY N.board_regdate DESC) AS previousseq,
+			        LAG(N.subject) OVER(ORDER BY N.board_regdate DESC) AS previoussubject,
 			
 			        N.board_no, 
 			        N.fk_emp_id, 
@@ -600,8 +600,8 @@
 			        N.fk_dept_id,
 			        N.fk_bcate_no,
 			        E.profile_img,
-			        LEAD(N.board_no) OVER(ORDER BY N.board_no DESC) AS nextseq,
-			        LEAD(N.subject) OVER(ORDER BY N.board_no DESC) AS nextsubject,
+			        LEAD(N.board_no) OVER(ORDER BY N.board_regdate DESC) AS nextseq,
+			        LEAD(N.subject) OVER(ORDER BY N.board_regdate DESC) AS nextsubject,
 			
 			        COALESCE(LISTAGG(A.atboard_filename, ', ') WITHIN GROUP (ORDER BY A.atboard_no), '') AS atboard_filename,
 			        COALESCE(LISTAGG(A.atboard_orgfilename, ', ') WITHIN GROUP (ORDER BY A.atboard_no), '') AS atboard_orgfilename,
