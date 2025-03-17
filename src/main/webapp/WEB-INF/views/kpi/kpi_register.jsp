@@ -22,7 +22,7 @@
 						<tr>
 							<th>소속</th>
 							<td colspan="3">
-								본사-인사부
+								${sessionScope.loginuser.branch_name}-${sessionScope.loginuser.dept_name}
 							</td>
 							
 						</tr>
