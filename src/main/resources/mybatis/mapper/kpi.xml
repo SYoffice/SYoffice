@@ -118,7 +118,7 @@
 		 		</when>
 		 		<otherwise></otherwise>
 		 	</choose>
-		ORDER BY k.kpi_year DESC, k.kpi_quarter ASC, b.branch_no ASC, A.fk_dept_id ASC, g.grade_no ASC
+		ORDER BY k.kpi_year DESC, k.kpi_quarter ASC, b.branch_no ASC, A.fk_dept_id ASC, g.grade_no ASC, A.name ASC, A.result_date DESC
 	</select>
 	
 </mapper>

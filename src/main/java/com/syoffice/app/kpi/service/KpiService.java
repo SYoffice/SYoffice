@@ -44,7 +44,7 @@ public interface KpiService {
 	int add_resultList(List<Map<String, String>> paraMapList);
 
 	// === 엑셀다운로드 === //
-	void kpiResult_to_Excel(Map<String, String> paraMap, Model model);
+	void kpiResult_to_Excel(Map<String, String> paraMap, Model model, List<ResultVO> kpiResultList);
 
 	// === 부서별 개인 실적 내역 조회 === //
 	List<ResultVO> getDeptResultByYearQuarter(Map<String, String> paraMap);
