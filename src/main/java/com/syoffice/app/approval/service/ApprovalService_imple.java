@@ -221,10 +221,6 @@ public class ApprovalService_imple implements ApprovalService {
 		
 
 		// 최종 결재자가 승인했을때 
-		if (apr_approver_cnt == 1 && apr_approver2.equals(emp_id)) {
-			isAcceptedLastApr = true;
-		}
-		
 		if (apr_approver_cnt == 2 && apr_approver2.equals(emp_id)) {
 			isAcceptedLastApr = true;
 		}
