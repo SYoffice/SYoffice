@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //console.log(" 캘린더 컨테이너 확인:", calendarEl);
 
     calendar = new FullCalendar.Calendar(calendarEl, {
-        googleCalendarApiKey: "YOUR_GOOGLE_API_KEY", // 구글 캘린더 API 키
+        googleCalendarApiKey: "AIzaSyASM5hq3PTF2dNRmliR_rXpjqNqC-6aPbQ", // 구글 캘린더 API 키
         eventSources: [
             {
                 googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
