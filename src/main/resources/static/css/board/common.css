@@ -23,7 +23,7 @@
 
 .common_wrapper {
   display: flex;
-  height: calc(100vh - 65px);
+  height: calc(100vh - 80px);
   margin-top: 65px;
 }
 .common_wrapper .title {
