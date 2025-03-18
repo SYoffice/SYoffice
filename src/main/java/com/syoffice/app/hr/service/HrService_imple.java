@@ -153,7 +153,10 @@ public class HrService_imple implements HrService {
 	
 	
 	// 신규 부서등록하기
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor = {Throwable.class})	// 부서장과 담당임원이 중복되지 않기 위해 트랜잭션 처리
+	@Transactional( transactionManager = "transactionManager",  // 추가된 트랜잭션 매니저 지정
+		    propagation = Propagation.REQUIRED, 
+		    isolation = Isolation.READ_COMMITTED, 
+		    rollbackFor = {Throwable.class})	// 부서장과 담당임원이 중복되지 않기 위해 트랜잭션 처리
 	@Override
 	public int RegisterDepartment(String dept_name, String manager_id, String executive_id) {
 		
@@ -258,7 +261,10 @@ public class HrService_imple implements HrService {
 	}// end of public List<EmployeeVO> getAllExecutives() ----
 	
 	// 부서 정보 수정
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor = {Throwable.class})
+	@Transactional( transactionManager = "transactionManager",  // 추가된 트랜잭션 매니저 지정
+		    propagation = Propagation.REQUIRED, 
+		    isolation = Isolation.READ_COMMITTED, 
+		    rollbackFor = {Throwable.class})
 	@Override
 	public Integer editDepartment(Map<String, String> paraMap) {
 		
@@ -399,7 +405,7 @@ public class HrService_imple implements HrService {
 	
 	// 부서 삭제 여부
 	@Override
-	@Transactional(rollbackFor = Exception.class)
+	@Transactional(rollbackFor = Exception.class, transactionManager = "transactionManager")
 	public boolean deleteDepartment(String dept_id) {
 		// 1. 부서에 소속된 직원이 있는지 확인
         int employeeCount = dao.getEmployeeCountByDeptId(dept_id);
